@@ -2,7 +2,8 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios, { AxiosError } from "axios";
 
-// Type definitions
+// ── TYPE DEFINITIONS ───────────────────────────────────────────────
+
 interface MenuItem {
     id: number;
     label: string;
@@ -25,36 +26,44 @@ interface MenuItem {
 }
 
 interface LandingContent {
+    app_name?: string;
     logo?: string;
-    title?: string;
     description?: string;
+    email?: string;
+    telepon?: string;
+    alamat?: string;
     [key: string]: any;
 }
 
+// Mengambil URL dari env atau default ke localhost
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
 export const useLandingStore = defineStore("landing", () => {
-    // State
+    // ── STATE ──────────────────────────────────────────────────────
     const content = ref<LandingContent>({});
     const menus = ref<MenuItem[]>([]);
     const loading = ref(false);
     const error = ref<string | null>(null);
 
+    // ── ACTIONS ────────────────────────────────────────────────────
+
     /**
-     * Fetch content untuk landing page
+     * Fetch content umum (Logo, Judul, Deskripsi)
+     * Endpoint: /api/front/settings
      */
     async function fetchContent() {
         loading.value = true;
         error.value = null;
 
         try {
-            const response = await axios.get(`${API_URL}/landing-content`);
+            // UPDATE: Mengarah ke endpoint settings yang baru dibuat di backend
+            const response = await axios.get(`${API_URL}/front/settings`);
 
-            if (response.data.status) {
+            if (response.data.success) {
                 content.value = response.data.data || {};
             } else {
                 throw new Error(
-                    response.data.message || "Gagal mengambil data"
+                    response.data.message || "Gagal mengambil data settings"
                 );
             }
         } catch (err: any) {
@@ -62,6 +71,7 @@ export const useLandingStore = defineStore("landing", () => {
                 err.response?.data?.message ||
                 err.message ||
                 "Gagal mengambil data landing page";
+
             error.value = errorMessage;
             console.error("❌ Error fetching landing content:", err);
         } finally {
@@ -71,17 +81,18 @@ export const useLandingStore = defineStore("landing", () => {
 
     /**
      * Fetch menu navbar
+     * Endpoint: /api/front/navbar
      * @param device - 'mobile' | 'desktop'
      */
     async function fetchMenu(device?: "mobile" | "desktop") {
         error.value = null;
 
         try {
-            // Deteksi device type jika tidak diberikan
+            // Deteksi device type otomatis jika tidak diberikan
             const deviceType =
                 device || (window.innerWidth < 992 ? "mobile" : "desktop");
 
-            console.log(`🔄 Fetching ${deviceType} menu...`);
+            // console.log(`🔄 Fetching ${deviceType} menu...`);
 
             const response = await axios.get(`${API_URL}/front/navbar`, {
                 params: { device: deviceType },
@@ -89,22 +100,6 @@ export const useLandingStore = defineStore("landing", () => {
 
             if (response.data.success) {
                 menus.value = response.data.data || [];
-
-                console.log("✅ Menu data loaded:", {
-                    total: menus.value.length,
-                    device: deviceType,
-                    activeMenus: menus.value.filter((m) => m.is_active).length,
-                    menus: menus.value.map((m) => ({
-                        id: m.id,
-                        label: m.label,
-                        type: m.type,
-                        is_active: m.is_active,
-                        show_on_desktop: m.show_on_desktop,
-                        show_on_mobile: m.show_on_mobile,
-                        has_dropdown: m.has_dropdown,
-                        children_count: m.children?.length || 0,
-                    })),
-                });
             } else {
                 menus.value = [];
                 console.warn(
@@ -113,24 +108,21 @@ export const useLandingStore = defineStore("landing", () => {
                 );
             }
         } catch (err: any) {
-            const errorMessage = 
+            const errorMessage =
                 err.response?.data?.message ||
                 err.message ||
                 "Gagal mengambil data menu";
+
             error.value = errorMessage;
-
-            console.error("❌ Failed to fetch menu:", {
-                message: errorMessage,
-                status: err.response?.status,
-                data: err.response?.data,
-            });
-
             menus.value = [];
+
+            console.error("❌ Failed to fetch menu:", errorMessage);
         }
     }
 
     /**
      * Refresh menus berdasarkan ukuran window saat ini
+     * Berguna saat event window resize
      */
     async function refreshMenus() {
         const isMobile = window.innerWidth < 992;
@@ -148,8 +140,19 @@ export const useLandingStore = defineStore("landing", () => {
     }
 
     /**
-     * Get menus berdasarkan visibility (all/guest/auth)
+     * Track analytics saat menu diklik
      */
+    async function trackMenuClick(menuId: number) {
+        try {
+            await axios.post(`${API_URL}/front/navbar/track-click/${menuId}`);
+        } catch (err) {
+            // Silent fail - analytics error should not disturb user experience
+            console.error("Failed to track menu click:", err);
+        }
+    }
+
+    // ── GETTERS / HELPERS ──────────────────────────────────────────
+
     function getMenusByVisibility(
         visibility: "all" | "guest" | "auth"
     ): MenuItem[] {
@@ -159,16 +162,10 @@ export const useLandingStore = defineStore("landing", () => {
         );
     }
 
-    /**
-     * Get hanya menu yang aktif
-     */
     function getActiveMenus(): MenuItem[] {
         return menus.value.filter((menu) => menu.is_active);
     }
 
-    /**
-     * Get menu yang memiliki dropdown
-     */
     function getMenusWithDropdown(): MenuItem[] {
         return menus.value.filter(
             (menu) =>
@@ -176,27 +173,21 @@ export const useLandingStore = defineStore("landing", () => {
         );
     }
 
-    /**
-     * Get CTA button (button-primary)
-     */
+    // Mencari menu tipe button-primary untuk dijadikan CTA (Call to Action)
     function getCtaButton(): MenuItem | undefined {
         return menus.value.find(
             (menu) => menu.type === "button-primary" && menu.is_active
         );
     }
 
-    /**
-     * Get menu dengan type 'link'
-     */
+    // Mengambil menu biasa (text link)
     function getLinkMenus(): MenuItem[] {
         return menus.value.filter(
             (menu) => menu.is_active && menu.type === "link"
         );
     }
 
-    /**
-     * Get semua button menus (primary + outline)
-     */
+    // Mengambil semua menu berbentuk tombol
     function getButtonMenus(): MenuItem[] {
         return menus.value.filter(
             (menu) =>
@@ -204,19 +195,6 @@ export const useLandingStore = defineStore("landing", () => {
                 (menu.type === "button-primary" ||
                     menu.type === "button-outline")
         );
-    }
-
-    /**
-     * Track menu click analytics
-     */
-    async function trackMenuClick(menuId: number) {
-        try {
-            await axios.post(`${API_URL}/front/navbar/track-click/${menuId}`);
-            console.log(`📊 Tracked click for menu ID: ${menuId}`);
-        } catch (err) {
-            console.error("Failed to track menu click:", err);
-            // Silent fail - tidak perlu menampilkan error ke user
-        }
     }
 
     return {
