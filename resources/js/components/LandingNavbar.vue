@@ -1,7 +1,10 @@
 <template>
     <div class="navbar-wrapper">
         <!-- Scroll Progress Bar -->
-        <div class="scroll-progress" :style="{ width: scrollProgress + '%' }"></div>
+        <div
+            class="scroll-progress"
+            :style="{ width: scrollProgress + '%' }"
+        ></div>
 
         <header
             class="navbar-root"
@@ -17,7 +20,11 @@
             <!-- Animated glow spotlight following cursor -->
             <div
                 class="navbar-spotlight"
-                :style="{ left: spotlightX + 'px', top: spotlightY + 'px', opacity: spotlightVisible ? 1 : 0 }"
+                :style="{
+                    left: spotlightX + 'px',
+                    top: spotlightY + 'px',
+                    opacity: spotlightVisible ? 1 : 0,
+                }"
             ></div>
 
             <div class="navbar-glow-border"></div>
@@ -48,29 +55,60 @@
 
                     <!-- Desktop Navigation -->
                     <nav class="desktop-nav d-none d-lg-flex" role="navigation">
-                        <template v-for="(menu, idx) in desktopLinks" :key="menu.id">
+                        <template
+                            v-for="(menu, idx) in desktopLinks"
+                            :key="menu.id"
+                        >
                             <!-- Dropdown Menu -->
                             <div
-                                v-if="menu.has_dropdown && menu.children?.length"
+                                v-if="
+                                    menu.has_dropdown && menu.children?.length
+                                "
                                 class="nav-item"
                                 @mouseenter="openDropdown(menu.id)"
                                 @mouseleave="scheduleClose"
                             >
                                 <button
                                     class="nav-link"
-                                    :class="{ 'is-open': activeDropdown === menu.id }"
-                                    :style="{ animationDelay: `${idx * 70 + 100}ms` }"
+                                    :class="{
+                                        'is-open': activeDropdown === menu.id,
+                                    }"
+                                    :style="{
+                                        animationDelay: `${idx * 70 + 100}ms`,
+                                    }"
                                     :aria-expanded="activeDropdown === menu.id"
                                 >
-                                    <i v-if="menu.icon_class" :class="menu.icon_class" class="nav-icon"></i>
+                                    <i
+                                        v-if="menu.icon_class"
+                                        :class="menu.icon_class"
+                                        class="nav-icon"
+                                    ></i>
                                     <span>{{ menu.label }}</span>
                                     <span
                                         v-if="menu.badge_text"
                                         class="inline-badge"
-                                        :class="`ib-${menu.badge_color || 'primary'}`"
-                                    >{{ menu.badge_text }}</span>
-                                    <svg class="nav-chevron" :class="{ rotated: activeDropdown === menu.id }" width="10" height="10" viewBox="0 0 10 10" fill="none">
-                                        <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        :class="`ib-${
+                                            menu.badge_color || 'primary'
+                                        }`"
+                                        >{{ menu.badge_text }}</span
+                                    >
+                                    <svg
+                                        class="nav-chevron"
+                                        :class="{
+                                            rotated: activeDropdown === menu.id,
+                                        }"
+                                        width="10"
+                                        height="10"
+                                        viewBox="0 0 10 10"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M2 3.5L5 6.5L8 3.5"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
                                     </svg>
                                 </button>
 
@@ -86,31 +124,73 @@
                                         <div class="drop-arrow"></div>
                                         <div class="drop-items">
                                             <a
-                                                v-for="(child, ci) in menu.children"
+                                                v-for="(
+                                                    child, ci
+                                                ) in menu.children"
                                                 :key="child.id"
                                                 :href="child.url"
-                                                :target="child.target || '_self'"
-                                                :rel="child.target === '_blank' ? 'noopener noreferrer' : undefined"
+                                                :target="
+                                                    child.target || '_self'
+                                                "
+                                                :rel="
+                                                    child.target === '_blank'
+                                                        ? 'noopener noreferrer'
+                                                        : undefined
+                                                "
                                                 class="drop-item"
-                                                :style="{ animationDelay: `${ci * 45}ms` }"
+                                                :style="{
+                                                    animationDelay: `${
+                                                        ci * 45
+                                                    }ms`,
+                                                }"
                                                 @click="trackClick(child.id)"
                                                 role="menuitem"
                                             >
                                                 <span class="drop-icon">
-                                                    <i :class="child.icon_class || 'bi bi-arrow-right-short'"></i>
+                                                    <i
+                                                        :class="
+                                                            child.icon_class ||
+                                                            'bi bi-arrow-right-short'
+                                                        "
+                                                    ></i>
                                                 </span>
                                                 <span class="drop-body">
-                                                    <span class="drop-label">{{ child.label }}</span>
-                                                    <span v-if="child.description" class="drop-desc">{{ child.description }}</span>
+                                                    <span class="drop-label">{{
+                                                        child.label
+                                                    }}</span>
+                                                    <span
+                                                        v-if="child.description"
+                                                        class="drop-desc"
+                                                        >{{
+                                                            child.description
+                                                        }}</span
+                                                    >
                                                 </span>
                                                 <span
                                                     v-if="child.badge_text"
                                                     class="drop-badge"
-                                                    :class="`db-${child.badge_color || 'primary'}`"
-                                                >{{ child.badge_text }}</span>
+                                                    :class="`db-${
+                                                        child.badge_color ||
+                                                        'primary'
+                                                    }`"
+                                                    >{{
+                                                        child.badge_text
+                                                    }}</span
+                                                >
                                                 <span class="drop-item-arrow">
-                                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                                        <path d="M2.5 6h7M6.5 3L9.5 6l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <svg
+                                                        width="12"
+                                                        height="12"
+                                                        viewBox="0 0 12 12"
+                                                        fill="none"
+                                                    >
+                                                        <path
+                                                            d="M2.5 6h7M6.5 3L9.5 6l-3 3"
+                                                            stroke="currentColor"
+                                                            stroke-width="1.3"
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                        />
                                                     </svg>
                                                 </span>
                                             </a>
@@ -126,22 +206,31 @@
                                 :target="menu.target || '_self'"
                                 class="nav-link"
                                 :class="{ 'is-active': isActive(menu.url) }"
-                                :style="{ animationDelay: `${idx * 70 + 100}ms` }"
+                                :style="{
+                                    animationDelay: `${idx * 70 + 100}ms`,
+                                }"
                                 @click="trackClick(menu.id)"
                             >
-                                <i v-if="menu.icon_class" :class="menu.icon_class" class="nav-icon"></i>
+                                <i
+                                    v-if="menu.icon_class"
+                                    :class="menu.icon_class"
+                                    class="nav-icon"
+                                ></i>
                                 <span>{{ menu.label }}</span>
                                 <span
                                     v-if="menu.badge_text"
                                     class="inline-badge"
-                                    :class="`ib-${menu.badge_color || 'primary'}`"
-                                >{{ menu.badge_text }}</span>
+                                    :class="`ib-${
+                                        menu.badge_color || 'primary'
+                                    }`"
+                                    >{{ menu.badge_text }}</span
+                                >
                             </a>
                         </template>
                     </nav>
 
                     <!-- Actions Area -->
-                            <div class="nav-actions">
+                    <div class="nav-actions d-flex align-items-center gap-3">
                         <!-- Ghost / Outline Buttons -->
                         <a
                             v-for="menu in desktopGhost"
@@ -151,7 +240,10 @@
                             class="d-none d-lg-inline-flex action-ghost"
                             @click="trackClick(menu.id)"
                         >
-                            <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                            <i
+                                v-if="menu.icon_class"
+                                :class="menu.icon_class"
+                            ></i>
                             <span>{{ menu.label }}</span>
                         </a>
 
@@ -166,10 +258,71 @@
                         >
                             <span class="cta-fill"></span>
                             <span class="cta-text">
-                                <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                                <i
+                                    v-if="menu.icon_class"
+                                    :class="menu.icon_class"
+                                ></i>
                                 {{ menu.label }}
                             </span>
                         </a>
+
+                        <!-- Theme Toggle -->
+                        <button
+                            class="theme-toggle"
+                            :class="{ 'is-light': isLight }"
+                            @click="toggleTheme"
+                            :aria-label="
+                                isLight
+                                    ? 'Switch to dark mode'
+                                    : 'Switch to light mode'
+                            "
+                            type="button"
+                        >
+                            <span class="theme-track">
+                                <span class="theme-thumb">
+                                    <!-- Sun icon -->
+                                    <svg
+                                        v-if="isLight"
+                                        class="theme-icon"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                    >
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="4"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        />
+                                        <path
+                                            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                    <!-- Moon icon -->
+                                    <svg
+                                        v-else
+                                        class="theme-icon"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                </span>
+                            </span>
+                        </button>
 
                         <!-- Hamburger — shown on non-desktop -->
                         <button
@@ -200,62 +353,150 @@
         <!-- Mobile Drawer -->
         <Transition name="drawer">
             <div v-if="mobileMenuOpen" class="mobile-drawer">
-                <div class="drawer-panel">
+                <div class="drawer-panel" ref="drawerRef" :style="drawerStyle">
                     <div class="drawer-noise"></div>
-                    <div class="drawer-glow"></div>
+
+                    <!-- Drag handle — touch/mouse to drag down and close -->
+                    <div
+                        class="drawer-handle"
+                        @touchstart.passive="onDragStart"
+                        @touchmove.passive="onDragMove"
+                        @touchend="onDragEnd"
+                        @mousedown="onDragStart"
+                        @mousemove="onDragMove"
+                        @mouseup="onDragEnd"
+                        @mouseleave="onDragEnd"
+                    >
+                        <span class="drawer-pill"></span>
+                    </div>
 
                     <!-- Drawer Header -->
                     <div class="drawer-header">
-                        <router-link to="/" class="brand" @click="closeMobileMenu">
+                        <router-link
+                            to="/"
+                            class="brand"
+                            @click="closeMobileMenu"
+                        >
                             <div class="brand-logo-wrap brand-logo-wrap-sm">
                                 <span class="brand-glow-ring"></span>
                                 <span class="brand-float">
-                                    <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="brand-img" style="height:36px" />
-                                    <img v-else src="/media/logos/logo-custom.png" alt="Logo" class="brand-img" style="height:36px" />
+                                    <img
+                                        v-if="logoUrl"
+                                        :src="logoUrl"
+                                        alt="Logo"
+                                        class="brand-img"
+                                        style="height: 36px"
+                                    />
+                                    <img
+                                        v-else
+                                        src="/media/logos/logo-custom.png"
+                                        alt="Logo"
+                                        class="brand-img"
+                                        style="height: 36px"
+                                    />
                                 </span>
                             </div>
                         </router-link>
-                        <button class="drawer-close" type="button" @click="closeMobileMenu" aria-label="Close menu">
-                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                                <path d="M2 2l14 14M16 2L2 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        <button
+                            class="drawer-close"
+                            type="button"
+                            @click="closeMobileMenu"
+                            aria-label="Close menu"
+                        >
+                            <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                            >
+                                <path
+                                    d="M2 2l14 14M16 2L2 16"
+                                    stroke="currentColor"
+                                    stroke-width="1.8"
+                                    stroke-linecap="round"
+                                />
                             </svg>
                         </button>
                     </div>
 
                     <!-- Drawer Nav -->
                     <nav class="drawer-nav">
-                        <template v-for="(menu, idx) in mobileLinks" :key="'m-' + menu.id">
+                        <template
+                            v-for="(menu, idx) in mobileLinks"
+                            :key="'m-' + menu.id"
+                        >
                             <!-- Dropdown group -->
                             <div
-                                v-if="menu.has_dropdown && menu.children?.length"
+                                v-if="
+                                    menu.has_dropdown && menu.children?.length
+                                "
                                 class="drawer-group"
-                                :style="{ animationDelay: `${idx * 60}ms` }"
+                                :style="{
+                                    animationDelay: `${idx * 75 + 120}ms`,
+                                }"
                             >
                                 <button
                                     class="drawer-link"
                                     type="button"
                                     @click="toggleMobileDropdown(menu.id)"
-                                    :class="{ 'is-open': mobileActiveDropdown === menu.id }"
+                                    :class="{
+                                        'is-open':
+                                            mobileActiveDropdown === menu.id,
+                                    }"
+                                    :style="{
+                                        animationDelay: `${idx * 75 + 120}ms`,
+                                    }"
                                 >
                                     <span class="dtl">
                                         <span class="dicon-wrap">
-                                            <i v-if="menu.icon_class" :class="menu.icon_class" class="dicon"></i>
-                                            <i v-else class="bi bi-grid dicon"></i>
+                                            <i
+                                                v-if="menu.icon_class"
+                                                :class="menu.icon_class"
+                                                class="dicon"
+                                            ></i>
+                                            <i
+                                                v-else
+                                                class="bi bi-grid dicon"
+                                            ></i>
                                         </span>
                                         {{ menu.mobile_label || menu.label }}
                                         <span
                                             v-if="menu.badge_text"
                                             class="inline-badge ms-1"
-                                            :class="`ib-${menu.badge_color || 'primary'}`"
-                                        >{{ menu.badge_text }}</span>
+                                            :class="`ib-${
+                                                menu.badge_color || 'primary'
+                                            }`"
+                                            >{{ menu.badge_text }}</span
+                                        >
                                     </span>
-                                    <svg class="dchev" :class="{ rotated: mobileActiveDropdown === menu.id }" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                        <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    <svg
+                                        class="dchev"
+                                        :class="{
+                                            rotated:
+                                                mobileActiveDropdown ===
+                                                menu.id,
+                                        }"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 14 14"
+                                        fill="none"
+                                    >
+                                        <path
+                                            d="M3 5l4 4 4-4"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                        />
                                     </svg>
                                 </button>
 
                                 <Transition name="slide-down">
-                                    <div v-show="mobileActiveDropdown === menu.id" class="drawer-children">
+                                    <div
+                                        v-show="
+                                            mobileActiveDropdown === menu.id
+                                        "
+                                        class="drawer-children"
+                                    >
                                         <a
                                             v-for="child in menu.children"
                                             :key="child.id"
@@ -265,14 +506,24 @@
                                             @click="handleMobileClick(child.id)"
                                         >
                                             <span class="child-dot-wrap">
-                                                <i :class="child.icon_class || 'bi bi-arrow-right-short'" class="child-dot"></i>
+                                                <i
+                                                    :class="
+                                                        child.icon_class ||
+                                                        'bi bi-arrow-right-short'
+                                                    "
+                                                    class="child-dot"
+                                                ></i>
                                             </span>
                                             <span>{{ child.label }}</span>
                                             <span
                                                 v-if="child.badge_text"
                                                 class="inline-badge ms-auto"
-                                                :class="`ib-${child.badge_color || 'primary'}`"
-                                            >{{ child.badge_text }}</span>
+                                                :class="`ib-${
+                                                    child.badge_color ||
+                                                    'primary'
+                                                }`"
+                                                >{{ child.badge_text }}</span
+                                            >
                                         </a>
                                     </div>
                                 </Transition>
@@ -285,17 +536,33 @@
                                 :target="menu.target || '_self'"
                                 class="drawer-link"
                                 :class="{ 'is-active': isActive(menu.url) }"
-                                :style="{ animationDelay: `${idx * 60}ms` }"
+                                :style="{
+                                    animationDelay: `${idx * 75 + 120}ms`,
+                                }"
                                 @click="handleMobileClick(menu.id)"
                             >
                                 <span class="dtl">
                                     <span class="dicon-wrap">
-                                        <i v-if="menu.icon_class" :class="menu.icon_class" class="dicon"></i>
-                                        <i v-else class="bi bi-link-45deg dicon"></i>
+                                        <i
+                                            v-if="menu.icon_class"
+                                            :class="menu.icon_class"
+                                            class="dicon"
+                                        ></i>
+                                        <i
+                                            v-else
+                                            class="bi bi-link-45deg dicon"
+                                        ></i>
                                     </span>
                                     {{ menu.mobile_label || menu.label }}
                                 </span>
-                                <span v-if="menu.badge_text" class="inline-badge" :class="`ib-${menu.badge_color || 'primary'}`">{{ menu.badge_text }}</span>
+                                <span
+                                    v-if="menu.badge_text"
+                                    class="inline-badge"
+                                    :class="`ib-${
+                                        menu.badge_color || 'primary'
+                                    }`"
+                                    >{{ menu.badge_text }}</span
+                                >
                             </a>
                         </template>
                     </nav>
@@ -308,15 +575,40 @@
                             :href="menu.url"
                             :target="menu.target || '_self'"
                             class="drawer-cta"
-                            :class="menu.type === 'button-primary' ? 'dcta-primary' : 'dcta-ghost'"
+                            :class="
+                                menu.type === 'button-primary'
+                                    ? 'dcta-primary'
+                                    : 'dcta-ghost'
+                            "
                             @click="handleMobileClick(menu.id)"
                         >
-                            <span v-if="menu.type === 'button-primary'" class="dcta-shimmer"></span>
-                            <span v-if="menu.type === 'button-primary'" class="dcta-glow"></span>
-                            <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                            <span
+                                v-if="menu.type === 'button-primary'"
+                                class="dcta-shimmer"
+                            ></span>
+                            <span
+                                v-if="menu.type === 'button-primary'"
+                                class="dcta-glow"
+                            ></span>
+                            <i
+                                v-if="menu.icon_class"
+                                :class="menu.icon_class"
+                            ></i>
                             <span>{{ menu.mobile_label || menu.label }}</span>
-                            <svg v-if="menu.type === 'button-primary'" class="ms-auto" width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <svg
+                                v-if="menu.type === 'button-primary'"
+                                class="ms-auto"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 14 14"
+                                fill="none"
+                            >
+                                <path
+                                    d="M2 7h10M8 3l4 4-4 4"
+                                    stroke="currentColor"
+                                    stroke-width="1.5"
+                                    stroke-linecap="round"
+                                />
                             </svg>
                         </a>
                     </div>
@@ -345,6 +637,51 @@ const spotlightX = ref(0);
 const spotlightY = ref(0);
 const spotlightVisible = ref(false);
 
+// === THEME TOGGLE ===
+const isLight = ref(false);
+const toggleTheme = () => {
+    isLight.value = !isLight.value;
+    document.documentElement.classList.toggle("theme-light", isLight.value);
+    localStorage.setItem("theme", isLight.value ? "light" : "dark");
+};
+
+// === DRAWER DRAG ===
+const drawerRef = ref<HTMLElement | null>(null);
+const dragY = ref(0);
+const isDragging = ref(false);
+let dragStartY = 0;
+let dragStartTime = 0;
+
+const onDragStart = (e: TouchEvent | MouseEvent) => {
+    isDragging.value = true;
+    dragStartY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    dragStartTime = Date.now();
+    dragY.value = 0;
+};
+const onDragMove = (e: TouchEvent | MouseEvent) => {
+    if (!isDragging.value) return;
+    const currentY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    const delta = currentY - dragStartY;
+    // Only allow dragging down
+    dragY.value = delta > 0 ? delta : Math.max(delta * 0.15, -30);
+};
+const onDragEnd = () => {
+    if (!isDragging.value) return;
+    isDragging.value = false;
+    const elapsed = Date.now() - dragStartTime;
+    const velocity = dragY.value / elapsed;
+    // Close if dragged down > 80px or fast flick
+    if (dragY.value > 80 || velocity > 0.5) {
+        closeMobileMenu();
+    }
+    dragY.value = 0;
+};
+
+const drawerStyle = computed(() => ({
+    transform: dragY.value !== 0 ? `translateY(${dragY.value}px)` : undefined,
+    transition: isDragging.value ? "none" : undefined,
+}));
+
 let closeTimer: ReturnType<typeof setTimeout> | null = null;
 let lastY = 0;
 
@@ -362,31 +699,62 @@ const logoUrl = computed(() => {
 
 // === COMPUTED MENUS ===
 // isRoot: handle parent_id bisa null, undefined, atau 0 dari backend
-const isRoot = (m: any) => !m.parent_id || m.parent_id === null || m.parent_id === 0;
+const isRoot = (m: any) =>
+    !m.parent_id || m.parent_id === null || m.parent_id === 0;
 
 const desktopLinks = computed(() =>
     (landingStore.menus ?? [])
-        .filter(m => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "link")
+        .filter(
+            (m) =>
+                m.is_active &&
+                isRoot(m) &&
+                m.show_on_desktop !== false &&
+                m.type === "link"
+        )
         .sort((a, b) => a.urutan - b.urutan)
 );
 const desktopPrimary = computed(() =>
     (landingStore.menus ?? [])
-        .filter(m => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "button-primary")
+        .filter(
+            (m) =>
+                m.is_active &&
+                isRoot(m) &&
+                m.show_on_desktop !== false &&
+                m.type === "button-primary"
+        )
         .sort((a, b) => a.urutan - b.urutan)
 );
 const desktopGhost = computed(() =>
     (landingStore.menus ?? [])
-        .filter(m => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "button-outline")
+        .filter(
+            (m) =>
+                m.is_active &&
+                isRoot(m) &&
+                m.show_on_desktop !== false &&
+                m.type === "button-outline"
+        )
         .sort((a, b) => a.urutan - b.urutan)
 );
 const mobileLinks = computed(() =>
     (landingStore.menus ?? [])
-        .filter(m => m.is_active && isRoot(m) && m.show_on_mobile !== false && m.type === "link")
+        .filter(
+            (m) =>
+                m.is_active &&
+                isRoot(m) &&
+                m.show_on_mobile !== false &&
+                m.type === "link"
+        )
         .sort((a, b) => a.urutan - b.urutan)
 );
 const mobileButtons = computed(() =>
     (landingStore.menus ?? [])
-        .filter(m => m.is_active && isRoot(m) && m.show_on_mobile !== false && (m.type === "button-primary" || m.type === "button-outline"))
+        .filter(
+            (m) =>
+                m.is_active &&
+                isRoot(m) &&
+                m.show_on_mobile !== false &&
+                (m.type === "button-primary" || m.type === "button-outline")
+        )
         .sort((a, b) => a.urutan - b.urutan)
 );
 
@@ -429,7 +797,9 @@ const isActive = (url: string) => {
     return route.path === url || route.path.startsWith(url + "/");
 };
 const trackClick = async (id: number) => {
-    try { await landingStore.trackMenuClick(id); } catch {}
+    try {
+        await landingStore.trackMenuClick(id);
+    } catch {}
 };
 
 // === SPOTLIGHT EFFECT ===
@@ -456,14 +826,23 @@ const onScroll = () => {
 };
 
 const onClickOut = (e: MouseEvent) => {
-    if (!(e.target as HTMLElement).closest(".nav-item")) activeDropdown.value = null;
+    if (!(e.target as HTMLElement).closest(".nav-item"))
+        activeDropdown.value = null;
 };
 
 onMounted(async () => {
-    await landingStore.fetchMenu(window.innerWidth < 992 ? "mobile" : "desktop");
+    await landingStore.fetchMenu(
+        window.innerWidth < 992 ? "mobile" : "desktop"
+    );
     await landingStore.fetchContent();
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("click", onClickOut);
+    // Init theme
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") {
+        isLight.value = true;
+        document.documentElement.classList.add("theme-light");
+    }
 });
 
 onUnmounted(() => {
@@ -522,19 +901,14 @@ onUnmounted(() => {
     width: 100%;
     z-index: 900;
     padding: 0;
-    transition:
-        background 0.5s ease,
-        box-shadow 0.5s ease,
-        transform 0.4s var(--ease-spring),
-        backdrop-filter 0.5s ease;
+    transition: background 0.5s ease, box-shadow 0.5s ease,
+        transform 0.4s var(--ease-spring), backdrop-filter 0.5s ease;
 }
 .navbar-root.is-scrolled {
     background: var(--glass);
     backdrop-filter: blur(28px) saturate(160%) brightness(0.9);
     -webkit-backdrop-filter: blur(28px) saturate(160%) brightness(0.9);
-    box-shadow:
-        0 1px 0 var(--border-strong),
-        0 8px 40px rgba(5, 12, 36, 0.55),
+    box-shadow: 0 1px 0 var(--border-strong), 0 8px 40px rgba(5, 12, 36, 0.55),
         0 0 60px rgba(29, 78, 216, 0.06);
 }
 .navbar-root.is-hidden {
@@ -557,7 +931,11 @@ onUnmounted(() => {
     width: 360px;
     height: 140px;
     border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(59, 130, 246, 0.09) 0%, transparent 70%);
+    background: radial-gradient(
+        ellipse,
+        rgba(59, 130, 246, 0.09) 0%,
+        transparent 70%
+    );
     transform: translate(-50%, -50%);
     pointer-events: none;
     transition: opacity 0.4s ease;
@@ -571,7 +949,14 @@ onUnmounted(() => {
     left: 0;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, var(--p) 30%, var(--p2) 60%, var(--p3) 80%, transparent 100%);
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--p) 30%,
+        var(--p2) 60%,
+        var(--p3) 80%,
+        transparent 100%
+    );
     background-size: 300% 100%;
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -581,8 +966,12 @@ onUnmounted(() => {
     opacity: 0.6;
 }
 @keyframes borderFlow {
-    0% { background-position: 100% 0; }
-    100% { background-position: -100% 0; }
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: -100% 0;
+    }
 }
 
 .navbar-inner {
@@ -592,13 +981,16 @@ onUnmounted(() => {
     justify-content: center;
     position: relative;
 }
+
+/* Nav-actions: absolute kanan, geser ke kiri dengan right value */
 .nav-actions {
     display: flex;
     align-items: center;
     gap: 12px;
     position: absolute;
-    right: 80px;
+    right: 40px;
 }
+
 /* ════════════════════════════════════════
    BRAND
 ════════════════════════════════════════ */
@@ -609,12 +1001,18 @@ onUnmounted(() => {
     text-decoration: none;
     flex-shrink: 0;
     position: absolute;
-    left: 80px;             
+    left: 40px;
     animation: slideInLeft 0.7s var(--ease-spring) both;
 }
 @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-16px); }
-    to   { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(-16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .brand-logo-wrap {
@@ -631,13 +1029,24 @@ onUnmounted(() => {
     position: absolute;
     inset: -6px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, transparent 70%);
+    background: radial-gradient(
+        circle,
+        rgba(59, 130, 246, 0.18) 0%,
+        transparent 70%
+    );
     animation: glowPulse 4s ease-in-out infinite;
     pointer-events: none;
 }
 @keyframes glowPulse {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50%       { opacity: 0.85; transform: scale(1.12); }
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.85;
+        transform: scale(1.12);
+    }
 }
 
 /* Float wrapper */
@@ -648,9 +1057,15 @@ onUnmounted(() => {
     animation: logoFloat 5s ease-in-out infinite;
 }
 @keyframes logoFloat {
-    0%   { transform: translateY(0px); }
-    50%  { transform: translateY(-4px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
 }
 
 .brand-img {
@@ -667,7 +1082,7 @@ onUnmounted(() => {
 }
 .brand:hover .brand-img {
     filter: drop-shadow(0 6px 22px rgba(59, 130, 246, 0.55))
-            drop-shadow(0 0 8px rgba(96, 165, 250, 0.3));
+        drop-shadow(0 0 8px rgba(96, 165, 250, 0.3));
 }
 .brand:hover .brand-glow-ring {
     opacity: 0.9;
@@ -687,7 +1102,6 @@ onUnmounted(() => {
 .nav-item {
     position: relative;
 }
-
 .nav-link {
     display: inline-flex;
     align-items: center;
@@ -707,13 +1121,17 @@ onUnmounted(() => {
     letter-spacing: 0.01em;
     opacity: 0;
     animation: fadeInDown 0.7s var(--ease-smooth) both;
-    transition:
-        color 0.25s ease,
-        background 0.25s ease;
+    transition: color 0.25s ease, background 0.25s ease;
 }
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ── Hover: text lift, NO background glow ── */
@@ -736,7 +1154,9 @@ onUnmounted(() => {
 }
 
 /* ── Underline slot (hidden — replaced by ::before) ── */
-.nav-link::after { display: none; }
+.nav-link::after {
+    display: none;
+}
 
 .nav-link:hover,
 .nav-link.is-active,
@@ -842,9 +1262,18 @@ onUnmounted(() => {
 }
 
 @keyframes rippleExpand {
-    0%   { transform: scale(0); opacity: 1; }
-    60%  { transform: scale(1); opacity: 0.5; }
-    100% { transform: scale(1); opacity: 0; }
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    60% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
 }
 
 .nav-icon {
@@ -856,7 +1285,10 @@ onUnmounted(() => {
     transition: transform 0.3s var(--ease-spring), opacity 0.3s ease;
     margin-left: 1px;
 }
-.nav-chevron.rotated { transform: rotate(180deg); opacity: 0.9; }
+.nav-chevron.rotated {
+    transform: rotate(180deg);
+    opacity: 0.9;
+}
 
 /* Inline badges */
 .inline-badge {
@@ -870,55 +1302,61 @@ onUnmounted(() => {
     letter-spacing: 0.04em;
     line-height: 1.6;
 }
-.ib-primary { background: var(--p-dim); color: #818cf8; }
-.ib-success { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-.ib-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-.ib-danger  { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-.ib-info    { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.ib-primary {
+    background: var(--p-dim);
+    color: #818cf8;
+}
+.ib-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+.ib-warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+}
+.ib-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+.ib-info {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
 
 /* ════════════════════════════════════════
-   DROPDOWN PANEL — Premium Redesign
+   DROPDOWN PANEL
 ════════════════════════════════════════ */
 .drop-panel {
     position: absolute;
-    top: calc(100% + 16px);
+    top: calc(100% + 14px);
     left: 50%;
     transform: translateX(-50%);
-    min-width: 280px;
-    background: rgba(6, 8, 24, 0.96);
-    border: 1px solid rgba(99, 102, 241, 0.18);
-    border-radius: 20px;
-    padding: 8px;
-    box-shadow:
-        0 24px 70px -10px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(255, 255, 255, 0.04),
-        0 0 60px -10px rgba(59, 130, 246, 0.18),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    min-width: 260px;
+    background: rgba(8, 10, 28, 0.97);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    padding: 6px;
+    box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(99, 102, 241, 0.1),
+        0 0 40px -5px rgba(99, 102, 241, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
     z-index: 100;
     overflow: hidden;
-    backdrop-filter: blur(24px) saturate(150%);
-    -webkit-backdrop-filter: blur(24px) saturate(150%);
 }
-
-/* Top ambient glow */
 .drop-glow {
     position: absolute;
-    top: -60px;
+    top: -40px;
     left: 50%;
     transform: translateX(-50%);
-    width: 240px;
-    height: 120px;
-    background: radial-gradient(ellipse, rgba(99, 102, 241, 0.22) 0%, transparent 70%);
+    width: 200px;
+    height: 80px;
+    background: radial-gradient(
+        ellipse,
+        rgba(99, 102, 241, 0.2) 0%,
+        transparent 70%
+    );
     pointer-events: none;
-    animation: dropGlowPulse 3s ease-in-out infinite;
 }
-@keyframes dropGlowPulse {
-    0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-    50%       { opacity: 1;   transform: translateX(-50%) scale(1.1); }
-}
-
-/* Arrow pointer */
 .drop-arrow {
     position: absolute;
     top: -5px;
@@ -926,239 +1364,144 @@ onUnmounted(() => {
     margin-left: -5px;
     width: 10px;
     height: 10px;
-    background: rgba(8, 10, 28, 0.98);
-    border-top: 1px solid rgba(99, 102, 241, 0.2);
-    border-left: 1px solid rgba(99, 102, 241, 0.2);
+    background: rgba(10, 12, 32, 0.98);
+    border-top: 1px solid var(--border-strong);
+    border-left: 1px solid var(--border-strong);
     transform: rotate(45deg);
     z-index: 1;
 }
-
 .drop-items {
     position: relative;
     z-index: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
 }
-
-/* ── Drop Item ── */
 .drop-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 11px 13px;
-    border-radius: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
     text-decoration: none;
     color: var(--muted);
     font-size: 0.875rem;
     position: relative;
     opacity: 0;
-    animation: dropIn 0.45s var(--ease-spring) both;
-    border: 1px solid transparent;
-    transition:
-        background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.3s ease,
-        border-color 0.3s ease,
-        transform 0.35s var(--ease-spring),
-        box-shadow 0.3s ease;
+    animation: dropIn 0.35s var(--ease-spring) both;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 @keyframes dropIn {
-    0%   { opacity: 0; transform: translateY(12px) scale(0.95); filter: blur(3px); }
-    60%  { opacity: 1; filter: blur(0); }
-    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
-
-/* Hover state — clean, no background fill */
 .drop-item:hover {
-    background: rgba(255, 255, 255, 0.035);
-    border-color: rgba(148, 163, 184, 0.1);
+    background: transparent;
     color: var(--text);
-    transform: translateX(6px);
-    box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.22),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    /* Transisi masuk lebih cepat */
-    transition:
-        background 0.22s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.22s ease,
-        border-color 0.22s ease,
-        transform 0.3s var(--ease-spring),
-        box-shadow 0.25s ease;
-}
-.drop-item:not(:hover) {
-    transform: translateX(0);
-    transition:
-        background 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.35s ease,
-        border-color 0.35s ease,
-        transform 0.4s var(--ease-spring),
-        box-shadow 0.35s ease;
+    transform: translateX(4px);
 }
 .drop-item:active {
     transform: translateX(5px) scale(0.98);
-    transition: transform 0.1s ease;
+    transition: transform 0.08s ease;
 }
-
-/* Hover left accent line */
-.drop-item::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 20%;
-    height: 60%;
-    width: 2px;
-    background: linear-gradient(180deg, transparent, rgba(148, 163, 184, 0.5), transparent);
-    border-radius: 0 2px 2px 0;
-    opacity: 0;
-    transform: scaleY(0.2);
-    transition: opacity 0.4s ease, transform 0.5s var(--ease-spring);
-}
-.drop-item:hover::before {
-    opacity: 1;
-    transform: scaleY(1);
-    transition: opacity 0.25s ease, transform 0.35s var(--ease-spring);
-}
-.drop-item:not(:hover)::before {
-    opacity: 0;
-    transform: scaleY(0.2);
-    transition: opacity 0.3s ease, transform 0.35s ease;
-}
-.drop-item:hover::before {
-    opacity: 1;
-    transform: scaleY(1);
-}
-
-/* Arrow indicator */
 .drop-item-arrow {
-    color: rgba(148, 163, 184, 0.6);
+    color: var(--p);
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateX(-5px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
     margin-left: auto;
     flex-shrink: 0;
-    /* Keluar lebih lambat */
-    transition: opacity 0.4s ease, transform 0.5s var(--ease-spring);
 }
 .drop-item:hover .drop-item-arrow {
     opacity: 1;
     transform: translateX(0);
-    /* Masuk lebih cepat */
-    transition: opacity 0.22s ease, transform 0.32s var(--ease-spring);
 }
 
-.drop-item:not(:hover) .drop-item-arrow {
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: opacity 0.3s ease, transform 0.35s ease;
-}
-
-/* ── Drop Icon ── */
 .drop-icon {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(59, 130, 246, 0.08);
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 9px;
     font-size: 1rem;
-    color: var(--p3);
-    /* Keluar lebih lambat & spring */
-    transition:
-        background 0.45s ease,
-        color 0.45s ease,
-        border-color 0.45s ease,
-        transform 0.5s var(--ease-spring),
-        box-shadow 0.45s ease;
+    color: var(--p);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+        transform 0.25s var(--ease-spring);
 }
 .drop-item:hover .drop-icon {
-    background: rgba(255, 255, 255, 0.08);
-    color: #e2eaff;
-    border-color: rgba(255, 255, 255, 0.12);
-    transform: scale(1.1) rotate(-6deg);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-    /* Masuk lebih cepat */
-    transition:
-        background 0.25s ease,
-        color 0.25s ease,
-        border-color 0.25s ease,
-        transform 0.35s var(--ease-spring),
-        box-shadow 0.25s ease;
+    background: var(--p);
+    color: #fff;
+    border-color: transparent;
+    transform: scale(1.08) rotate(-5deg);
 }
-.drop-item:not(:hover) .drop-icon {
-    transform: scale(1) rotate(0deg);
-    transition:
-        background 0.4s ease,
-        color 0.4s ease,
-        border-color 0.4s ease,
-        transform 0.45s var(--ease-spring),
-        box-shadow 0.4s ease;
+.drop-body {
+    flex: 1;
+    min-width: 0;
 }
-
-/* ── Drop Body ── */
-.drop-body { flex: 1; min-width: 0; }
-
 .drop-label {
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #c8d8ff;
+    color: var(--text);
     line-height: 1.3;
-    transition: color 0.2s ease;
 }
-.drop-item:hover .drop-label {
-    color: #fff;
-}
-
 .drop-desc {
     display: block;
     font-size: 0.72rem;
     color: var(--muted2);
-    margin-top: 3px;
+    margin-top: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    transition: color 0.3s ease;
 }
-.drop-item:hover .drop-desc {
-    color: #475569;
-}
-.drop-item:not(:hover) .drop-desc {
-    color: var(--muted2);
-    transition: color 0.35s ease;
-}
-
-/* ── Drop Badge ── */
 .drop-badge {
-    padding: 2px 8px;
+    padding: 2px 7px;
     font-size: 0.6rem;
     font-weight: 700;
     border-radius: 20px;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
     flex-shrink: 0;
 }
-.db-primary { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2); }
-.db-success { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
-.db-warning { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
-.db-danger  { background: rgba(239, 68, 68, 0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.db-primary {
+    background: var(--p-dim);
+    color: #818cf8;
+}
+.db-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+.db-warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+}
+.db-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
 
-/* ── Dropdown Transition ── */
+/* Dropdown transition */
 .drop-enter-active {
-    transition: opacity 0.3s ease, transform 0.38s var(--ease-spring);
+    transition: opacity 0.2s ease, transform 0.25s var(--ease-spring);
 }
 .drop-leave-active {
-    transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.15s ease, transform 0.15s ease;
 }
 .drop-enter-from {
     opacity: 0;
-    transform: translateX(-50%) translateY(-14px) scale(0.93);
+    transform: translateX(-50%) translateY(-10px) scale(0.95);
 }
 .drop-leave-to {
     opacity: 0;
-    transform: translateX(-50%) translateY(-10px) scale(0.96);
+    transform: translateX(-50%) translateY(-6px) scale(0.97);
 }
+
 /* ════════════════════════════════════════
    ACTION BUTTONS (GHOST & CTA)
 ════════════════════════════════════════ */
@@ -1175,10 +1518,7 @@ onUnmounted(() => {
     border-radius: 50px;
     background: transparent;
     cursor: pointer;
-    transition:
-        color 0.25s ease,
-        border-color 0.25s ease,
-        background 0.25s ease,
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease,
         transform 0.2s ease;
     animation: fadeInDown 0.6s var(--ease-spring) 0.4s both;
 }
@@ -1196,83 +1536,52 @@ onUnmounted(() => {
 
 /* CTA Button — the showstopper */
 /* ════════════════════════════════════════
-   CTA BUTTON — Liquid Fill (Refined)
+   CTA BUTTON — Liquid Fill Outline
 ════════════════════════════════════════ */
 .cta-btn {
     position: relative;
     display: inline-flex;
     align-items: center;
-    padding: 10px 26px;
+    padding: 10px 28px;
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: #93c5fd;
     text-decoration: none;
-    border-radius: 10px;
+    border-radius: 50px;
     cursor: pointer;
     overflow: hidden;
-    border: 1.5px solid rgba(59, 130, 246, 0.45);
-    background: rgba(59, 130, 246, 0.06);
-    box-shadow:
-        0 0 0 0 rgba(59, 130, 246, 0),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(59, 130, 246, 0.5);
+    background: transparent;
     animation: fadeInDown 0.7s var(--ease-smooth) 0.5s both;
-    transition:
-        color 0.4s ease,
-        border-color 0.4s ease,
-        transform 0.3s var(--ease-spring),
-        box-shadow 0.4s ease,
-        background 0.4s ease;
+    transition: color 0.35s ease, border-color 0.35s ease, transform 0.2s ease;
 }
 .cta-btn:hover {
     color: #fff;
-    border-color: rgba(99, 155, 255, 0.7);
+    border-color: #3b82f6;
     transform: translateY(-1px);
-    box-shadow:
-        0 6px 20px rgba(29, 78, 216, 0.35),
-        0 0 0 1px rgba(99, 155, 255, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 .cta-btn:active {
-    transform: translateY(1px) scale(0.97);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-    box-shadow: 0 2px 8px rgba(29, 78, 216, 0.3);
+    transform: translateY(1px);
+    transition: transform 0.08s ease;
 }
 
-/* Liquid fill — rises from bottom on hover (same as before, smoother) */
+/* Liquid fill — rises from bottom on hover */
 .cta-fill {
     position: absolute;
     inset: 0;
-    background: linear-gradient(160deg, #1e40af 0%, #1d4ed8 50%, #2563eb 100%);
-    transform: translateY(101%);
-    transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+    border-radius: 50px;
+    background: #1d4ed8;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
     z-index: 0;
 }
 .cta-btn:hover .cta-fill {
     transform: translateY(0);
 }
 .cta-btn:active .cta-fill {
-    background: linear-gradient(160deg, #1e3a8a 0%, #1e40af 100%);
-}
-
-/* Subtle shimmer overlay di atas fill */
-.cta-fill::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        105deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.08) 50%,
-        transparent 70%
-    );
-    background-size: 200% 100%;
-    background-position: 100% 0;
-    transition: background-position 0.6s ease;
-}
-.cta-btn:hover .cta-fill::after {
-    background-position: -50% 0;
+    background: #1e40af;
 }
 
 /* Text sits above fill */
@@ -1282,11 +1591,69 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: text-shadow 0.4s ease;
 }
-.cta-btn:hover .cta-text {
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
-}   
+
+/* ════════════════════════════════════════
+   THEME TOGGLE
+════════════════════════════════════════ */
+.theme-toggle {
+    position: relative;
+    width: 52px;
+    height: 28px;
+    border-radius: 50px;
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: border-color 0.35s ease, background 0.35s ease;
+    animation: fadeInDown 0.7s var(--ease-smooth) 0.55s both;
+}
+.theme-toggle:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+}
+.theme-toggle.is-light {
+    border-color: rgba(250, 204, 21, 0.5);
+    background: rgba(250, 204, 21, 0.12);
+}
+.theme-toggle.is-light:hover {
+    border-color: rgba(250, 204, 21, 0.75);
+    background: rgba(250, 204, 21, 0.2);
+}
+
+.theme-track {
+    position: absolute;
+    inset: 2px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+}
+.theme-thumb {
+    position: absolute;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+.is-light .theme-thumb {
+    transform: translateX(24px);
+    background: rgba(250, 204, 21, 0.25);
+    border-color: rgba(250, 204, 21, 0.4);
+    color: #f59e0b;
+}
+.theme-icon {
+    display: block;
+    flex-shrink: 0;
+}
 
 /* ════════════════════════════════════════
    HAMBURGER
@@ -1334,12 +1701,12 @@ onUnmounted(() => {
     height: 1.5px;
     background: var(--muted);
     border-radius: 2px;
-    transition:
-        transform 0.35s var(--ease-spring),
-        opacity 0.25s ease,
+    transition: transform 0.35s var(--ease-spring), opacity 0.25s ease,
         width 0.25s ease;
 }
-.hamburger:hover .ham-bar { background: var(--text); }
+.hamburger:hover .ham-bar {
+    background: var(--text);
+}
 .hamburger.is-open .ham-bar:nth-child(1) {
     transform: translateY(6.5px) rotate(45deg);
 }
@@ -1357,17 +1724,23 @@ onUnmounted(() => {
 .mobile-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(2, 3, 12, 0.7);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
     z-index: 940;
 }
-.overlay-fade-enter-active { transition: opacity 0.3s ease; }
-.overlay-fade-leave-active { transition: opacity 0.25s ease; }
+.overlay-fade-enter-active {
+    transition: opacity 0.3s ease;
+}
+.overlay-fade-leave-active {
+    transition: opacity 0.22s ease;
+}
 .overlay-fade-enter-from,
-.overlay-fade-leave-to { opacity: 0; }
+.overlay-fade-leave-to {
+    opacity: 0;
+}
 
 /* ════════════════════════════════════════
-   MOBILE DRAWER
+   MOBILE DRAWER — Slide from BOTTOM
 ════════════════════════════════════════ */
 .mobile-drawer {
     position: fixed;
@@ -1377,117 +1750,163 @@ onUnmounted(() => {
 }
 .drawer-panel {
     position: absolute;
-    top: 0;
-    right: 0;
     bottom: 0;
-    width: min(360px, 90vw);
-    background: rgba(6, 8, 22, 0.98);
-    border-left: 1px solid var(--border-strong);
+    left: 0;
+    right: 0;
+    max-height: 88vh;
+    background: #0d0d14;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px 20px 0 0;
     display: flex;
     flex-direction: column;
     pointer-events: all;
     overflow: hidden;
-    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.6), -1px 0 0 rgba(99, 102, 241, 0.12);
+    box-shadow: 0 -12px 60px rgba(0, 0, 0, 0.6);
+    will-change: transform;
 }
+
+/* Drag handle area */
+.drawer-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 0 6px;
+    cursor: grab;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+.drawer-handle:active {
+    cursor: grabbing;
+}
+.drawer-pill {
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.18);
+    transition: background 0.2s ease, width 0.2s ease;
+}
+.drawer-handle:hover .drawer-pill {
+    background: rgba(255, 255, 255, 0.32);
+    width: 52px;
+}
+
 .drawer-noise {
     position: absolute;
     inset: 0;
-    opacity: 0.03;
+    opacity: 0.02;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     background-size: 128px;
     pointer-events: none;
 }
 .drawer-glow {
-    position: absolute;
-    top: -100px;
-    right: -50px;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
-    pointer-events: none;
+    display: none;
 }
+
+/* Header */
 .drawer-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     flex-shrink: 0;
     position: relative;
     z-index: 1;
+    gap: 12px;
+}
+
+/* Override absolute brand positioning inside drawer */
+.drawer-header .brand {
+    position: static !important;
+    left: auto !important;
+    margin: 0 0 0 16px !important;
+    animation: none !important;
+    flex-shrink: 0;
 }
 .drawer-close {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border);
-    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
     color: var(--muted);
     cursor: pointer;
     padding: 0;
-    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.25s;
 }
 .drawer-close:hover {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.25);
     color: #f87171;
     transform: rotate(90deg);
 }
 
-/* Drawer nav items */
+/* Nav list */
 .drawer-nav {
     flex: 1;
     overflow-y: auto;
-    padding: 12px 12px;
+    padding: 6px 0;
     scrollbar-width: none;
     position: relative;
     z-index: 1;
 }
-.drawer-nav::-webkit-scrollbar { display: none; }
+.drawer-nav::-webkit-scrollbar {
+    display: none;
+}
 
+/* Menu items */
 .drawer-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 12px 14px;
-    margin-bottom: 2px;
-    border-radius: 12px;
-    color: var(--muted);
-    font-size: 0.9rem;
+    padding: 15px 24px;
+    color: #9aa5c0;
+    font-size: 1rem;
     font-weight: 500;
     text-decoration: none;
     background: none;
     border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     cursor: pointer;
     text-align: left;
     opacity: 0;
-    animation: slideInRight 0.45s var(--ease-spring) both;
-    transition: background 0.2s ease, color 0.2s ease;
+    letter-spacing: 0.01em;
+    animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: color 0.18s ease, background 0.18s ease,
+        padding-left 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
-@keyframes slideInRight {
-    from { opacity: 0; transform: translateX(12px); }
-    to { opacity: 1; transform: translateX(0); }
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
 }
 .drawer-link:hover,
 .drawer-link.is-open {
-    background: transparent;
-    color: var(--text);
-    padding-left: 20px;
-    transition: padding-left 0.2s var(--ease-smooth), color 0.2s ease;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+    padding-left: 30px;
 }
 .drawer-link:active {
-    transform: translateX(4px) scaleY(0.97);
-    transition: transform 0.08s ease;
+    background: rgba(255, 255, 255, 0.06);
 }
 .drawer-link.is-active {
-    color: var(--text);
-    border-left: 2px solid var(--p3);
-    padding-left: 20px;
-    background: transparent;
+    color: #fff;
+    font-weight: 600;
+    padding-left: 26px;
+    border-left: 3px solid var(--p3);
+    background: rgba(59, 130, 246, 0.05);
 }
 
 .dtl {
@@ -1496,166 +1915,158 @@ onUnmounted(() => {
     gap: 10px;
 }
 .dicon-wrap {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    flex-shrink: 0;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    display: none;
 }
-.drawer-link:hover .dicon-wrap,
-.drawer-link.is-active .dicon-wrap {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(255, 255, 255, 0.15);
+.dicon {
+    font-size: 0.85rem;
+    color: var(--p);
 }
-.dicon { font-size: 0.85rem; color: var(--p); }
 .dchev {
-    color: var(--muted2);
+    color: rgba(255, 255, 255, 0.25);
     transition: transform 0.3s var(--ease-spring);
     flex-shrink: 0;
 }
-.dchev.rotated { transform: rotate(180deg); color: var(--p); }
+.dchev.rotated {
+    transform: rotate(180deg);
+    color: var(--p3);
+}
 
-/* Drawer children */
+/* Children */
 .drawer-children {
-    padding: 4px 0 4px 14px;
-    margin: 2px 0;
-    border-left: 1px solid var(--border);
-    margin-left: 28px;
+    background: rgba(0, 0, 0, 0.18);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     overflow: hidden;
 }
 .drawer-child {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 9px 12px;
-    border-radius: 9px;
-    color: var(--muted);
-    font-size: 0.85rem;
+    padding: 12px 24px 12px 36px;
+    color: #6b7a9a;
+    font-size: 0.9rem;
     text-decoration: none;
-    transition: background 0.2s ease, color 0.2s ease;
-    margin-bottom: 1px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    transition: color 0.18s ease, padding-left 0.18s ease;
+}
+.drawer-child:last-child {
+    border-bottom: none;
 }
 .drawer-child:hover {
-    background: transparent;
-    color: var(--text);
-    padding-left: 18px;
-    transition: padding-left 0.2s var(--ease-smooth), color 0.2s ease;
+    color: #fff;
+    padding-left: 42px;
 }
 .drawer-child:active {
-    transform: translateX(6px);
-    transition: transform 0.08s ease;
+    background: rgba(255, 255, 255, 0.04);
 }
 .child-dot-wrap {
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    display: none;
 }
 .child-dot {
     font-size: 0.95rem;
     color: var(--p);
     transition: transform 0.2s ease;
 }
-.drawer-child:hover .child-dot { transform: translateX(3px); }
+.drawer-child:hover .child-dot {
+    transform: translateX(3px);
+}
 
-/* Slide down transition for children */
+/* Slide down */
 .slide-down-enter-active {
-    transition: all 0.3s var(--ease-spring);
+    transition: all 0.28s var(--ease-spring);
 }
 .slide-down-leave-active {
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
 }
 .slide-down-enter-from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
 }
 .slide-down-leave-to {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-4px);
 }
 
-/* Drawer Footer */
+/* Footer CTA */
 .drawer-footer {
-    padding: 16px;
-    border-top: 1px solid var(--border);
+    padding: 16px 20px 24px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     flex-shrink: 0;
     position: relative;
     z-index: 1;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 .drawer-cta {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 13px 18px;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 20px;
     border-radius: 12px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
     text-decoration: none;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    text-align: center;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+    letter-spacing: 0.01em;
 }
-.drawer-cta:hover { transform: translateY(-1px); }
 .drawer-cta:active {
-    transform: scale(0.98) translateY(0);
-    transition: transform 0.1s ease;
+    transform: scale(0.97);
+    transition: transform 0.08s ease;
 }
+
+/* Primary = white solid */
+.dcta-primary {
+    background: #ffffff;
+    color: #0a0a0f;
+    border: none;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+}
+.dcta-primary:hover {
+    background: #eef2ff;
+}
+
+/* Ghost = outline */
 .dcta-ghost {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-strong);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
     color: var(--text);
 }
 .dcta-ghost:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.2);
-}
-.dcta-primary {
-    background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
-    color: #fff;
-    box-shadow: 0 4px 18px rgba(29, 78, 216, 0.35);
-}
-.dcta-primary:hover {
-    box-shadow: 0 8px 28px rgba(29, 78, 216, 0.5);
-}
-/* Smaller logo wrapper for mobile drawer */
-.brand-logo-wrap-sm {
-    width: 44px;
-    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.24);
 }
 
+.brand-logo-wrap-sm {
+    width: 40px;
+    height: 40px;
+}
 .dcta-shimmer {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
-    background-size: 200% 100%;
-    animation: shimmerSlide 2.5s ease-in-out infinite;
+    display: none;
 }
 .dcta-glow {
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 20px;
-    background: radial-gradient(ellipse, var(--p-glow) 0%, transparent 70%);
-    filter: blur(8px);
+    display: none;
 }
 
-/* Drawer transition — slides from right */
-.drawer-enter-active { transition: transform 0.45s var(--ease-smooth); }
-.drawer-leave-active { transition: transform 0.32s ease; }
-.drawer-enter-from .drawer-panel { transform: translateX(100%); }
-.drawer-leave-to .drawer-panel { transform: translateX(100%); }
+/* Drawer transition — slides from BOTTOM */
+.drawer-enter-active {
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.drawer-leave-active {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 1, 1);
+}
+.drawer-enter-from .drawer-panel {
+    transform: translateY(100%);
+}
+.drawer-leave-to .drawer-panel {
+    transform: translateY(100%);
+}
 .drawer-enter-from,
-.drawer-leave-to { pointer-events: none; }
+.drawer-leave-to {
+    pointer-events: none;
+}
 </style>
