@@ -1,5 +1,5 @@
 <template>
-    <div class="landing-wrapper min-vh-100 d-flex flex-column overflow-hidden">
+    <div class="landing-wrapper min-vh-100 d-flex flex-column">
         
         <!-- NAVBAR STYLE MCFLYON -->
         <header 
@@ -335,27 +335,17 @@
             </div>
         </main>
 
-        <!-- FOOTER -->
-        <footer class="footer-section">
-            <div class="container-xxl">
-                <div class="footer-inner d-flex flex-wrap justify-content-between align-items-center">
-                    <div class="footer-copy">
-                        &copy; {{ new Date().getFullYear() }} McFlyon. All rights reserved.
-                    </div>
-                    <div class="footer-links d-flex gap-4">
-                        <a href="#" class="footer-link">Privacy Policy</a>
-                        <a href="#" class="footer-link">Terms of Service</a>
-                        <a href="#" class="footer-link">Contact</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        <!-- FOOTER (Dynamic from CMS) -->
+        <Footer />
+        
     </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, onUnmounted, computed } from "vue";
 import { useLandingStore } from "@/stores/landing";
+import Footer from '@/components/landing/footer.vue';
+import Projects from '@/components/landing/Projects.vue';
 
 const landingStore = useLandingStore();
 
@@ -367,6 +357,7 @@ const mobileMenuOpen = ref(false);
 const mobileActiveDropdown = ref<number | null>(null);
 let dropdownTimer: ReturnType<typeof setTimeout> | null = null;
 let lastScroll = 0;
+
 
 // Computed - Pisahkan menu berdasarkan tipe dan device
 const desktopMenus = computed(() => {
@@ -1166,7 +1157,6 @@ onUnmounted(() => {
 .hero-wrapper {
     padding: 140px 0 100px;
     position: relative;
-    min-height: 100vh;
     display: flex;
     align-items: center;
 }

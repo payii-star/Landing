@@ -7,12 +7,15 @@
     ],
     "compilerOptions": {
         "lib": ["ES2020", "DOM"],
+        "module": "es2020",
+        "target": "es2020",
         "noImplicitAny": false,
         "baseUrl": ".",
         "paths": {
             "@/*": ["./resources/js/*"]
         },
-        "allowJs": true
+        "allowJs": true,
+        "noEmit": true
     },
     "exclude": ["node_modules", "dist"],
     "references": [
