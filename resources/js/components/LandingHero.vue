@@ -2,14 +2,8 @@
   <section class="hero-section" ref="heroRef">
 
     <!-- ── Background layers ── -->
-    <div class="hero-bg-base"></div>
-    <canvas class="hero-stars" ref="canvasRef"></canvas>
-    <div class="hero-gradient-orb orb-1"></div>
-    <div class="hero-gradient-orb orb-2"></div>
-    <div class="hero-gradient-orb orb-3"></div>
     <div class="hero-grid"></div>
     <div class="hero-noise"></div>
-    <div class="hero-vignette"></div>
 
     <!-- ── Content ── -->
     <div class="hero-container">
@@ -17,10 +11,12 @@
 
       <!-- Headline -->
       <h1 class="hero-title" :class="{ visible: animate }">
-        <span class="title-line" v-for="(line, i) in titleLines" :key="i" :style="{ animationDelay: `${i * 80 + 200}ms` }">
-          <span v-if="line.highlight" class="title-highlight">{{ line.text }}</span>
-          <span v-else>{{ line.text }}</span>
-        </span>
+        <template v-for="line in titleLines" :key="line.text">
+          <span class="title-line" :style="{ animationDelay: line.delay }">
+            <span v-if="line.highlight" class="title-highlight">{{ line.text }}</span>
+            <span v-else>{{ line.text }}</span>
+          </span>
+        </template>
       </h1>
 
       <!-- Description -->
@@ -151,18 +147,15 @@
 
     </div>
 
-    <!-- Bottom fade -->
-    <div class="hero-bottom-fade"></div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useLandingStore } from '@/stores/landing';
 
 const landingStore = useLandingStore();
 const heroRef = ref<HTMLElement | null>(null);
-const canvasRef = ref<HTMLCanvasElement | null>(null);
 const animate = ref(false);
 
 // ── Content dari store (fallback ke default jika belum ada) ──
@@ -174,57 +167,15 @@ const titleLines = computed(() => {
   return raw.split('\n').map((text: string, i: number) => ({
     text,
     highlight: i === 1, // baris kedua diberi highlight gradient
+    delay: `${i * 80 + 200}ms`,
   }));
 });
 
-// ── Starfield canvas ──
-let animFrame: number;
-const initStars = () => {
-  const canvas = canvasRef.value;
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  const resize = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = canvas.parentElement?.offsetHeight || 900;
-  };
-  resize();
-  window.addEventListener('resize', resize);
-
-  const stars = Array.from({ length: 120 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 1.2 + 0.2,
-    o: Math.random() * 0.5 + 0.1,
-    speed: Math.random() * 0.3 + 0.05,
-    phase: Math.random() * Math.PI * 2,
-  }));
-
-  let t = 0;
-  const draw = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    t += 0.008;
-    stars.forEach(s => {
-      const opacity = s.o * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(148, 180, 255, ${opacity})`;
-      ctx.fill();
-    });
-    animFrame = requestAnimationFrame(draw);
-  };
-  draw();
-};
 
 onMounted(() => {
   setTimeout(() => { animate.value = true; }, 100);
-  initStars();
 });
 
-onUnmounted(() => {
-  cancelAnimationFrame(animFrame);
-});
 </script>
 
 <style scoped>
@@ -252,22 +203,14 @@ onUnmounted(() => {
   box-sizing: border-box;
   
   /* 👇 INI YANG DIRUBAH AGAR PARTIKEL TERLIHAT 👇 */
-  background: transparent !important; 
+  background: transparent !important;
+  z-index: 1;
+  
 }
 
 /* ── Backgrounds ── */
-.hero-bg-base {
-  position: absolute;
-  inset: 0;
-  
-  /* 👇 INI JUGA DIRUBAH AGAR PARTIKEL TERLIHAT 👇 */
-  background: transparent !important; 
-}
-.hero-stars {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
+.hero-bg-base { display: none; }
+.hero-stars { display: none; }
 .hero-gradient-orb {
   position: absolute;
   border-radius: 50%;
@@ -316,18 +259,14 @@ onUnmounted(() => {
   background-size: 128px;
   pointer-events: none;
 }
-.hero-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 100% 80% at 50% 50%, transparent 40%, rgba(2, 6, 23, 0.6) 100%);
-  pointer-events: none;
-}
+.hero-vignette { display: none; }
 .hero-bottom-fade {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 200px;
-  background: linear-gradient(to bottom, transparent, rgba(2, 6, 23, 0.8)); /* Dibuat sedikit transparan */
+  height: 180px;
+  background: linear-gradient(to bottom, transparent 0%, #020617 100%);
   pointer-events: none;
+  z-index: 2;
 }
 
 /* ── Container ── */
@@ -933,7 +872,7 @@ onUnmounted(() => {
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .hero-section { padding-top: 112px; padding-bottom: 60px; }
+  .hero-section { padding-top: 100px; padding-bottom: 60px; }
   .hero-container { padding: 0 20px; }
   .float-card { display: none; }
   .preview-placeholder { height: 240px; }
@@ -943,7 +882,18 @@ onUnmounted(() => {
   .proof-text { text-align: center; }
 }
 @media (max-width: 480px) {
+  .hero-section { padding-top: 88px; padding-bottom: 48px; }
+  .hero-container { padding: 0 16px; }
   .hero-cta { flex-direction: column; width: 100%; }
   .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+  .preview-placeholder { height: 180px; }
+  .ph-chart { display: none; }
+}
+@media (max-width: 360px) {
+  .hero-title { font-size: 1.9rem; }
+  .hero-desc { font-size: 0.88rem; }
+  .proof-avatars { display: none; }
+  .preview-placeholder { height: 150px; }
+  .hero-container { padding: 0 14px; }
 }
 </style>

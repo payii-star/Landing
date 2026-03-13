@@ -1,9 +1,6 @@
 <template>
   <section class="ceo-section">
 
-    <div class="ceo-bg-grid"></div>
-    <div class="ceo-bg-orb orb-l"></div>
-    <div class="ceo-bg-orb orb-r"></div>
 
     <div class="ceo-wrap">
 
@@ -35,14 +32,12 @@
 
         <!-- Identitas -->
         <div class="ceo-identity">
-          <p class="ceo-label">Pesan dari Pemimpin</p>
           <transition name="txt-fade" mode="out-in">
             <h3 class="ceo-name" :key="current.name">{{ current.name }}</h3>
           </transition>
           <transition name="txt-fade" mode="out-in">
             <p class="ceo-role" :key="current.username">{{ current.username }}</p>
           </transition>
-          <p class="ceo-company">{{ appName }}</p>
         </div>
 
         <!-- Divider -->
@@ -195,40 +190,13 @@ onUnmounted(() => clearInterval(timer));
 <style scoped>
 /* ── Section ── */
 .ceo-section {
+  background: transparent;
   position: relative;
   padding: 100px 24px 110px;
   overflow: hidden;
   z-index: 2;
 }
 
-/* ── Background ── */
-.ceo-bg-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 0%, transparent 100%);
-  pointer-events: none;
-}
-.ceo-bg-orb {
-  position: absolute; border-radius: 50%;
-  filter: blur(90px); pointer-events: none;
-}
-.orb-l {
-  width: 480px; height: 480px; top: -120px; left: -160px;
-  background: radial-gradient(circle, rgba(29,78,216,0.12), transparent 70%);
-  animation: orbFloat 14s ease-in-out infinite;
-}
-.orb-r {
-  width: 360px; height: 360px; bottom: -80px; right: -100px;
-  background: radial-gradient(circle, rgba(139,92,246,0.10), transparent 70%);
-  animation: orbFloat 11s ease-in-out infinite reverse;
-}
-@keyframes orbFloat {
-  0%,100% { transform: translate(0,0); }
-  50%      { transform: translate(30px,-20px); }
-}
 
 /* ── Wrapper ── */
 .ceo-wrap {
@@ -262,7 +230,7 @@ onUnmounted(() => clearInterval(timer));
 .ceo-card {
   position: relative;
   width: 100%;
-  background: rgba(6,11,30,0.6);
+  background: rgba(6,11,30,0.35);
   border: 1px solid rgba(59,130,246,0.15);
   border-radius: 28px;
   padding: 68px 52px 40px;
@@ -308,12 +276,7 @@ onUnmounted(() => clearInterval(timer));
 }
 
 /* ── Identity ── */
-.ceo-identity { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 20px; }
-.ceo-label {
-  font-size: 0.62rem; font-weight: 700;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: #3b82f6; margin: 0 0 4px;
-}
+.ceo-identity { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 20px; margin-top: 16px; }
 .ceo-name {
   font-size: 1.35rem; font-weight: 800;
   color: #f1f5f9; margin: 0;
@@ -322,10 +285,6 @@ onUnmounted(() => clearInterval(timer));
 .ceo-role {
   font-size: 0.8rem; color: #60a5fa;
   margin: 0; font-weight: 500;
-}
-.ceo-company {
-  font-size: 0.7rem; color: #475569;
-  margin: 6px 0 0; font-weight: 500;
 }
 
 /* ── Divider ── */
@@ -446,10 +405,27 @@ onUnmounted(() => clearInterval(timer));
 .txt-fade-enter-from, .txt-fade-leave-to { opacity:0; transform:translateY(6px); }
 
 /* ── Responsive ── */
+@media (max-width: 768px) {
+  .ceo-section { padding: 80px 20px 88px; }
+  .ceo-card { padding: 80px 28px 36px; }
+  .quote-para { font-size: 1rem; }
+  .quote-mark { font-size: 6rem; }
+}
 @media (max-width: 600px) {
-  .ceo-section  { padding : 80px 16px 80px; }
-  .ceo-card     { padding: 0 24px 36px; }
-  .quote-para   { font-size: 0.98rem; }
-  .quote-mark   { font-size: 6rem; }
+  .ceo-section       { padding: 72px 16px 80px; }
+  .ceo-card          { padding: 72px 20px 32px; }
+  .ceo-avatar-wrap   { width: 90px; height: 90px; margin-bottom: -45px; }
+  .ceo-identity      { margin-top: 0; }
+  .quote-para        { font-size: 0.95rem; }
+  .quote-mark        { font-size: 5rem; top: 80px; left: 20px; }
+  .ceo-sig-row       { flex-wrap: wrap; gap: 12px; }
+  .carousel-controls { align-items: flex-start; }
+  .sig-block         { min-width: 0; }
+}
+@media (max-width: 360px) {
+  .ceo-section { padding: 56px 12px 64px; }
+  .ceo-card { padding: 64px 16px 28px; }
+  .quote-para { font-size: 0.88rem; }
+  .ceo-avatar-wrap { width: 76px; height: 76px; margin-bottom: -38px; }
 }
 </style>

@@ -23,7 +23,7 @@ const currentYear = new Date().getFullYear();
 .footer-section {
     padding: 32px 0;
     border-top: 1px solid rgba(99, 102, 241, 0.1);
-    background: rgba(10, 14, 39, 0.5);
+    background: rgba(10, 14, 39, 0.25);
     position: relative;
     z-index: 10;
     margin-top: auto;
@@ -33,7 +33,16 @@ const currentYear = new Date().getFullYear();
 .footer-link { color: #94A3B8; font-size: 14px; text-decoration: none; transition: color 0.2s ease; }
 .footer-link:hover { color: white; }
 
+@media (max-width: 768px) {
+    .footer-inner { gap: 20px; }
+    .footer-links { gap: 20px; }
+}
 @media (max-width: 576px) {
     .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+    .footer-links { justify-content: center; flex-wrap: wrap; gap: 16px; }
+}
+@media (max-width: 360px) {
+    .footer-copy, .footer-link { font-size: 12px; }
+    .footer-links { gap: 12px; }
 }
 </style>
