@@ -1,33 +1,36 @@
 <template>
-    <div class="landing-wrapper min-vh-100 d-flex flex-column overflow-hidden">
+    <div class="landing-wrapper">
+        
+        <ParticleBackground />
         
         <LandingNavbar />
         
         <LandingHero />
-        
+        <LandingServices />
+        <LandingTestimonials />
+        <LandingClientLogos />  
         <LandingFooter />
 
     </div>
 </template>
-
+    
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useLandingStore } from "@/stores/landing";
 
-// Import Components
 import LandingNavbar from "@/components/LandingNavbar.vue";
 import LandingHero from "@/components/LandingHero.vue";
+import LandingClientLogos from "@/components/LandingClientLogos.vue";
 import LandingFooter from "@/components/LandingFooter.vue";
+import ParticleBackground from "@/components/ParticleBackground.vue";
+import LandingServices from "@/components/LandingServices.vue";
+import LandingTestimonials from "@/components/LandingTestimonials.vue";
 
-// Inisialisasi Store Pinia
 const landingStore = useLandingStore();
 
 onMounted(async () => {
     try {
-        // 1. Fetch content umum (Logo, Judul Hero, Deskripsi, dll)
         await landingStore.fetchContent();
-
-        // 2. Fetch Menu Navbar dari Backend (INI YANG SEBELUMNYA KURANG)
         await landingStore.fetchMenu();
         
     } catch (error) {
@@ -38,12 +41,11 @@ onMounted(async () => {
 
 <style scoped>
 .landing-wrapper {
-    /* Background gradient gelap modern */
-    background: linear-gradient(180deg, #0A0E27 0%, #141B2D 50%, #1A2332 100%);
     color: white;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     position: relative;
     width: 100%;
     min-height: 100vh;
+    padding-top: 72px; /* tinggi navbar fixed */
 }
 </style>

@@ -56,9 +56,8 @@ export const useLandingStore = defineStore("landing", () => {
         error.value = null;
 
         try {
-            // UPDATE: Mengarah ke endpoint settings yang baru dibuat di backend
-            const response = await axios.get(`${API_URL}/front/settings`);
 
+            const response = await axios.get(`${API_URL}/front/content`);
             if (response.data.success) {
                 content.value = response.data.data || {};
             } else {

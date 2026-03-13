@@ -830,7 +830,7 @@ const onClickOut = (e: MouseEvent) => {
         activeDropdown.value = null;
 };
 
-onMounted(async () => {
+    onMounted(async () => {
     await landingStore.fetchMenu(
         window.innerWidth < 992 ? "mobile" : "desktop"
     );
@@ -843,6 +843,7 @@ onMounted(async () => {
         isLight.value = true;
         document.documentElement.classList.add("theme-light");
     }
+    console.log("ISI DATA CONTENT:", landingStore.content);
 });
 
 onUnmounted(() => {
