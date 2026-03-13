@@ -123,20 +123,12 @@
                                         <div class="drop-glow"></div>
                                         <div class="drop-arrow"></div>
                                         <div class="drop-items">
-                                            <a
+                                            <router-link
                                                 v-for="(
                                                     child, ci
                                                 ) in menu.children"
                                                 :key="child.id"
-                                                :href="child.url"
-                                                :target="
-                                                    child.target || '_self'
-                                                "
-                                                :rel="
-                                                    child.target === '_blank'
-                                                        ? 'noopener noreferrer'
-                                                        : undefined
-                                                "
+                                                :to="child.url"
                                                 class="drop-item"
                                                 :style="{
                                                     animationDelay: `${
@@ -193,7 +185,7 @@
                                                         />
                                                     </svg>
                                                 </span>
-                                            </a>
+                                            </router-link>
                                         </div>
                                     </div>
                                 </Transition>

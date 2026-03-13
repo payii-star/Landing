@@ -3,7 +3,7 @@
     <div class="container">
 
       <!-- Section Header -->
-      <div class="text-center mb-5">
+      <div v-if="showHeader" class="text-center mb-5">
         <span class="section-label">PORTFOLIO</span>
         <h2 class="section-title mt-2">Our Recent Projects</h2>
         <p class="section-subtitle">
@@ -11,10 +11,57 @@
         </p>
       </div>
 
+      <div
+        v-for="(project, index) in featuredProjects"
+        :key="project.id"
+        class="featured-project"
+      >
+
+        <div
+          class="row align-items-center"
+          :class="{ 'flex-row-reverse': index % 2 !== 0 }"
+        >
+
+          <!-- IMAGE -->
+          <div class="col-lg-6">
+            <img
+              :src="project.image"
+              class="featured-image"
+            />
+          </div>
+
+          <!-- TEXT -->
+          <div class="col-lg-6">
+
+            <span class="featured-label">
+              Featured Project
+            </span>
+
+            <h2 class="featured-title">
+              {{ project.title }}
+            </h2>
+
+            <p class="featured-desc">
+              {{ project.description }}
+            </p>
+
+            <router-link
+              :to="`/projects/${project.slug}`"
+              class="featured-btn"
+            >
+              View Case Study →
+            </router-link>
+
+          </div>
+
+        </div>
+
+      </div>
+
       <div class="row g-4">
 
         <div
-          v-for="project in projectStore.projects"
+          v-for="project in gridProjects"
           :key="project.id"
           class="col-lg-4 col-md-6"
         >
@@ -43,9 +90,12 @@
                 {{ project.description }}
               </p>
 
-              <button class="project-btn">
-                View Project →
-              </button>
+              <router-link
+                :to="`/projects/${project.slug}`"
+                class="project-card"
+              >
+                View Project        →
+              </router-link>
 
             </div>
 
@@ -66,18 +116,33 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useProjectStore } from '@/stores/project'
 
+defineProps({
+  showHeader: {
+    type: Boolean,
+    default: true
+  }
+})
+
 const projectStore = useProjectStore()
+
+const featuredProjects = computed(() => {
+  return projectStore.projects.slice(0, 3)
+})
+
+const gridProjects = computed(() => {
+  return projectStore.projects.slice(3)
+})
 
 onMounted(() => {
   if (projectStore.projects.length === 0) {
     projectStore.fetchProjects()
   }
 })
-
 </script>
+
 <style scoped>
 .projects-section {
   background: linear-gradient(
@@ -192,5 +257,43 @@ onMounted(() => {
 .project-btn:hover {
   color: #7dd3fc;
   transform: translateX(4px);
+}
+
+.featured-project {
+  padding: 80px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.featured-image {
+  width: 100%;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.featured-label {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: #94a3b8;
+}
+
+.featured-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin: 10px 0;
+}
+
+.featured-desc {
+  color: #cbd5e1;
+  margin-bottom: 20px;
+}
+
+.featured-btn {
+  background: #38bdf8;
+  padding: 10px 18px;
+  border-radius: 8px;
+  color: #0f172a;
+  font-weight: 600;
+  text-decoration: none;
 }
 </style>

@@ -69,6 +69,7 @@ const landingStore = useLandingStore();
     justify-content: center;
     padding: 160px 0 80px; /* Increased top padding to account for fixed navbar */
     overflow: hidden;
+    flex: 1;
 }
 
 .container-xxl {

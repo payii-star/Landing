@@ -57,7 +57,12 @@
       <div class="text-center small footer-copy">
         {{ footerStore.setting?.copyright }}
       </div>
+      <div class="footer-bg">
+        <div class="footer-orb orb-left"></div>
+        <div class="footer-orb orb-right"></div>
+      </div>
     </div>
+    
   </footer>
 </template>
 
@@ -79,47 +84,87 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.footer-custom {
+  position: relative;
+  background: rgba(15, 23, 42, 0.6);
+  border-top: 1px solid rgba(99, 102, 241, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Company Title (same gradient as hero title) */
 .footer-custom h4 {
-  background: linear-gradient(180deg, var(--navy-darkest) 0%, var(--navy-dark) 50%, var(--navy-medium) 100%);
-  
+  font-weight: 700;
+  font-size: 28px;
+
+  background: linear-gradient(135deg, #ffffff 0%, #E0E7FF 50%, #C7D2FE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
+/* Description */
 .footer-desc {
-  color: #e5e9ee;
-  line-height: 1.6;
+  color: #94A3B8;
+  line-height: 1.7;
 }
 
+/* Section title */
 .footer-title {
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  font-size: 0.85rem;
-  color: #ededf5;
+  font-size: 13px;
+  color: #CBD5F5;
 }
 
+
+/* Contact info */
 .footer-contact p {
   margin-bottom: 6px;
-  color: #94a3b8;
+  color: #94A3B8;
 }
 
+/* Links */
 .footer-link {
-  color: #94a3b8;
+  color: #94A3B8;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .footer-link:hover {
   color: white;
-  transform: translateX(5px);
+  transform: translateX(6px);
 }
 
+/* Divider */
 .footer-divider {
   height: 1px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(99, 102, 241, 0.2);
 }
 
+/* Copyright */
 .footer-copy {
-  color: #64748b;
+  color: #64748B;
+}
+
+.footer-orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:.25;
+}
+
+.orb-left{
+  background:radial-gradient(circle,#6366F1 0%,transparent 70%);
+  bottom:-120px;
+  left:-120px;
+}
+
+.orb-right{
+  background:radial-gradient(circle,#8B5CF6 0%,transparent 70%);
+  top:-100px;
+  right:-100px;
 }
 
 </style>

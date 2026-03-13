@@ -31,6 +31,18 @@ const routes: Array<RouteRecordRaw> = [
     },
 
     // =================================================================
+    // 1. PROJECTS (Public / Halaman Depan)
+    // =================================================================
+    {
+        path: "/projects",
+        name: "projects",
+        component: () => import("@/pages/landing/ProjectsPage.vue"),
+        meta: {
+            pageTitle: "Our Projects",
+        },
+    },
+
+    // =================================================================
     // 2. DASHBOARD (Protected / Wajib Login)
     // =================================================================
     {
