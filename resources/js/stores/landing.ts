@@ -35,6 +35,27 @@ interface LandingContent {
     [key: string]: any;
 }
 
+// Interface untuk Statistik
+interface Statistic {
+    id: number;
+    icon: string;
+    statistic: string;
+    label: string;
+    is_active: boolean;
+    order: number;
+}
+
+
+interface TeamMember {
+    id: number;
+    name: string;
+    position: string;
+    image: string;
+    image_url: string;
+    order: number;
+    is_active: boolean;
+}
+
 // Mengambil URL dari env atau default ke localhost
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
@@ -42,6 +63,9 @@ export const useLandingStore = defineStore("landing", () => {
     // ── STATE ──────────────────────────────────────────────────────
     const content = ref<LandingContent>({});
     const menus = ref<MenuItem[]>([]);
+    const statistics = ref<Statistic[]>([]);
+    const teams = ref<TeamMember[]>([]);
+
     const loading = ref(false);
     const error = ref<string | null>(null);
 
@@ -56,7 +80,6 @@ export const useLandingStore = defineStore("landing", () => {
         error.value = null;
 
         try {
-
             const response = await axios.get(`${API_URL}/front/content`);
             if (response.data.success) {
                 content.value = response.data.data || {};
@@ -87,11 +110,9 @@ export const useLandingStore = defineStore("landing", () => {
         error.value = null;
 
         try {
-            // Deteksi device type otomatis jika tidak diberikan
+
             const deviceType =
                 device || (window.innerWidth < 992 ? "mobile" : "desktop");
-
-            // console.log(`🔄 Fetching ${deviceType} menu...`);
 
             const response = await axios.get(`${API_URL}/front/navbar`, {
                 params: { device: deviceType },
@@ -119,10 +140,25 @@ export const useLandingStore = defineStore("landing", () => {
         }
     }
 
-    /**
-     * Refresh menus berdasarkan ukuran window saat ini
-     * Berguna saat event window resize
-     */
+    async function fetchStatistics() {
+        try {
+            const response = await axios.get(`${API_URL}/front/statistics`);
+            statistics.value = response.data.data || response.data || [];
+        } catch (err: any) {
+            console.error("❌ Failed to fetch statistics:", err);
+        }
+    }
+
+
+    async function fetchTeams() {
+        try {
+            const response = await axios.get(`${API_URL}/front/teams`);
+            teams.value = response.data.data || response.data || [];
+        } catch (err: any) {
+            console.error("❌ Failed to fetch teams:", err);
+        }
+    }
+
     async function refreshMenus() {
         const isMobile = window.innerWidth < 992;
         await fetchMenu(isMobile ? "mobile" : "desktop");
@@ -134,6 +170,8 @@ export const useLandingStore = defineStore("landing", () => {
     function clearData() {
         content.value = {};
         menus.value = [];
+        statistics.value = [];
+        teams.value = []; 
         loading.value = false;
         error.value = null;
     }
@@ -145,7 +183,6 @@ export const useLandingStore = defineStore("landing", () => {
         try {
             await axios.post(`${API_URL}/front/navbar/track-click/${menuId}`);
         } catch (err) {
-            // Silent fail - analytics error should not disturb user experience
             console.error("Failed to track menu click:", err);
         }
     }
@@ -172,14 +209,12 @@ export const useLandingStore = defineStore("landing", () => {
         );
     }
 
-    // Mencari menu tipe button-primary untuk dijadikan CTA (Call to Action)
     function getCtaButton(): MenuItem | undefined {
         return menus.value.find(
             (menu) => menu.type === "button-primary" && menu.is_active
         );
     }
 
-    // Mengambil menu biasa (text link)
     function getLinkMenus(): MenuItem[] {
         return menus.value.filter(
             (menu) => menu.is_active && menu.type === "link"
@@ -200,12 +235,16 @@ export const useLandingStore = defineStore("landing", () => {
         // State
         content,
         menus,
+        statistics,
+        teams,
         loading,
         error,
 
         // Actions
         fetchContent,
         fetchMenu,
+        fetchStatistics,
+        fetchTeams, 
         refreshMenus,
         clearData,
         trackMenuClick,
