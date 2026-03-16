@@ -258,64 +258,6 @@
                             </span>
                         </a>
 
-                        <!-- Theme Toggle -->
-                        <button
-                            class="theme-toggle"
-                            :class="{ 'is-light': isLight }"
-                            @click="toggleTheme"
-                            :aria-label="
-                                isLight
-                                    ? 'Switch to dark mode'
-                                    : 'Switch to light mode'
-                            "
-                            type="button"
-                        >
-                            <span class="theme-track">
-                                <span class="theme-thumb">
-                                    <!-- Sun icon -->
-                                    <svg
-                                        v-if="isLight"
-                                        class="theme-icon"
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                    >
-                                        <circle
-                                            cx="12"
-                                            cy="12"
-                                            r="4"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                        />
-                                        <path
-                                            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                        />
-                                    </svg>
-                                    <!-- Moon icon -->
-                                    <svg
-                                        v-else
-                                        class="theme-icon"
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                    >
-                                        <path
-                                            d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>
-                                </span>
-                            </span>
-                        </button>
-
                         <!-- Hamburger — shown on non-desktop -->
                         <button
                             class="hamburger nav-hamburger"
@@ -629,14 +571,6 @@ const spotlightX = ref(0);
 const spotlightY = ref(0);
 const spotlightVisible = ref(false);
 
-// === THEME TOGGLE ===
-const isLight = ref(false);
-const toggleTheme = () => {
-    isLight.value = !isLight.value;
-    document.documentElement.classList.toggle("theme-light", isLight.value);
-    localStorage.setItem("theme", isLight.value ? "light" : "dark");
-};
-
 // === DRAWER DRAG ===
 const drawerRef = ref<HTMLElement | null>(null);
 const dragY = ref(0);
@@ -822,19 +756,12 @@ const onClickOut = (e: MouseEvent) => {
         activeDropdown.value = null;
 };
 
-    onMounted(async () => {
-    await landingStore.fetchMenu(
-        window.innerWidth < 992 ? "mobile" : "desktop"
-    );
+onMounted(async () => {
+    await landingStore.fetchMenu(window.innerWidth < 992 ? "mobile" : "desktop");
     await landingStore.fetchContent();
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("click", onClickOut);
-    // Init theme
-    const saved = localStorage.getItem("theme");
-    if (saved === "light") {
-        isLight.value = true;
-        document.documentElement.classList.add("theme-light");
-    }
+    
     console.log("ISI DATA CONTENT:", landingStore.content);
 });
 
@@ -1587,68 +1514,6 @@ onUnmounted(() => {
 }
 
 /* ════════════════════════════════════════
-   THEME TOGGLE
-════════════════════════════════════════ */
-.theme-toggle {
-    position: relative;
-    width: 52px;
-    height: 28px;
-    border-radius: 50px;
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.06);
-    cursor: pointer;
-    padding: 0;
-    flex-shrink: 0;
-    transition: border-color 0.35s ease, background 0.35s ease;
-    animation: fadeInDown 0.7s var(--ease-smooth) 0.55s both;
-}
-.theme-toggle:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.1);
-}
-.theme-toggle.is-light {
-    border-color: rgba(250, 204, 21, 0.5);
-    background: rgba(250, 204, 21, 0.12);
-}
-.theme-toggle.is-light:hover {
-    border-color: rgba(250, 204, 21, 0.75);
-    background: rgba(250, 204, 21, 0.2);
-}
-
-.theme-track {
-    position: absolute;
-    inset: 2px;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-}
-.theme-thumb {
-    position: absolute;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #94a3b8;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-        background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
-}
-.is-light .theme-thumb {
-    transform: translateX(24px);
-    background: rgba(250, 204, 21, 0.25);
-    border-color: rgba(250, 204, 21, 0.4);
-    color: #f59e0b;
-}
-.theme-icon {
-    display: block;
-    flex-shrink: 0;
-}
-
-/* ════════════════════════════════════════
    HAMBURGER
 ════════════════════════════════════════ */
 /* Hide hamburger on desktop, show on mobile/tablet */
@@ -2062,4 +1927,57 @@ onUnmounted(() => {
 .drawer-leave-to {
     pointer-events: none;
 }
+
+/* ════════════════════════════════════════
+   LIGHT MODE OVERRIDES (Warna Terang)
+════════════════════════════════════════ */
+[data-bs-theme="light"] .navbar-wrapper,
+[data-theme="light"] .navbar-wrapper {
+    --glass: rgba(255, 255, 255, 0.9);
+    --glass-s: rgba(255, 255, 255, 0.99);
+    --border: rgba(0, 0, 0, 0.08);
+    --border-strong: rgba(59, 130, 246, 0.2);
+    --text: #0f172a;
+    --muted: #475569;
+    --muted2: #94a3b8;
+}
+
+[data-bs-theme="light"] .drop-panel {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+[data-bs-theme="light"] .drop-arrow {
+    background: rgba(255, 255, 255, 0.98);
+    border-top-color: rgba(0, 0, 0, 0.1);
+    border-left-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-bs-theme="light"] .drawer-panel {
+    background: #ffffff;
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-bs-theme="light"] .drawer-header,
+[data-bs-theme="light"] .drawer-link,
+[data-bs-theme="light"] .drawer-children,
+[data-bs-theme="light"] .drawer-child,
+[data-bs-theme="light"] .drawer-footer {
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-bs-theme="light"] .drawer-link { color: #475569; }
+[data-bs-theme="light"] .drawer-link:hover,
+[data-bs-theme="light"] .drawer-link.is-open { color: #0f172a; background: rgba(0, 0, 0, 0.03); }
+[data-bs-theme="light"] .drawer-child { color: #64748b; }
+[data-bs-theme="light"] .drawer-child:hover { color: #0f172a; }
+[data-bs-theme="light"] .drawer-children { background: rgba(0, 0, 0, 0.02); }
+[data-bs-theme="light"] .drawer-close { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.08); }
+[data-bs-theme="light"] .drawer-handle .drawer-pill { background: rgba(0, 0, 0, 0.15); }
+[data-bs-theme="light"] .dcta-ghost, 
+[data-bs-theme="light"] .action-ghost { border-color: rgba(0, 0, 0, 0.2); color: var(--text); }
+[data-bs-theme="light"] .dcta-ghost:hover,
+[data-bs-theme="light"] .action-ghost:hover { background: rgba(0, 0, 0, 0.05); }
+[data-bs-theme="light"] .hamburger { background: rgba(0, 0, 0, 0.03); border-color: rgba(0, 0, 0, 0.1); }
 </style>

@@ -314,7 +314,17 @@ onMounted(() => fetchServices());
   .services-grid { grid-template-columns: 1fr; gap: 14px; }
   .service-card { padding: 24px 22px 28px; }
 }
-
+@media (max-width: 480px) {
+  .services-section { padding: 56px 14px 64px; }
+  .section-title { font-size: 1.6rem; }
+  .services-header { margin-bottom: 40px; }
+  .stat-num { font-size: 1.2rem; }
+}
+@media (max-width: 360px) {
+  .section-title { font-size: 1.4rem; }
+  .service-card { padding: 20px 16px 24px; }
+  .card-title { font-size: 1.1rem; }
+}
 @media (min-width: 1024px) {
   .services-grid { grid-template-columns: repeat(3, 1fr); }
 }
