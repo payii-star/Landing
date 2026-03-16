@@ -21,15 +21,16 @@
         <LandingTestimonials />
         <LandingClientLogos />  
         <LandingCta />
-        
-        <LandingFooter />
+        <Footer />
 
-    </div>
+  </div>
 </template>
     
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useLandingStore } from "@/stores/landing";
+import Footer from '@/components/landing/footer.vue';
+import Projects from '@/components/landing/Projects.vue';
 
 import LandingNavbar from "@/components/LandingNavbar.vue";
 import LandingHero from "@/components/LandingHero.vue";
@@ -69,7 +70,7 @@ onMounted(async () => {
 
 /* ── Global ambient orbs ── */
 .g-orb {
-    position: absolute;
+    position: fixed;
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
@@ -125,7 +126,7 @@ onMounted(async () => {
 }
 .g-orb-8 {
     width: 650px; height: 650px;
-    top: 300vh; right: -100px;
+    top: 200vh; right: -100px;
     background: radial-gradient(circle, rgba(59, 130, 246, 0.09) 0%, transparent 65%);
     filter: blur(80px);
     animation: gOrbFloat 19s ease-in-out infinite 1s;
