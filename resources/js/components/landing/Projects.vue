@@ -2,15 +2,6 @@
   <section class="projects-section py-5">
     <div class="container">
 
-      <!-- Section Header -->
-      <div v-if="showHeader" class="text-center mb-5">
-        <span class="section-label">PORTFOLIO</span>
-        <h2 class="section-title mt-2">Our Recent Projects</h2>
-        <p class="section-subtitle">
-          We build digital experiences that deliver real impact.
-        </p>
-      </div>
-
       <div
         v-for="(project, index) in featuredProjects"
         :key="project.id"
@@ -118,13 +109,6 @@
 <script setup>
 import { onMounted, computed } from 'vue'
 import { useProjectStore } from '@/stores/project'
-
-defineProps({
-  showHeader: {
-    type: Boolean,
-    default: true
-  }
-})
 
 const projectStore = useProjectStore()
 
@@ -266,21 +250,45 @@ onMounted(() => {
 
 .featured-image {
   width: 100%;
-  border-radius: 14px;
+  border-radius: 16px;
   object-fit: cover;
+
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  transition: transform .35s ease;
+}
+
+.featured-image:hover {
+  transform: scale(1.02);
 }
 
 .featured-label {
   font-size: 0.75rem;
   letter-spacing: 2px;
-  color: #94a3b8;
+
+  color: #c7d2fe;
+  background: rgba(99,102,241,0.15);
+
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 999px;
+
+  padding: 6px 14px;
+  display: inline-block;
 }
 
 .featured-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: white;
-  margin: 10px 0;
+  margin: 14px 0;
+
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #e0e7ff 50%,
+    #c7d2fe 100%
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .featured-desc {
@@ -289,11 +297,26 @@ onMounted(() => {
 }
 
 .featured-btn {
-  background: #38bdf8;
+  display: inline-block;
+
+  background: linear-gradient(
+    135deg,
+    #38bdf8,
+    #6366f1
+  );
+
   padding: 10px 18px;
-  border-radius: 8px;
-  color: #0f172a;
+  border-radius: 10px;
+
+  color: white;
   font-weight: 600;
   text-decoration: none;
+
+  transition: all .25s ease;
+}
+
+.featured-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(56,189,248,0.35);
 }
 </style>

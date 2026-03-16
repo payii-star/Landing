@@ -1,20 +1,20 @@
 <template>
-    <div class="landing-wrapper">
-        
-        <ParticleBackground />
-        
-        <LandingNavbar />
-        
-        <LandingHero />
-        
-        
-        <LandingServices />
-        <LandingTestimonials />
-        <LandingClientLogos />  
-        <!-- <LandingFooter /> -->
-        <Footer />
+  <div class="landing-wrapper">
 
-    </div>
+    <ParticleBackground />
+
+    <LandingNavbar />
+
+    <main class="landing-content">
+      <LandingHero />
+      <LandingServices />
+      <LandingTestimonials />
+      <LandingClientLogos />
+    </main>
+
+    <Footer />
+
+  </div>
 </template>
     
 <script setup lang="ts">
@@ -53,6 +53,10 @@ onMounted(async () => {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+}
+
+.landing-content {
+    flex: 1;
     padding-top: 72px; /* tinggi navbar fixed */
 }
 </style>

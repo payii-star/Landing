@@ -1,7 +1,18 @@
 <template>
   <footer class="footer-custom text-white">
     <div class="container py-5">
-      <div class="row gy-4">
+
+        <!-- Loading -->
+        <div v-if="footerStore.loading || !footerStore.setting" class="text-center py-5">
+
+          <div class="spinner-border text-primary"></div>
+
+          <p class="mt-3 text-muted small">
+            Loading footer...
+          </p>
+
+        </div>
+      <div v-else class="row gy-4">
 
         <!-- Company Info -->
         <div class="col-lg-5 col-md-6">
