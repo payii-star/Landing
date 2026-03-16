@@ -21,7 +21,7 @@
         <LandingTestimonials />
         <LandingClientLogos />  
         <LandingCta />
-        <Footer />
+        <LandingFooter/>
 
   </div>
 </template>
@@ -29,7 +29,6 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useLandingStore } from "@/stores/landing";
-import Footer from '@/components/landing/footer.vue';
 import Projects from '@/components/landing/Projects.vue';
 
 import LandingNavbar from "@/components/LandingNavbar.vue";

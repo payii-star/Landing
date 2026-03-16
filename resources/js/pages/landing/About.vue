@@ -7,6 +7,8 @@ import ParticleBackground from "@/components/ParticleBackground.vue";
 import LandingAbout from "@/components/LandingAbout.vue";
 import LandingStatistics from "@/components/LandingStatistics.vue";
 import LandingTeam from '@/components/LandingTeam.vue';
+import LandingClientLogos2 from "@/components/LandingClientLogos2.vue";
+import LandingCta from "@/components/LandingCta.vue";
 import LandingTestimonials from "@/components/LandingTestimonials.vue";
 
 // Panggil Store
@@ -17,10 +19,10 @@ onMounted(async () => {
     try {
         await landingStore.fetchContent();
         
-
+        // Memunculkan data tim
         await landingStore.fetchTeams(); 
         
-
+        // Memunculkan data statistik
         await landingStore.fetchStatistics(); 
         
     } catch (error) {
@@ -44,13 +46,19 @@ onMounted(async () => {
         
         <LandingNavbar />
         
-        <LandingAbout />
-        
-        <LandingStatistics />
+        <div class="about-content">
+            <LandingAbout />
+            
+            <LandingStatistics />
+            
+            <LandingTeam /> 
 
-        <LandingTeam/> 
+            <LandingTestimonials/>
+            
+            <LandingClientLogos2 />
 
-        <LandingTestimonials/>
+            <LandingCta/>
+        </div>
         
         <LandingFooter />
     </div>
@@ -61,12 +69,21 @@ onMounted(async () => {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    background-color: #020617; 
+    
+    /* 👇 INI KUNCI UTAMANYA: Diubah jadi transparan agar bintang (canvas) terlihat 👇 */
+    background-color: transparent; 
+    
     overflow-x: hidden;
     color: #f8fafc;
 }
 
-/* Efek Bintang / Titik-titik Background */
+/* Memastikan konten halaman About selalu berada di atas efek bintang */
+.about-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Efek Bintang / Titik-titik Background Tambahan */
 .landing-wrapper::before {
     content: '';
     position: absolute;
