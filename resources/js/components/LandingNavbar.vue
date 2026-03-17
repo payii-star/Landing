@@ -61,54 +61,30 @@
                         >
                             <!-- Dropdown Menu -->
                             <div
-                                v-if="
-                                    menu.has_dropdown && menu.children?.length
-                                "
+                                v-if="menu.has_dropdown && menu.children?.length"
                                 class="nav-item"
                                 @mouseenter="openDropdown(menu.id)"
                                 @mouseleave="scheduleClose"
                             >
                                 <button
                                     class="nav-link"
-                                    :class="{
-                                        'is-open': activeDropdown === menu.id,
-                                    }"
-                                    :style="{
-                                        animationDelay: `${idx * 70 + 100}ms`,
-                                    }"
+                                    :class="{ 'is-open': activeDropdown === menu.id }"
+                                    :style="{ animationDelay: `${idx * 70 + 100}ms` }"
                                     :aria-expanded="activeDropdown === menu.id"
                                 >
-                                    <i
-                                        v-if="menu.icon_class"
-                                        :class="menu.icon_class"
-                                        class="nav-icon"
-                                    ></i>
+                                    <i v-if="menu.icon_class" :class="menu.icon_class" class="nav-icon"></i>
                                     <span>{{ menu.label }}</span>
                                     <span
                                         v-if="menu.badge_text"
                                         class="inline-badge"
-                                        :class="`ib-${
-                                            menu.badge_color || 'primary'
-                                        }`"
-                                        >{{ menu.badge_text }}</span
-                                    >
+                                        :class="`ib-${menu.badge_color || 'primary'}`"
+                                    >{{ menu.badge_text }}</span>
                                     <svg
                                         class="nav-chevron"
-                                        :class="{
-                                            rotated: activeDropdown === menu.id,
-                                        }"
-                                        width="10"
-                                        height="10"
-                                        viewBox="0 0 10 10"
-                                        fill="none"
+                                        :class="{ rotated: activeDropdown === menu.id }"
+                                        width="10" height="10" viewBox="0 0 10 10" fill="none"
                                     >
-                                        <path
-                                            d="M2 3.5L5 6.5L8 3.5"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
+                                        <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                 </button>
 
@@ -123,142 +99,162 @@
                                         <div class="drop-glow"></div>
                                         <div class="drop-arrow"></div>
                                         <div class="drop-items">
-                                            <router-link
-                                                v-for="(
-                                                    child, ci
-                                                ) in menu.children"
-                                                :key="child.id"
-                                                :to="child.url"
-                                                class="drop-item"
-                                                :style="{
-                                                    animationDelay: `${
-                                                        ci * 45
-                                                    }ms`,
-                                                }"
-                                                @click="trackClick(child.id)"
-                                                role="menuitem"
-                                            >
-                                                <span class="drop-icon">
-                                                    <i
-                                                        :class="
-                                                            child.icon_class ||
-                                                            'bi bi-arrow-right-short'
-                                                        "
-                                                    ></i>
-                                                </span>
-                                                <span class="drop-body">
-                                                    <span class="drop-label">{{
-                                                        child.label
-                                                    }}</span>
-                                                    <span
-                                                        v-if="child.description"
-                                                        class="drop-desc"
-                                                        >{{
-                                                            child.description
-                                                        }}</span
-                                                    >
-                                                </span>
-                                                <span
-                                                    v-if="child.badge_text"
-                                                    class="drop-badge"
-                                                    :class="`db-${
-                                                        child.badge_color ||
-                                                        'primary'
-                                                    }`"
-                                                    >{{
-                                                        child.badge_text
-                                                    }}</span
+                                            <!-- 
+                                                Dropdown children:
+                                                - Link eksternal (target="_blank") → tetap pakai <a>
+                                                - Link internal → pakai <router-link>
+                                            -->
+                                            <template v-for="(child, ci) in menu.children" :key="child.id">
+                                                <!-- Eksternal -->
+                                                <a
+                                                    v-if="isExternal(child.url, child.target)"
+                                                    :href="child.url"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="drop-item"
+                                                    :style="{ animationDelay: `${ci * 45}ms` }"
+                                                    @click="trackClick(child.id)"
+                                                    role="menuitem"
                                                 >
-                                                <span class="drop-item-arrow">
-                                                    <svg
-                                                        width="12"
-                                                        height="12"
-                                                        viewBox="0 0 12 12"
-                                                        fill="none"
-                                                    >
-                                                        <path
-                                                            d="M2.5 6h7M6.5 3L9.5 6l-3 3"
-                                                            stroke="currentColor"
-                                                            stroke-width="1.3"
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                        />
-                                                    </svg>
-                                                </span>
-                                            </router-link>
+                                                    <span class="drop-icon">
+                                                        <i :class="child.icon_class || 'bi bi-arrow-right-short'"></i>
+                                                    </span>
+                                                    <span class="drop-body">
+                                                        <span class="drop-label">{{ child.label }}</span>
+                                                        <span v-if="child.description" class="drop-desc">{{ child.description }}</span>
+                                                    </span>
+                                                    <span
+                                                        v-if="child.badge_text"
+                                                        class="drop-badge"
+                                                        :class="`db-${child.badge_color || 'primary'}`"
+                                                    >{{ child.badge_text }}</span>
+                                                    <span class="drop-item-arrow">
+                                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                                            <path d="M2.5 6h7M6.5 3L9.5 6l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </svg>
+                                                    </span>
+                                                </a>
+
+                                                <!-- Internal → router-link -->
+                                                <router-link
+                                                    v-else
+                                                    :to="child.url"
+                                                    class="drop-item"
+                                                    :style="{ animationDelay: `${ci * 45}ms` }"
+                                                    @click="trackClick(child.id)"
+                                                    role="menuitem"
+                                                >
+                                                    <span class="drop-icon">
+                                                        <i :class="child.icon_class || 'bi bi-arrow-right-short'"></i>
+                                                    </span>
+                                                    <span class="drop-body">
+                                                        <span class="drop-label">{{ child.label }}</span>
+                                                        <span v-if="child.description" class="drop-desc">{{ child.description }}</span>
+                                                    </span>
+                                                    <span
+                                                        v-if="child.badge_text"
+                                                        class="drop-badge"
+                                                        :class="`db-${child.badge_color || 'primary'}`"
+                                                    >{{ child.badge_text }}</span>
+                                                    <span class="drop-item-arrow">
+                                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                                            <path d="M2.5 6h7M6.5 3L9.5 6l-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </svg>
+                                                    </span>
+                                                </router-link>
+                                            </template>
                                         </div>
                                     </div>
                                 </Transition>
                             </div>
 
-                            <!-- Regular Link -->
+                            <!-- Regular Link: eksternal → <a>, internal → <router-link> -->
                             <a
-                                v-else
+                                v-else-if="isExternal(menu.url, menu.target)"
                                 :href="menu.url"
-                                :target="menu.target || '_self'"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 class="nav-link"
-                                :class="{ 'is-active': isActive(menu.url) }"
-                                :style="{
-                                    animationDelay: `${idx * 70 + 100}ms`,
-                                }"
+                                :style="{ animationDelay: `${idx * 70 + 100}ms` }"
                                 @click="trackClick(menu.id)"
                             >
-                                <i
-                                    v-if="menu.icon_class"
-                                    :class="menu.icon_class"
-                                    class="nav-icon"
-                                ></i>
+                                <i v-if="menu.icon_class" :class="menu.icon_class" class="nav-icon"></i>
                                 <span>{{ menu.label }}</span>
-                                <span
-                                    v-if="menu.badge_text"
-                                    class="inline-badge"
-                                    :class="`ib-${
-                                        menu.badge_color || 'primary'
-                                    }`"
-                                    >{{ menu.badge_text }}</span
-                                >
+                                <span v-if="menu.badge_text" class="inline-badge" :class="`ib-${menu.badge_color || 'primary'}`">{{ menu.badge_text }}</span>
                             </a>
+
+                            <router-link
+                                v-else
+                                :to="menu.url"
+                                class="nav-link"
+                                :class="{ 'is-active': isActive(menu.url) }"
+                                :style="{ animationDelay: `${idx * 70 + 100}ms` }"
+                                @click="trackClick(menu.id)"
+                            >
+                                <i v-if="menu.icon_class" :class="menu.icon_class" class="nav-icon"></i>
+                                <span>{{ menu.label }}</span>
+                                <span v-if="menu.badge_text" class="inline-badge" :class="`ib-${menu.badge_color || 'primary'}`">{{ menu.badge_text }}</span>
+                            </router-link>
                         </template>
                     </nav>
 
                     <!-- Actions Area -->
                     <div class="nav-actions d-flex align-items-center gap-3">
                         <!-- Ghost / Outline Buttons -->
-                        <a
-                            v-for="menu in desktopGhost"
-                            :key="'g-' + menu.id"
-                            :href="menu.url"
-                            :target="menu.target || '_self'"
-                            class="d-none d-lg-inline-flex action-ghost"
-                            @click="trackClick(menu.id)"
-                        >
-                            <i
-                                v-if="menu.icon_class"
-                                :class="menu.icon_class"
-                            ></i>
-                            <span>{{ menu.label }}</span>
-                        </a>
+                        <template v-for="menu in desktopGhost" :key="'g-' + menu.id">
+                            <a
+                                v-if="isExternal(menu.url, menu.target)"
+                                :href="menu.url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="d-none d-lg-inline-flex action-ghost"
+                                @click="trackClick(menu.id)"
+                            >
+                                <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                                <span>{{ menu.label }}</span>
+                            </a>
+                            <router-link
+                                v-else
+                                :to="menu.url"
+                                class="d-none d-lg-inline-flex action-ghost"
+                                @click="trackClick(menu.id)"
+                            >
+                                <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                                <span>{{ menu.label }}</span>
+                            </router-link>
+                        </template>
 
                         <!-- Primary CTA Button -->
-                        <a
-                            v-for="menu in desktopPrimary"
-                            :key="'p-' + menu.id"
-                            :href="menu.url"
-                            :target="menu.target || '_self'"
-                            class="d-none d-lg-inline-flex cta-btn"
-                            @click="trackClick(menu.id)"
-                        >
-                            <span class="cta-fill"></span>
-                            <span class="cta-text">
-                                <i
-                                    v-if="menu.icon_class"
-                                    :class="menu.icon_class"
-                                ></i>
-                                {{ menu.label }}
-                            </span>
-                        </a>
+                        <template v-for="menu in desktopPrimary" :key="'p-' + menu.id">
+                            <a
+                                v-if="isExternal(menu.url, menu.target)"
+                                :href="menu.url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="d-none d-lg-inline-flex cta-btn"
+                                @click="trackClick(menu.id)"
+                            >
+                                <span class="cta-fill"></span>
+                                <span class="cta-text">
+                                    <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                                    {{ menu.label }}
+                                </span>
+                            </a>
+                            <router-link
+                                v-else
+                                :to="menu.url"
+                                class="d-none d-lg-inline-flex cta-btn"
+                                @click="trackClick(menu.id)"
+                            >
+                                <span class="cta-fill"></span>
+                                <span class="cta-text">
+                                    <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                                    {{ menu.label }}
+                                </span>
+                            </router-link>
+                        </template>
 
-                        <!-- Hamburger — shown on non-desktop -->
+                        <!-- Hamburger -->
                         <button
                             class="hamburger nav-hamburger"
                             :class="{ 'is-open': mobileMenuOpen }"
@@ -277,11 +273,7 @@
 
         <!-- Mobile Overlay -->
         <Transition name="overlay-fade">
-            <div
-                v-if="mobileMenuOpen"
-                class="mobile-overlay"
-                @click="closeMobileMenu"
-            ></div>
+            <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
         </Transition>
 
         <!-- Mobile Drawer -->
@@ -290,7 +282,7 @@
                 <div class="drawer-panel" ref="drawerRef" :style="drawerStyle">
                     <div class="drawer-noise"></div>
 
-                    <!-- Drag handle — touch/mouse to drag down and close -->
+                    <!-- Drag handle -->
                     <div
                         class="drawer-handle"
                         @touchstart.passive="onDragStart"
@@ -306,245 +298,183 @@
 
                     <!-- Drawer Header -->
                     <div class="drawer-header">
-                        <router-link
-                            to="/"
-                            class="brand"
-                            @click="closeMobileMenu"
-                        >
+                        <router-link to="/" class="brand" @click="closeMobileMenu">
                             <div class="brand-logo-wrap brand-logo-wrap-sm">
                                 <span class="brand-glow-ring"></span>
                                 <span class="brand-float">
-                                    <img
-                                        v-if="logoUrl"
-                                        :src="logoUrl"
-                                        alt="Logo"
-                                        class="brand-img"
-                                        style="height: 36px"
-                                    />
-                                    <img
-                                        v-else
-                                        src="/media/logos/logo-custom.png"
-                                        alt="Logo"
-                                        class="brand-img"
-                                        style="height: 36px"
-                                    />
+                                    <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="brand-img" style="height: 36px"/>
+                                    <img v-else src="/media/logos/logo-custom.png" alt="Logo" class="brand-img" style="height: 36px"/>
                                 </span>
                             </div>
                         </router-link>
-                        <button
-                            class="drawer-close"
-                            type="button"
-                            @click="closeMobileMenu"
-                            aria-label="Close menu"
-                        >
-                            <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 18 18"
-                                fill="none"
-                            >
-                                <path
-                                    d="M2 2l14 14M16 2L2 16"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                    stroke-linecap="round"
-                                />
+                        <button class="drawer-close" type="button" @click="closeMobileMenu" aria-label="Close menu">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                <path d="M2 2l14 14M16 2L2 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                             </svg>
                         </button>
                     </div>
 
                     <!-- Drawer Nav -->
                     <nav class="drawer-nav">
-                        <template
-                            v-for="(menu, idx) in mobileLinks"
-                            :key="'m-' + menu.id"
-                        >
+                        <template v-for="(menu, idx) in mobileLinks" :key="'m-' + menu.id">
                             <!-- Dropdown group -->
                             <div
-                                v-if="
-                                    menu.has_dropdown && menu.children?.length
-                                "
+                                v-if="menu.has_dropdown && menu.children?.length"
                                 class="drawer-group"
-                                :style="{
-                                    animationDelay: `${idx * 75 + 120}ms`,
-                                }"
+                                :style="{ animationDelay: `${idx * 75 + 120}ms` }"
                             >
                                 <button
                                     class="drawer-link"
                                     type="button"
                                     @click="toggleMobileDropdown(menu.id)"
-                                    :class="{
-                                        'is-open':
-                                            mobileActiveDropdown === menu.id,
-                                    }"
-                                    :style="{
-                                        animationDelay: `${idx * 75 + 120}ms`,
-                                    }"
+                                    :class="{ 'is-open': mobileActiveDropdown === menu.id }"
+                                    :style="{ animationDelay: `${idx * 75 + 120}ms` }"
                                 >
                                     <span class="dtl">
                                         <span class="dicon-wrap">
-                                            <i
-                                                v-if="menu.icon_class"
-                                                :class="menu.icon_class"
-                                                class="dicon"
-                                            ></i>
-                                            <i
-                                                v-else
-                                                class="bi bi-grid dicon"
-                                            ></i>
+                                            <i v-if="menu.icon_class" :class="menu.icon_class" class="dicon"></i>
+                                            <i v-else class="bi bi-grid dicon"></i>
                                         </span>
                                         {{ menu.mobile_label || menu.label }}
                                         <span
                                             v-if="menu.badge_text"
                                             class="inline-badge ms-1"
-                                            :class="`ib-${
-                                                menu.badge_color || 'primary'
-                                            }`"
-                                            >{{ menu.badge_text }}</span
-                                        >
+                                            :class="`ib-${menu.badge_color || 'primary'}`"
+                                        >{{ menu.badge_text }}</span>
                                     </span>
                                     <svg
                                         class="dchev"
-                                        :class="{
-                                            rotated:
-                                                mobileActiveDropdown ===
-                                                menu.id,
-                                        }"
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 14 14"
-                                        fill="none"
+                                        :class="{ rotated: mobileActiveDropdown === menu.id }"
+                                        width="14" height="14" viewBox="0 0 14 14" fill="none"
                                     >
-                                        <path
-                                            d="M3 5l4 4 4-4"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                        />
+                                        <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                                     </svg>
                                 </button>
 
                                 <Transition name="slide-down">
-                                    <div
-                                        v-show="
-                                            mobileActiveDropdown === menu.id
-                                        "
-                                        class="drawer-children"
-                                    >
-                                        <a
-                                            v-for="child in menu.children"
-                                            :key="child.id"
-                                            :href="child.url"
-                                            :target="child.target || '_self'"
-                                            class="drawer-child"
-                                            @click="handleMobileClick(child.id)"
-                                        >
-                                            <span class="child-dot-wrap">
-                                                <i
-                                                    :class="
-                                                        child.icon_class ||
-                                                        'bi bi-arrow-right-short'
-                                                    "
-                                                    class="child-dot"
-                                                ></i>
-                                            </span>
-                                            <span>{{ child.label }}</span>
-                                            <span
-                                                v-if="child.badge_text"
-                                                class="inline-badge ms-auto"
-                                                :class="`ib-${
-                                                    child.badge_color ||
-                                                    'primary'
-                                                }`"
-                                                >{{ child.badge_text }}</span
+                                    <div v-show="mobileActiveDropdown === menu.id" class="drawer-children">
+                                        <template v-for="child in menu.children" :key="child.id">
+                                            <!-- Eksternal -->
+                                            <a
+                                                v-if="isExternal(child.url, child.target)"
+                                                :href="child.url"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="drawer-child"
+                                                @click="handleMobileClick(child.id)"
                                             >
-                                        </a>
+                                                <span class="child-dot-wrap">
+                                                    <i :class="child.icon_class || 'bi bi-arrow-right-short'" class="child-dot"></i>
+                                                </span>
+                                                <span>{{ child.label }}</span>
+                                                <span
+                                                    v-if="child.badge_text"
+                                                    class="inline-badge ms-auto"
+                                                    :class="`ib-${child.badge_color || 'primary'}`"
+                                                >{{ child.badge_text }}</span>
+                                            </a>
+
+                                            <!-- Internal → router-link -->
+                                            <router-link
+                                                v-else
+                                                :to="child.url"
+                                                class="drawer-child"
+                                                @click="handleMobileClick(child.id)"
+                                            >
+                                                <span class="child-dot-wrap">
+                                                    <i :class="child.icon_class || 'bi bi-arrow-right-short'" class="child-dot"></i>
+                                                </span>
+                                                <span>{{ child.label }}</span>
+                                                <span
+                                                    v-if="child.badge_text"
+                                                    class="inline-badge ms-auto"
+                                                    :class="`ib-${child.badge_color || 'primary'}`"
+                                                >{{ child.badge_text }}</span>
+                                            </router-link>
+                                        </template>
                                     </div>
                                 </Transition>
                             </div>
 
-                            <!-- Regular link -->
+                            <!-- Regular link: eksternal → <a>, internal → router-link -->
                             <a
-                                v-else
+                                v-else-if="isExternal(menu.url, menu.target)"
                                 :href="menu.url"
-                                :target="menu.target || '_self'"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 class="drawer-link"
-                                :class="{ 'is-active': isActive(menu.url) }"
-                                :style="{
-                                    animationDelay: `${idx * 75 + 120}ms`,
-                                }"
+                                :style="{ animationDelay: `${idx * 75 + 120}ms` }"
                                 @click="handleMobileClick(menu.id)"
                             >
                                 <span class="dtl">
                                     <span class="dicon-wrap">
-                                        <i
-                                            v-if="menu.icon_class"
-                                            :class="menu.icon_class"
-                                            class="dicon"
-                                        ></i>
-                                        <i
-                                            v-else
-                                            class="bi bi-link-45deg dicon"
-                                        ></i>
+                                        <i v-if="menu.icon_class" :class="menu.icon_class" class="dicon"></i>
+                                        <i v-else class="bi bi-link-45deg dicon"></i>
                                     </span>
                                     {{ menu.mobile_label || menu.label }}
                                 </span>
-                                <span
-                                    v-if="menu.badge_text"
-                                    class="inline-badge"
-                                    :class="`ib-${
-                                        menu.badge_color || 'primary'
-                                    }`"
-                                    >{{ menu.badge_text }}</span
-                                >
+                                <span v-if="menu.badge_text" class="inline-badge" :class="`ib-${menu.badge_color || 'primary'}`">{{ menu.badge_text }}</span>
                             </a>
+
+                            <router-link
+                                v-else
+                                :to="menu.url"
+                                class="drawer-link"
+                                :class="{ 'is-active': isActive(menu.url) }"
+                                :style="{ animationDelay: `${idx * 75 + 120}ms` }"
+                                @click="handleMobileClick(menu.id)"
+                            >
+                                <span class="dtl">
+                                    <span class="dicon-wrap">
+                                        <i v-if="menu.icon_class" :class="menu.icon_class" class="dicon"></i>
+                                        <i v-else class="bi bi-link-45deg dicon"></i>
+                                    </span>
+                                    {{ menu.mobile_label || menu.label }}
+                                </span>
+                                <span v-if="menu.badge_text" class="inline-badge" :class="`ib-${menu.badge_color || 'primary'}`">{{ menu.badge_text }}</span>
+                            </router-link>
                         </template>
                     </nav>
 
                     <!-- Drawer Footer Buttons -->
                     <div class="drawer-footer" v-if="mobileButtons.length">
-                        <a
-                            v-for="menu in mobileButtons"
-                            :key="'mc-' + menu.id"
-                            :href="menu.url"
-                            :target="menu.target || '_self'"
-                            class="drawer-cta"
-                            :class="
-                                menu.type === 'button-primary'
-                                    ? 'dcta-primary'
-                                    : 'dcta-ghost'
-                            "
-                            @click="handleMobileClick(menu.id)"
-                        >
-                            <span
-                                v-if="menu.type === 'button-primary'"
-                                class="dcta-shimmer"
-                            ></span>
-                            <span
-                                v-if="menu.type === 'button-primary'"
-                                class="dcta-glow"
-                            ></span>
-                            <i
-                                v-if="menu.icon_class"
-                                :class="menu.icon_class"
-                            ></i>
-                            <span>{{ menu.mobile_label || menu.label }}</span>
-                            <svg
-                                v-if="menu.type === 'button-primary'"
-                                class="ms-auto"
-                                width="14"
-                                height="14"
-                                viewBox="0 0 14 14"
-                                fill="none"
+                        <template v-for="menu in mobileButtons" :key="'mc-' + menu.id">
+                            <!-- Eksternal -->
+                            <a
+                                v-if="isExternal(menu.url, menu.target)"
+                                :href="menu.url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="drawer-cta"
+                                :class="menu.type === 'button-primary' ? 'dcta-primary' : 'dcta-ghost'"
+                                @click="handleMobileClick(menu.id)"
                             >
-                                <path
-                                    d="M2 7h10M8 3l4 4-4 4"
-                                    stroke="currentColor"
-                                    stroke-width="1.5"
-                                    stroke-linecap="round"
-                                />
-                            </svg>
-                        </a>
+                                <span v-if="menu.type === 'button-primary'" class="dcta-shimmer"></span>
+                                <span v-if="menu.type === 'button-primary'" class="dcta-glow"></span>
+                                <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                                <span>{{ menu.mobile_label || menu.label }}</span>
+                                <svg v-if="menu.type === 'button-primary'" class="ms-auto" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </a>
+
+                            <!-- Internal → router-link -->
+                            <router-link
+                                v-else
+                                :to="menu.url"
+                                class="drawer-cta"
+                                :class="menu.type === 'button-primary' ? 'dcta-primary' : 'dcta-ghost'"
+                                @click="handleMobileClick(menu.id)"
+                            >
+                                <span v-if="menu.type === 'button-primary'" class="dcta-shimmer"></span>
+                                <span v-if="menu.type === 'button-primary'" class="dcta-glow"></span>
+                                <i v-if="menu.icon_class" :class="menu.icon_class"></i>
+                                <span>{{ menu.mobile_label || menu.label }}</span>
+                                <svg v-if="menu.type === 'button-primary'" class="ms-auto" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </router-link>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -588,7 +518,6 @@ const onDragMove = (e: TouchEvent | MouseEvent) => {
     if (!isDragging.value) return;
     const currentY = "touches" in e ? e.touches[0].clientY : e.clientY;
     const delta = currentY - dragStartY;
-    // Only allow dragging down
     dragY.value = delta > 0 ? delta : Math.max(delta * 0.15, -30);
 };
 const onDragEnd = () => {
@@ -596,7 +525,6 @@ const onDragEnd = () => {
     isDragging.value = false;
     const elapsed = Date.now() - dragStartTime;
     const velocity = dragY.value / elapsed;
-    // Close if dragged down > 80px or fast flick
     if (dragY.value > 80 || velocity > 0.5) {
         closeMobileMenu();
     }
@@ -623,64 +551,41 @@ const logoUrl = computed(() => {
     return `${backendUrl}${path}`;
 });
 
+// === HELPER: apakah URL ini eksternal? ===
+// Dianggap eksternal jika: dimulai dengan http(s), atau target="_blank" eksplisit
+const isExternal = (url: string, target?: string): boolean => {
+    if (!url) return false;
+    if (target === "_blank") return true;
+    return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("//");
+};
+
 // === COMPUTED MENUS ===
-// isRoot: handle parent_id bisa null, undefined, atau 0 dari backend
 const isRoot = (m: any) =>
     !m.parent_id || m.parent_id === null || m.parent_id === 0;
 
 const desktopLinks = computed(() =>
     (landingStore.menus ?? [])
-        .filter(
-            (m) =>
-                m.is_active &&
-                isRoot(m) &&
-                m.show_on_desktop !== false &&
-                m.type === "link"
-        )
+        .filter((m) => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "link")
         .sort((a, b) => a.urutan - b.urutan)
 );
 const desktopPrimary = computed(() =>
     (landingStore.menus ?? [])
-        .filter(
-            (m) =>
-                m.is_active &&
-                isRoot(m) &&
-                m.show_on_desktop !== false &&
-                m.type === "button-primary"
-        )
+        .filter((m) => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "button-primary")
         .sort((a, b) => a.urutan - b.urutan)
 );
 const desktopGhost = computed(() =>
     (landingStore.menus ?? [])
-        .filter(
-            (m) =>
-                m.is_active &&
-                isRoot(m) &&
-                m.show_on_desktop !== false &&
-                m.type === "button-outline"
-        )
+        .filter((m) => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "button-outline")
         .sort((a, b) => a.urutan - b.urutan)
 );
 const mobileLinks = computed(() =>
     (landingStore.menus ?? [])
-        .filter(
-            (m) =>
-                m.is_active &&
-                isRoot(m) &&
-                m.show_on_mobile !== false &&
-                m.type === "link"
-        )
+        .filter((m) => m.is_active && isRoot(m) && m.show_on_mobile !== false && m.type === "link")
         .sort((a, b) => a.urutan - b.urutan)
 );
 const mobileButtons = computed(() =>
     (landingStore.menus ?? [])
-        .filter(
-            (m) =>
-                m.is_active &&
-                isRoot(m) &&
-                m.show_on_mobile !== false &&
-                (m.type === "button-primary" || m.type === "button-outline")
-        )
+        .filter((m) => m.is_active && isRoot(m) && m.show_on_mobile !== false && (m.type === "button-primary" || m.type === "button-outline"))
         .sort((a, b) => a.urutan - b.urutan)
 );
 
@@ -761,7 +666,7 @@ onMounted(async () => {
     await landingStore.fetchContent();
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("click", onClickOut);
-    
+
     console.log("ISI DATA CONTENT:", landingStore.content);
 });
 
@@ -835,7 +740,6 @@ onUnmounted(() => {
     transform: translateY(-100%);
 }
 
-/* Noise texture for premium feel */
 .navbar-noise {
     position: absolute;
     inset: 0;
@@ -845,38 +749,25 @@ onUnmounted(() => {
     pointer-events: none;
 }
 
-/* Spotlight effect */
 .navbar-spotlight {
     position: absolute;
     width: 360px;
     height: 140px;
     border-radius: 50%;
-    background: radial-gradient(
-        ellipse,
-        rgba(59, 130, 246, 0.09) 0%,
-        transparent 70%
-    );
+    background: radial-gradient(ellipse, rgba(59, 130, 246, 0.09) 0%, transparent 70%);
     transform: translate(-50%, -50%);
     pointer-events: none;
     transition: opacity 0.4s ease;
     filter: blur(8px);
 }
 
-/* Glowing border at bottom */
 .navbar-glow-border {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        var(--p) 30%,
-        var(--p2) 60%,
-        var(--p3) 80%,
-        transparent 100%
-    );
+    background: linear-gradient(90deg, transparent 0%, var(--p) 30%, var(--p2) 60%, var(--p3) 80%, transparent 100%);
     background-size: 300% 100%;
     opacity: 0;
     transition: opacity 0.5s ease;
@@ -886,12 +777,8 @@ onUnmounted(() => {
     opacity: 0.6;
 }
 @keyframes borderFlow {
-    0% {
-        background-position: 100% 0;
-    }
-    100% {
-        background-position: -100% 0;
-    }
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
 }
 
 .navbar-inner {
@@ -902,7 +789,6 @@ onUnmounted(() => {
     position: relative;
 }
 
-/* Nav-actions: absolute kanan, geser ke kiri dengan right value */
 .nav-actions {
     display: flex;
     align-items: center;
@@ -925,14 +811,8 @@ onUnmounted(() => {
     animation: slideInLeft 0.7s var(--ease-spring) both;
 }
 @keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(-16px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
 .brand-logo-wrap {
@@ -944,32 +824,19 @@ onUnmounted(() => {
     justify-content: center;
 }
 
-/* Soft glow ring behind logo */
 .brand-glow-ring {
     position: absolute;
     inset: -6px;
     border-radius: 50%;
-    background: radial-gradient(
-        circle,
-        rgba(59, 130, 246, 0.18) 0%,
-        transparent 70%
-    );
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, transparent 70%);
     animation: glowPulse 4s ease-in-out infinite;
     pointer-events: none;
 }
 @keyframes glowPulse {
-    0%,
-    100% {
-        opacity: 0.4;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.85;
-        transform: scale(1.12);
-    }
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(1.12); }
 }
 
-/* Float wrapper */
 .brand-float {
     position: relative;
     z-index: 1;
@@ -977,15 +844,9 @@ onUnmounted(() => {
     animation: logoFloat 5s ease-in-out infinite;
 }
 @keyframes logoFloat {
-    0% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-4px);
-    }
-    100% {
-        transform: translateY(0px);
-    }
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+    100% { transform: translateY(0px); }
 }
 
 .brand-img {
@@ -996,18 +857,11 @@ onUnmounted(() => {
     transition: filter 0.4s ease;
 }
 
-/* Hover — pause float, intensify glow */
-.brand:hover .brand-float {
-    animation-play-state: paused;
-}
+.brand:hover .brand-float { animation-play-state: paused; }
 .brand:hover .brand-img {
-    filter: drop-shadow(0 6px 22px rgba(59, 130, 246, 0.55))
-        drop-shadow(0 0 8px rgba(96, 165, 250, 0.3));
+    filter: drop-shadow(0 6px 22px rgba(59, 130, 246, 0.55)) drop-shadow(0 0 8px rgba(96, 165, 250, 0.3));
 }
-.brand:hover .brand-glow-ring {
-    opacity: 0.9;
-    transform: scale(1.12);
-}
+.brand:hover .brand-glow-ring { opacity: 0.9; transform: scale(1.12); }
 
 /* ════════════════════════════════════════
    DESKTOP NAV
@@ -1019,9 +873,7 @@ onUnmounted(() => {
     flex: 1;
     justify-content: center;
 }
-.nav-item {
-    position: relative;
-}
+.nav-item { position: relative; }
 .nav-link {
     display: inline-flex;
     align-items: center;
@@ -1044,17 +896,10 @@ onUnmounted(() => {
     transition: color 0.25s ease, background 0.25s ease;
 }
 @keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Hover: text lift, NO background glow ── */
 .nav-link::before {
     content: "";
     position: absolute;
@@ -1069,148 +914,42 @@ onUnmounted(() => {
     border-radius: 2px 2px 0 0;
 }
 .nav-link:hover::before,
-.nav-link.is-open::before {
-    transform: scaleX(1);
-}
-
-/* ── Underline slot (hidden — replaced by ::before) ── */
-.nav-link::after {
-    display: none;
-}
+.nav-link.is-open::before { transform: scaleX(1); }
+.nav-link::after { display: none; }
 
 .nav-link:hover,
 .nav-link.is-active,
-.nav-link.is-open {
-    color: var(--text);
-}
+.nav-link.is-open { color: var(--text); }
 
-/* Active: left tick marker */
-.nav-link.is-active {
-    color: var(--text);
-    font-weight: 600;
-}
-.nav-link.is-active::before {
-    transform: scaleX(1);
-    background: var(--p3);
-}
-
-/* Press/click scale feedback */
-.nav-link:active {
-    transform: scaleX(0.94) scaleY(0.96);
-    transition: transform 0.08s ease;
-}
+.nav-link.is-active { color: var(--text); font-weight: 600; }
+.nav-link.is-active::before { transform: scaleX(1); background: var(--p3); }
+.nav-link:active { transform: scaleX(0.94) scaleY(0.96); transition: transform 0.08s ease; }
 
 /* ════════════════════════════════════════
-   RIPPLE WAVE — universal click effect
+   CLICK ANIMATIONS
 ════════════════════════════════════════ */
-.nav-link,
-.action-ghost,
-.cta-btn,
-.drop-item,
-.drawer-link,
-.drawer-child,
-.drawer-cta {
+.nav-link, .action-ghost, .cta-btn, .drop-item,
+.drawer-link, .drawer-child, .drawer-cta {
     position: relative;
     overflow: hidden;
 }
 
-.nav-link,
-.action-ghost,
-.cta-btn,
-.drop-item,
-.drawer-link,
-.drawer-child,
-.drawer-cta {
-    position: relative;
-    overflow: hidden;
-}
+.cta-btn:active { transform: translateY(2px) scaleX(0.97); transition: transform 0.08s ease; }
+.action-ghost:active { transform: scale(0.95); transition: transform 0.08s ease; }
+.drop-item:active { transform: translateX(5px) scale(0.98); transition: transform 0.08s ease; }
+.drawer-link:active { transform: translateX(4px) scaleY(0.97); transition: transform 0.08s ease; }
+.drawer-child:active { transform: translateX(6px); transition: transform 0.08s ease; }
+.drawer-cta:active { transform: translateY(2px) scale(0.98); transition: transform 0.08s ease; }
+.nav-hamburger:active { transform: rotate(90deg) scale(0.9); transition: transform 0.12s ease; }
 
-/* ════════════════════════════════════════
-   CLICK ANIMATIONS — no glow, pure motion
-════════════════════════════════════════ */
-
-/* Nav link: squeeze horizontal on click */
-.nav-link:active {
-    transform: scaleX(0.94) scaleY(0.96);
-    transition: transform 0.08s ease;
-}
-
-/* CTA: press down + squish */
-.cta-btn:active {
-    transform: translateY(2px) scaleX(0.97);
-    transition: transform 0.08s ease;
-}
-.cta-btn:active .cta-inner {
-    letter-spacing: -0.01em;
-    transition: letter-spacing 0.08s ease;
-}
-
-/* Ghost button: compress inward */
-.action-ghost:active {
-    transform: scale(0.95);
-    transition: transform 0.08s ease;
-}
-
-/* Dropdown item: snap left then spring back */
-.drop-item:active {
-    transform: translateX(5px) scale(0.98);
-    transition: transform 0.08s ease;
-}
-
-/* Drawer link: indent press */
-.drawer-link:active {
-    transform: translateX(4px) scaleY(0.97);
-    transition: transform 0.08s ease;
-}
-
-/* Drawer child: subtle indent */
-.drawer-child:active {
-    transform: translateX(6px);
-    transition: transform 0.08s ease;
-}
-
-/* Drawer CTA: press down */
-.drawer-cta:active {
-    transform: translateY(2px) scale(0.98);
-    transition: transform 0.08s ease;
-}
-
-/* Hamburger click: full rotate snap */
-.nav-hamburger:active {
-    transform: rotate(90deg) scale(0.9);
-    transition: transform 0.12s ease;
-}
-
-@keyframes rippleExpand {
-    0% {
-        transform: scale(0);
-        opacity: 1;
-    }
-    60% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 0;
-    }
-}
-
-.nav-icon {
-    font-size: 0.8em;
-    opacity: 0.7;
-}
+.nav-icon { font-size: 0.8em; opacity: 0.7; }
 .nav-chevron {
     opacity: 0.5;
     transition: transform 0.3s var(--ease-spring), opacity 0.3s ease;
     margin-left: 1px;
 }
-.nav-chevron.rotated {
-    transform: rotate(180deg);
-    opacity: 0.9;
-}
+.nav-chevron.rotated { transform: rotate(180deg); opacity: 0.9; }
 
-/* Inline badges */
 .inline-badge {
     display: inline-flex;
     align-items: center;
@@ -1222,26 +961,11 @@ onUnmounted(() => {
     letter-spacing: 0.04em;
     line-height: 1.6;
 }
-.ib-primary {
-    background: var(--p-dim);
-    color: #818cf8;
-}
-.ib-success {
-    background: rgba(16, 185, 129, 0.15);
-    color: #34d399;
-}
-.ib-warning {
-    background: rgba(245, 158, 11, 0.15);
-    color: #fbbf24;
-}
-.ib-danger {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-}
-.ib-info {
-    background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
-}
+.ib-primary { background: var(--p-dim); color: #818cf8; }
+.ib-success { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.ib-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.ib-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.ib-info { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
 
 /* ════════════════════════════════════════
    DROPDOWN PANEL
@@ -1270,11 +994,7 @@ onUnmounted(() => {
     transform: translateX(-50%);
     width: 200px;
     height: 80px;
-    background: radial-gradient(
-        ellipse,
-        rgba(99, 102, 241, 0.2) 0%,
-        transparent 70%
-    );
+    background: radial-gradient(ellipse, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
     pointer-events: none;
 }
 .drop-arrow {
@@ -1290,10 +1010,7 @@ onUnmounted(() => {
     transform: rotate(45deg);
     z-index: 1;
 }
-.drop-items {
-    position: relative;
-    z-index: 2;
-}
+.drop-items { position: relative; z-index: 2; }
 .drop-item {
     display: flex;
     align-items: center;
@@ -1309,24 +1026,10 @@ onUnmounted(() => {
     transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 @keyframes dropIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-.drop-item:hover {
-    background: transparent;
-    color: var(--text);
-    transform: translateX(4px);
-}
-.drop-item:active {
-    transform: translateX(5px) scale(0.98);
-    transition: transform 0.08s ease;
-}
+.drop-item:hover { background: transparent; color: var(--text); transform: translateX(4px); }
 .drop-item-arrow {
     color: var(--p);
     opacity: 0;
@@ -1335,10 +1038,7 @@ onUnmounted(() => {
     margin-left: auto;
     flex-shrink: 0;
 }
-.drop-item:hover .drop-item-arrow {
-    opacity: 1;
-    transform: translateX(0);
-}
+.drop-item:hover .drop-item-arrow { opacity: 1; transform: translateX(0); }
 
 .drop-icon {
     width: 34px;
@@ -1352,8 +1052,7 @@ onUnmounted(() => {
     border-radius: 9px;
     font-size: 1rem;
     color: var(--p);
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
-        transform 0.25s var(--ease-spring);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.25s var(--ease-spring);
 }
 .drop-item:hover .drop-icon {
     background: var(--p);
@@ -1361,69 +1060,22 @@ onUnmounted(() => {
     border-color: transparent;
     transform: scale(1.08) rotate(-5deg);
 }
-.drop-body {
-    flex: 1;
-    min-width: 0;
-}
-.drop-label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.3;
-}
-.drop-desc {
-    display: block;
-    font-size: 0.72rem;
-    color: var(--muted2);
-    margin-top: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.drop-badge {
-    padding: 2px 7px;
-    font-size: 0.6rem;
-    font-weight: 700;
-    border-radius: 20px;
-    text-transform: uppercase;
-    flex-shrink: 0;
-}
-.db-primary {
-    background: var(--p-dim);
-    color: #818cf8;
-}
-.db-success {
-    background: rgba(16, 185, 129, 0.15);
-    color: #34d399;
-}
-.db-warning {
-    background: rgba(245, 158, 11, 0.15);
-    color: #fbbf24;
-}
-.db-danger {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-}
+.drop-body { flex: 1; min-width: 0; }
+.drop-label { display: block; font-size: 0.875rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+.drop-desc { display: block; font-size: 0.72rem; color: var(--muted2); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.drop-badge { padding: 2px 7px; font-size: 0.6rem; font-weight: 700; border-radius: 20px; text-transform: uppercase; flex-shrink: 0; }
+.db-primary { background: var(--p-dim); color: #818cf8; }
+.db-success { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+.db-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.db-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; }
 
-/* Dropdown transition */
-.drop-enter-active {
-    transition: opacity 0.2s ease, transform 0.25s var(--ease-spring);
-}
-.drop-leave-active {
-    transition: opacity 0.15s ease, transform 0.15s ease;
-}
-.drop-enter-from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-10px) scale(0.95);
-}
-.drop-leave-to {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-6px) scale(0.97);
-}
+.drop-enter-active { transition: opacity 0.2s ease, transform 0.25s var(--ease-spring); }
+.drop-leave-active { transition: opacity 0.15s ease, transform 0.15s ease; }
+.drop-enter-from { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(0.95); }
+.drop-leave-to { opacity: 0; transform: translateX(-50%) translateY(-6px) scale(0.97); }
 
 /* ════════════════════════════════════════
-   ACTION BUTTONS (GHOST & CTA)
+   ACTION BUTTONS
 ════════════════════════════════════════ */
 .action-ghost {
     display: inline-flex;
@@ -1438,26 +1090,11 @@ onUnmounted(() => {
     border-radius: 50px;
     background: transparent;
     cursor: pointer;
-    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease,
-        transform 0.2s ease;
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
     animation: fadeInDown 0.6s var(--ease-spring) 0.4s both;
 }
-.action-ghost:hover {
-    color: var(--text);
-    border-color: rgba(255, 255, 255, 0.25);
-    background: transparent;
-    transform: translateY(-1px);
-    letter-spacing: 0.03em;
-}
-.action-ghost:active {
-    transform: translateY(0) scale(0.97);
-    transition: transform 0.1s ease;
-}
+.action-ghost:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.25); background: transparent; transform: translateY(-1px); letter-spacing: 0.03em; }
 
-/* CTA Button — the showstopper */
-/* ════════════════════════════════════════
-   CTA BUTTON — Liquid Fill Outline
-════════════════════════════════════════ */
 .cta-btn {
     position: relative;
     display: inline-flex;
@@ -1477,17 +1114,9 @@ onUnmounted(() => {
     animation: fadeInDown 0.7s var(--ease-smooth) 0.5s both;
     transition: color 0.35s ease, border-color 0.35s ease, transform 0.2s ease;
 }
-.cta-btn:hover {
-    color: #fff;
-    border-color: #3b82f6;
-    transform: translateY(-1px);
-}
-.cta-btn:active {
-    transform: translateY(1px);
-    transition: transform 0.08s ease;
-}
+.cta-btn:hover { color: #fff; border-color: #3b82f6; transform: translateY(-1px); }
+.cta-btn:active { transform: translateY(1px); transition: transform 0.08s ease; }
 
-/* Liquid fill — rises from bottom on hover */
 .cta-fill {
     position: absolute;
     inset: 0;
@@ -1497,42 +1126,18 @@ onUnmounted(() => {
     transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
     z-index: 0;
 }
-.cta-btn:hover .cta-fill {
-    transform: translateY(0);
-}
-.cta-btn:active .cta-fill {
-    background: #1e40af;
-}
-
-/* Text sits above fill */
-.cta-text {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+.cta-btn:hover .cta-fill { transform: translateY(0); }
+.cta-btn:active .cta-fill { background: #1e40af; }
+.cta-text { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; }
 
 /* ════════════════════════════════════════
    HAMBURGER
 ════════════════════════════════════════ */
-/* Hide hamburger on desktop, show on mobile/tablet */
-.nav-hamburger {
-    display: none;
-}
+.nav-hamburger { display: none; }
 @media (max-width: 991.98px) {
-    .nav-hamburger {
-        display: flex;
-    }
-    /* Hide desktop nav on non-desktop */
-    .desktop-nav {
-        display: none !important;
-    }
-    /* Hide desktop-only buttons on non-desktop */
-    .action-ghost,
-    .cta-btn {
-        display: none !important;
-    }
+    .nav-hamburger { display: flex; }
+    .desktop-nav { display: none !important; }
+    .action-ghost, .cta-btn { display: none !important; }
 }
 
 .hamburger {
@@ -1549,32 +1154,19 @@ onUnmounted(() => {
     padding: 0;
     transition: background 0.25s ease, border-color 0.25s ease;
 }
-.hamburger:hover {
-    background: var(--p-dim);
-    border-color: var(--p-ring);
-}
+.hamburger:hover { background: var(--p-dim); border-color: var(--p-ring); }
 .ham-bar {
     display: block;
     width: 18px;
     height: 1.5px;
     background: var(--muted);
     border-radius: 2px;
-    transition: transform 0.35s var(--ease-spring), opacity 0.25s ease,
-        width 0.25s ease;
+    transition: transform 0.35s var(--ease-spring), opacity 0.25s ease, width 0.25s ease;
 }
-.hamburger:hover .ham-bar {
-    background: var(--text);
-}
-.hamburger.is-open .ham-bar:nth-child(1) {
-    transform: translateY(6.5px) rotate(45deg);
-}
-.hamburger.is-open .ham-bar:nth-child(2) {
-    opacity: 0;
-    width: 0;
-}
-.hamburger.is-open .ham-bar:nth-child(3) {
-    transform: translateY(-6.5px) rotate(-45deg);
-}
+.hamburger:hover .ham-bar { background: var(--text); }
+.hamburger.is-open .ham-bar:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.is-open .ham-bar:nth-child(2) { opacity: 0; width: 0; }
+.hamburger.is-open .ham-bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 /* ════════════════════════════════════════
    MOBILE OVERLAY
@@ -1586,26 +1178,14 @@ onUnmounted(() => {
     backdrop-filter: blur(3px);
     z-index: 940;
 }
-.overlay-fade-enter-active {
-    transition: opacity 0.3s ease;
-}
-.overlay-fade-leave-active {
-    transition: opacity 0.22s ease;
-}
-.overlay-fade-enter-from,
-.overlay-fade-leave-to {
-    opacity: 0;
-}
+.overlay-fade-enter-active { transition: opacity 0.3s ease; }
+.overlay-fade-leave-active { transition: opacity 0.22s ease; }
+.overlay-fade-enter-from, .overlay-fade-leave-to { opacity: 0; }
 
 /* ════════════════════════════════════════
-   MOBILE DRAWER — Slide from BOTTOM
+   MOBILE DRAWER
 ════════════════════════════════════════ */
-.mobile-drawer {
-    position: fixed;
-    inset: 0;
-    z-index: 950;
-    pointer-events: none;
-}
+.mobile-drawer { position: fixed; inset: 0; z-index: 950; pointer-events: none; }
 .drawer-panel {
     position: absolute;
     bottom: 0;
@@ -1623,7 +1203,6 @@ onUnmounted(() => {
     will-change: transform;
 }
 
-/* Drag handle area */
 .drawer-handle {
     display: flex;
     align-items: center;
@@ -1634,9 +1213,7 @@ onUnmounted(() => {
     user-select: none;
     -webkit-user-select: none;
 }
-.drawer-handle:active {
-    cursor: grabbing;
-}
+.drawer-handle:active { cursor: grabbing; }
 .drawer-pill {
     width: 40px;
     height: 4px;
@@ -1644,10 +1221,7 @@ onUnmounted(() => {
     background: rgba(255, 255, 255, 0.18);
     transition: background 0.2s ease, width 0.2s ease;
 }
-.drawer-handle:hover .drawer-pill {
-    background: rgba(255, 255, 255, 0.32);
-    width: 52px;
-}
+.drawer-handle:hover .drawer-pill { background: rgba(255, 255, 255, 0.32); width: 52px; }
 
 .drawer-noise {
     position: absolute;
@@ -1657,11 +1231,8 @@ onUnmounted(() => {
     background-size: 128px;
     pointer-events: none;
 }
-.drawer-glow {
-    display: none;
-}
+.drawer-glow { display: none; }
 
-/* Header */
 .drawer-header {
     display: flex;
     align-items: center;
@@ -1673,8 +1244,6 @@ onUnmounted(() => {
     z-index: 1;
     gap: 12px;
 }
-
-/* Override absolute brand positioning inside drawer */
 .drawer-header .brand {
     position: static !important;
     left: auto !important;
@@ -1696,14 +1265,8 @@ onUnmounted(() => {
     padding: 0;
     transition: background 0.2s, color 0.2s, transform 0.25s;
 }
-.drawer-close:hover {
-    background: rgba(239, 68, 68, 0.12);
-    border-color: rgba(239, 68, 68, 0.25);
-    color: #f87171;
-    transform: rotate(90deg);
-}
+.drawer-close:hover { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.25); color: #f87171; transform: rotate(90deg); }
 
-/* Nav list */
 .drawer-nav {
     flex: 1;
     overflow-y: auto;
@@ -1712,11 +1275,8 @@ onUnmounted(() => {
     position: relative;
     z-index: 1;
 }
-.drawer-nav::-webkit-scrollbar {
-    display: none;
-}
+.drawer-nav::-webkit-scrollbar { display: none; }
 
-/* Menu items */
 .drawer-link {
     display: flex;
     align-items: center;
@@ -1735,66 +1295,23 @@ onUnmounted(() => {
     opacity: 0;
     letter-spacing: 0.01em;
     animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-    transition: color 0.18s ease, background 0.18s ease,
-        padding-left 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: color 0.18s ease, background 0.18s ease, padding-left 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 @keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(18px);
-        filter: blur(4px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-    }
+    from { opacity: 0; transform: translateY(18px); filter: blur(4px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 .drawer-link:hover,
-.drawer-link.is-open {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.03);
-    padding-left: 30px;
-}
-.drawer-link:active {
-    background: rgba(255, 255, 255, 0.06);
-}
-.drawer-link.is-active {
-    color: #fff;
-    font-weight: 600;
-    padding-left: 26px;
-    border-left: 3px solid var(--p3);
-    background: rgba(59, 130, 246, 0.05);
-}
+.drawer-link.is-open { color: #fff; background: rgba(255, 255, 255, 0.03); padding-left: 30px; }
+.drawer-link.is-active { color: #fff; font-weight: 600; padding-left: 26px; border-left: 3px solid var(--p3); background: rgba(59, 130, 246, 0.05); }
 
-.dtl {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.dicon-wrap {
-    display: none;
-}
-.dicon {
-    font-size: 0.85rem;
-    color: var(--p);
-}
-.dchev {
-    color: rgba(255, 255, 255, 0.25);
-    transition: transform 0.3s var(--ease-spring);
-    flex-shrink: 0;
-}
-.dchev.rotated {
-    transform: rotate(180deg);
-    color: var(--p3);
-}
+.dtl { display: flex; align-items: center; gap: 10px; }
+.dicon-wrap { display: none; }
+.dicon { font-size: 0.85rem; color: var(--p); }
+.dchev { color: rgba(255, 255, 255, 0.25); transition: transform 0.3s var(--ease-spring); flex-shrink: 0; }
+.dchev.rotated { transform: rotate(180deg); color: var(--p3); }
 
-/* Children */
-.drawer-children {
-    background: rgba(0, 0, 0, 0.18);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    overflow: hidden;
-}
+.drawer-children { background: rgba(0, 0, 0, 0.18); border-bottom: 1px solid rgba(255, 255, 255, 0.04); overflow: hidden; }
 .drawer-child {
     display: flex;
     align-items: center;
@@ -1806,45 +1323,17 @@ onUnmounted(() => {
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     transition: color 0.18s ease, padding-left 0.18s ease;
 }
-.drawer-child:last-child {
-    border-bottom: none;
-}
-.drawer-child:hover {
-    color: #fff;
-    padding-left: 42px;
-}
-.drawer-child:active {
-    background: rgba(255, 255, 255, 0.04);
-}
-.child-dot-wrap {
-    display: none;
-}
-.child-dot {
-    font-size: 0.95rem;
-    color: var(--p);
-    transition: transform 0.2s ease;
-}
-.drawer-child:hover .child-dot {
-    transform: translateX(3px);
-}
+.drawer-child:last-child { border-bottom: none; }
+.drawer-child:hover { color: #fff; padding-left: 42px; }
+.child-dot-wrap { display: none; }
+.child-dot { font-size: 0.95rem; color: var(--p); transition: transform 0.2s ease; }
+.drawer-child:hover .child-dot { transform: translateX(3px); }
 
-/* Slide down */
-.slide-down-enter-active {
-    transition: all 0.28s var(--ease-spring);
-}
-.slide-down-leave-active {
-    transition: all 0.18s ease;
-}
-.slide-down-enter-from {
-    opacity: 0;
-    transform: translateY(-8px);
-}
-.slide-down-leave-to {
-    opacity: 0;
-    transform: translateY(-4px);
-}
+.slide-down-enter-active { transition: all 0.28s var(--ease-spring); }
+.slide-down-leave-active { transition: all 0.18s ease; }
+.slide-down-enter-from { opacity: 0; transform: translateY(-8px); }
+.slide-down-leave-to { opacity: 0; transform: translateY(-4px); }
 
-/* Footer CTA */
 .drawer-footer {
     padding: 16px 20px 24px;
     display: flex;
@@ -1872,64 +1361,23 @@ onUnmounted(() => {
     transition: transform 0.18s ease, opacity 0.18s ease;
     letter-spacing: 0.01em;
 }
-.drawer-cta:active {
-    transform: scale(0.97);
-    transition: transform 0.08s ease;
-}
+.dcta-primary { background: #ffffff; color: #0a0a0f; border: none; box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35); }
+.dcta-primary:hover { background: #eef2ff; }
+.dcta-ghost { background: transparent; border: 1px solid rgba(255, 255, 255, 0.14); color: var(--text); }
+.dcta-ghost:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.24); }
 
-/* Primary = white solid */
-.dcta-primary {
-    background: #ffffff;
-    color: #0a0a0f;
-    border: none;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
-}
-.dcta-primary:hover {
-    background: #eef2ff;
-}
+.brand-logo-wrap-sm { width: 40px; height: 40px; }
+.dcta-shimmer { display: none; }
+.dcta-glow { display: none; }
 
-/* Ghost = outline */
-.dcta-ghost {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    color: var(--text);
-}
-.dcta-ghost:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.24);
-}
-
-.brand-logo-wrap-sm {
-    width: 40px;
-    height: 40px;
-}
-.dcta-shimmer {
-    display: none;
-}
-.dcta-glow {
-    display: none;
-}
-
-/* Drawer transition — slides from BOTTOM */
-.drawer-enter-active {
-    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.drawer-leave-active {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 1, 1);
-}
-.drawer-enter-from .drawer-panel {
-    transform: translateY(100%);
-}
-.drawer-leave-to .drawer-panel {
-    transform: translateY(100%);
-}
-.drawer-enter-from,
-.drawer-leave-to {
-    pointer-events: none;
-}
+.drawer-enter-active { transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1); }
+.drawer-leave-active { transition: transform 0.3s cubic-bezier(0.4, 0, 1, 1); }
+.drawer-enter-from .drawer-panel { transform: translateY(100%); }
+.drawer-leave-to .drawer-panel { transform: translateY(100%); }
+.drawer-enter-from, .drawer-leave-to { pointer-events: none; }
 
 /* ════════════════════════════════════════
-   LIGHT MODE OVERRIDES (Warna Terang)
+   LIGHT MODE OVERRIDES
 ════════════════════════════════════════ */
 [data-bs-theme="light"] .navbar-wrapper,
 [data-theme="light"] .navbar-wrapper {
@@ -1941,32 +1389,14 @@ onUnmounted(() => {
     --muted: #475569;
     --muted2: #94a3b8;
 }
-
-[data-bs-theme="light"] .drop-panel {
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
-}
-
-[data-bs-theme="light"] .drop-arrow {
-    background: rgba(255, 255, 255, 0.98);
-    border-top-color: rgba(0, 0, 0, 0.1);
-    border-left-color: rgba(0, 0, 0, 0.1);
-}
-
-[data-bs-theme="light"] .drawer-panel {
-    background: #ffffff;
-    border-top-color: rgba(0, 0, 0, 0.1);
-}
-
+[data-bs-theme="light"] .drop-panel { background: rgba(255, 255, 255, 0.98); border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1); }
+[data-bs-theme="light"] .drop-arrow { background: rgba(255, 255, 255, 0.98); border-top-color: rgba(0, 0, 0, 0.1); border-left-color: rgba(0, 0, 0, 0.1); }
+[data-bs-theme="light"] .drawer-panel { background: #ffffff; border-top-color: rgba(0, 0, 0, 0.1); }
 [data-bs-theme="light"] .drawer-header,
 [data-bs-theme="light"] .drawer-link,
 [data-bs-theme="light"] .drawer-children,
 [data-bs-theme="light"] .drawer-child,
-[data-bs-theme="light"] .drawer-footer {
-    border-color: rgba(0, 0, 0, 0.06);
-}
-
+[data-bs-theme="light"] .drawer-footer { border-color: rgba(0, 0, 0, 0.06); }
 [data-bs-theme="light"] .drawer-link { color: #475569; }
 [data-bs-theme="light"] .drawer-link:hover,
 [data-bs-theme="light"] .drawer-link.is-open { color: #0f172a; background: rgba(0, 0, 0, 0.03); }
@@ -1975,7 +1405,7 @@ onUnmounted(() => {
 [data-bs-theme="light"] .drawer-children { background: rgba(0, 0, 0, 0.02); }
 [data-bs-theme="light"] .drawer-close { background: rgba(0, 0, 0, 0.05); border-color: rgba(0, 0, 0, 0.08); }
 [data-bs-theme="light"] .drawer-handle .drawer-pill { background: rgba(0, 0, 0, 0.15); }
-[data-bs-theme="light"] .dcta-ghost, 
+[data-bs-theme="light"] .dcta-ghost,
 [data-bs-theme="light"] .action-ghost { border-color: rgba(0, 0, 0, 0.2); color: var(--text); }
 [data-bs-theme="light"] .dcta-ghost:hover,
 [data-bs-theme="light"] .action-ghost:hover { background: rgba(0, 0, 0, 0.05); }
