@@ -29,7 +29,11 @@ const routes: Array<RouteRecordRaw> = [
             pageTitle: "Selamat Datang",
         },
     },
-
+    {
+        path: '/about',
+        name: 'About',
+        component: () => import('@/pages/landing/About.vue') 
+    },
     // =================================================================
     // 1. PROJECTS (Public / Halaman Depan)
     // =================================================================
