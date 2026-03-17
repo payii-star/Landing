@@ -137,12 +137,7 @@ onMounted(() => {
 
 <style scoped>
 .projects-section {
-  background: linear-gradient(
-    180deg,
-    var(--navy-darkest) 0%,
-    var(--navy-dark) 50%,
-    var(--navy-medium) 100%
-  );
+  background: transparent;
 
   padding-bottom: 120px;
   position: relative;
