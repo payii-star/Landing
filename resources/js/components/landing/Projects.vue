@@ -143,6 +143,10 @@ onMounted(() => {
     var(--navy-dark) 50%,
     var(--navy-medium) 100%
   );
+
+  padding-bottom: 120px;
+  position: relative;
+  z-index: 1;
 }
 
 /* header */
