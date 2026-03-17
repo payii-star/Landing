@@ -15,10 +15,12 @@
 
           <!-- IMAGE -->
           <div class="col-lg-6">
-            <img
-              :src="project.image"
-              class="featured-image"
-            />
+            <div class="featured-image-wrapper">
+              <img
+                :src="getImageUrl(project.image)"
+                class="featured-image"
+              />
+            </div>
           </div>
 
           <!-- TEXT -->
@@ -62,7 +64,7 @@
 
               <img
                 v-if="project.image"
-                :src="project.image"
+                :src="getImageUrl(project.image)"
                 class="project-image"
                 alt="project image"
               />
@@ -119,6 +121,12 @@ const featuredProjects = computed(() => {
 const gridProjects = computed(() => {
   return projectStore.projects.slice(3)
 })
+
+const getImageUrl = (path) => {
+  if (!path) return ''
+
+  return `http://localhost:8000${path}`
+}
 
 onMounted(() => {
   if (projectStore.projects.length === 0) {
@@ -251,10 +259,30 @@ onMounted(() => {
 .featured-image {
   width: 100%;
   border-radius: 16px;
-  object-fit: cover;
+  object-fit: contain;
+  height: 100%;
 
   box-shadow: 0 20px 50px rgba(0,0,0,0.35);
   transition: transform .35s ease;
+}
+
+.featured-image-wrapper {
+  aspect-ratio: 16 / 9;
+  background: #07070f;
+  border-radius: 14px;
+  padding: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.featured-image-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
 }
 
 .featured-image:hover {
