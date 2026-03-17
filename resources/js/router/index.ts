@@ -30,13 +30,10 @@ const routes: Array<RouteRecordRaw> = [
         },
     },
     {
-        path: '/about',
-        name: 'About',
-        component: () => import('@/pages/landing/About.vue') 
+        path: "/about",
+        name: "About",
+        component: () => import("@/pages/landing/About.vue"),
     },
-    // =================================================================
-    // 1. PROJECTS (Public / Halaman Depan)
-    // =================================================================
     {
         path: "/projects",
         name: "projects",
@@ -45,19 +42,27 @@ const routes: Array<RouteRecordRaw> = [
             pageTitle: "Our Projects",
         },
     },
+    {
+        path: "/services",
+        name: "services",
+        component: () => import("@/pages/landing/Services.vue"),
+        meta: {
+            pageTitle: "Layanan Kami",
+        },
+    },
 
     // =================================================================
     // 2. DASHBOARD (Protected / Wajib Login)
     // =================================================================
     {
-        path: "/dashboard", // Ubah root dashboard ke /dashboard
+        path: "/dashboard",
         component: () => import("@/layouts/default-layout/DefaultLayout.vue"),
         meta: {
-            middleware: "auth", 
+            middleware: "auth",
         },
         children: [
             {
-                path: "", 
+                path: "",
                 name: "dashboard",
                 component: () => import("@/pages/dashboard/Index.vue"),
                 meta: {
@@ -75,7 +80,7 @@ const routes: Array<RouteRecordRaw> = [
                 },
             },
             {
-                path: "setting", 
+                path: "setting",
                 name: "dashboard.setting",
                 component: () => import("@/pages/dashboard/setting/Index.vue"),
                 meta: {
@@ -86,7 +91,7 @@ const routes: Array<RouteRecordRaw> = [
 
             // MASTER DATA
             {
-                path: "master/users/roles", 
+                path: "master/users/roles",
                 name: "dashboard.master.users.roles",
                 component: () =>
                     import("@/pages/dashboard/master/users/roles/Index.vue"),
@@ -96,7 +101,7 @@ const routes: Array<RouteRecordRaw> = [
                 },
             },
             {
-                path: "master/users", 
+                path: "master/users",
                 name: "dashboard.master.users",
                 component: () =>
                     import("@/pages/dashboard/master/users/Index.vue"),
@@ -116,12 +121,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/layouts/AuthLayout.vue"),
         children: [
             {
-                path: "sign-in", // Menjadi: /sign-in
+                path: "sign-in",
                 name: "sign-in",
                 component: () => import("@/pages/auth/sign-in/Index.vue"),
                 meta: {
                     pageTitle: "Sign In",
-                    middleware: "guest", // Hanya bisa diakses jika BELUM login
+                    middleware: "guest",
                 },
             },
         ],
@@ -217,7 +222,6 @@ router.beforeEach(async (to, from, next) => {
             next({ name: "sign-in" });
         }
     } else if (to.meta.middleware == "guest" && authStore.isAuthenticated) {
-        // Jika sudah login tapi akses halaman guest (login), lempar ke dashboard
         next({ name: "dashboard" });
     } else {
         next();
