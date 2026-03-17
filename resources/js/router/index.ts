@@ -46,6 +46,15 @@ const routes: Array<RouteRecordRaw> = [
         },
     },
 
+    {
+        path: '/contact',
+        name: 'contact',
+        component: () => import('@/pages/landing/ContactPage.vue'),
+        meta: { 
+            pageTitle: 'Contact'
+        },
+    },
+
     // =================================================================
     // 2. DASHBOARD (Protected / Wajib Login)
     // =================================================================
