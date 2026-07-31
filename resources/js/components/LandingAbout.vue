@@ -72,27 +72,30 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { mockAbout } from '@/mocks/landingMock';
 
-const aboutData = ref({
-  title: 'Tentang Kami',
-  subtitle: 'Kami Profesional Software Developer Menyediakan Solusi Untuk Kebutuhan Anda.',
-  description: 'CV. MCFLYON TEKNOLOGI INDONESIA adalah Software Developer yang termotivasi untuk memberikan solusi dalam setiap masalah maupun bisnis.\n\nMemiliki tim dengan SDM yang unggul dan berkualitas dapat menjawab setiap permasalahan yang ada, hingga membantu mengembangkan bisnis Anda meningkat pesat.',
-  image: null,
-});
+// Nilai awal sekarang diambil dari mockAbout (landingMock.ts), bukan hardcode
+// di sini lagi — isinya PERSIS sama seperti sebelumnya, cuma dipindah sumbernya.
+const aboutData = ref({ ...mockAbout });
 
-const features = [
-  'Tim berpengalaman & profesional',
-  'Solusi teknologi berbasis kebutuhan bisnis',
-  'Support & maintenance jangka panjang',
-  'Desain modern & performa optimal',
-];
+// features tetap statis (bukan dari backend), tapi sumbernya sekarang
+// dari mockAbout supaya satu tempat rujukan dengan bagian About lainnya.
+const features = mockAbout.features;
+
+// Sama seperti pola di stores/landing.ts — bisa dimatikan lewat .env kalau perlu
+const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
 const fetchAboutData = async () => {
   try {
     const response = await axios.get('/front/landing-about');
     if (response.data.data) aboutData.value = response.data.data;
   } catch (error) {
-    console.error('Gagal memuat data About:', error);
+    console.error('❌ Gagal memuat data About:', error);
+
+    if (USE_MOCK_FALLBACK) {
+      console.warn('⚠️ Pakai mockAbout — backend belum tersedia. JANGAN lupa dicabut sebelum production.');
+      aboutData.value = { ...mockAbout };
+    }
   }
 };
 
@@ -342,4 +345,4 @@ onMounted(() => fetchAboutData());
   .about-section { padding: 80px 16px 90px; }
   .about-title { font-size: 1.6rem; }
 }
-</style>    
+</style>

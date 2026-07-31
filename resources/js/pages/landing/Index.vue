@@ -1,6 +1,6 @@
 <template>
     <div class="landing-wrapper">
-        
+
         <ParticleBackground />
 
         <!-- Global ambient orbs — konsisten di seluruh halaman -->
@@ -12,20 +12,19 @@
         <div class="g-orb g-orb-6"></div>
         <div class="g-orb g-orb-7"></div>
         <div class="g-orb g-orb-8"></div>
-        
+
         <LandingNavbar />
-        
+
         <LandingHero />
-        <LandingServices />
         <LandingBestProject />
         <LandingTestimonials />
-        <LandingClientLogos />  
+        <LandingClientLogos />
         <LandingCta />
         <LandingFooter/>
 
   </div>
 </template>
-    
+
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useLandingStore } from "@/stores/landing";
@@ -36,7 +35,6 @@ import LandingHero from "@/components/LandingHero.vue";
 import LandingClientLogos from "@/components/LandingClientLogos.vue";
 import LandingFooter from "@/components/LandingFooter.vue";
 import ParticleBackground from "@/components/ParticleBackground.vue";
-import LandingServices from "@/components/LandingServices.vue";
 import LandingTestimonials from "@/components/LandingTestimonials.vue";
 import LandingBestProject from "@/components/LandingBestProject.vue";
 import LandingCta from '@/components/LandingCta.vue';
@@ -47,7 +45,7 @@ onMounted(async () => {
     try {
         await landingStore.fetchContent();
         await landingStore.fetchMenu();
-        
+
     } catch (error) {
         console.error("Error mounting landing page:", error);
     }

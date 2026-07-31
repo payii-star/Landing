@@ -13,44 +13,66 @@
         <p class="section-subtitle">Fitur unggulan yang dirancang khusus untuk mempercepat dan mempermudah alur kerja bisnis Anda setiap harinya.</p>
       </div>
 
-      <!-- Grid 2 kolom -->
+      <!-- Grid -->
       <div class="services-grid">
         <div
-          v-for="(service, index) in services"
+          v-for="service in services"
           :key="service.id"
           class="service-card"
-          :style="{ '--delay': `${index * 0.08}s`, '--accent': accentColors[index % accentColors.length] }"
-          @mousemove="onMouseMove"
-          @mouseleave="onMouseLeave"
         >
-          <!-- Top row: icon kiri + nomor/stat kanan -->
-          <div class="card-top-row">
-            <div class="icon-wrapper">
-              <img
-                v-if="service.icon"
-                :src="getImageUrl(service.icon)"
-                :alt="service.title"
-                class="service-icon"
-              />
-              <div v-else class="default-icon">✨</div>
-            </div>
-            <div class="card-stat">
-              <span class="stat-num">{{ String(index + 1).padStart(2, '0') }}</span>
-              <span class="stat-label">LAYANAN</span>
-            </div>
+          <!-- Icon -->
+          <div class="icon-wrapper">
+            <img
+              v-if="service.icon"
+              :src="getImageUrl(service.icon)"
+              :alt="service.title"
+              class="service-icon"
+            />
+
+            <svg v-else-if="getIconType(service.title) === 'consult'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+            </svg>
+
+            <svg v-else-if="getIconType(service.title) === 'web'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
+            </svg>
+
+            <svg v-else-if="getIconType(service.title) === 'mobile'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="7" y="2" width="10" height="20" rx="2" />
+              <line x1="11" y1="18" x2="13" y2="18" />
+            </svg>
+
+            <svg v-else-if="getIconType(service.title) === 'software'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2" />
+              <polyline points="2 17 12 22 22 17" />
+              <polyline points="2 12 12 17 22 12" />
+            </svg>
+
+            <svg v-else-if="getIconType(service.title) === 'network'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="5" cy="6" r="2.5" />
+              <circle cx="19" cy="6" r="2.5" />
+              <circle cx="12" cy="18" r="2.5" />
+              <line x1="7" y1="7.5" x2="10.3" y2="16" />
+              <line x1="17" y1="7.5" x2="13.7" y2="16" />
+            </svg>
+
+            <svg v-else-if="getIconType(service.title) === 'api'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
+
+            <svg v-else class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="3" />
+              <path d="M8 12h8M12 8v8" />
+            </svg>
           </div>
 
-          <!-- Bottom: judul + deskripsi -->
+          <!-- Judul + deskripsi -->
           <div class="card-body">
             <h3 class="card-title">{{ service.title }}</h3>
             <p class="card-desc">{{ service.description }}</p>
           </div>
-
-          <!-- Sweep line -->
-          <div class="card-sweep"></div>
-
-          <!-- Featured bottom border -->
-          <div class="card-bottom-line"></div>
         </div>
       </div>
 
@@ -61,28 +83,28 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { mockServices } from '@/mocks/landingMock';
 
-const services = ref([]);
+// Diisi mockServices dari awal (bukan array kosong) supaya section langsung
+// kelihatan lengkap saat halaman dibuka, tidak nunggu fetch selesai dulu.
+// Kalau backend berhasil, isinya akan ditimpa data asli di fetchServices().
+const services = ref([...mockServices]);
 
-const accentColors = [
-  'rgba(59,130,246,0.9)',
-  'rgba(239,68,68,0.9)',
-  'rgba(34,197,94,0.9)',
-  'rgba(245,158,11,0.9)',
-  'rgba(168,85,247,0.9)',
-  'rgba(20,184,166,0.9)',
-];
+// Sama seperti pola di stores/landing.ts — bisa dimatikan lewat .env kalau perlu
+const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
-const onMouseMove = (e) => {
-  const card = e.currentTarget;
-  const rect = card.getBoundingClientRect();
-  card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
-  card.style.setProperty('--my', `${e.clientY - rect.top}px`);
-};
-const onMouseLeave = (e) => {
-  const card = e.currentTarget;
-  card.style.setProperty('--mx', '-100px');
-  card.style.setProperty('--my', '-100px');
+// Icon fallback dipilih berdasarkan kata kunci di judul layanan —
+// jadi kalau backend belum kirim field icon, tetap tampil icon yang relevan
+// (bukan kotak generik yang sama untuk semua card).
+const getIconType = (title = '') => {
+  const t = title.toLowerCase();
+  if (t.includes('konsultasi')) return 'consult';
+  if (t.includes('web')) return 'web';
+  if (t.includes('mobile') || t.includes('aplikasi')) return 'mobile';
+  if (t.includes('network') || t.includes('jaringan')) return 'network';
+  if (t.includes('api') || t.includes('integrasi')) return 'api';
+  if (t.includes('software') || t.includes('engineering') || t.includes('analysis')) return 'software';
+  return 'default';
 };
 
 const getImageUrl = (path) => {
@@ -101,7 +123,12 @@ const fetchServices = async () => {
     const response = await axios.get('/front/services');
     services.value = response.data;
   } catch (error) {
-    console.error('Gagal memuat layanan:', error);
+    console.error('❌ Gagal memuat layanan:', error);
+
+    if (USE_MOCK_FALLBACK) {
+      console.warn('⚠️ Pakai mockServices — backend belum tersedia. JANGAN lupa dicabut sebelum production.');
+      services.value = [...mockServices];
+    }
   }
 };
 
@@ -130,12 +157,12 @@ onMounted(() => fetchServices());
 }
 .eyebrow-line {
   height: 1px; width: 40px;
-  background: linear-gradient(90deg, transparent, rgba(96,165,250,0.5));
+  background: rgba(255,255,255,0.2);
 }
 .eyebrow-line:last-child { transform: scaleX(-1); }
 .eyebrow-text {
   font-size: 0.68rem; font-weight: 800;
-  letter-spacing: 0.18em; color: #3b82f6; text-transform: uppercase;
+  letter-spacing: 0.18em; color: #94a3b8; text-transform: uppercase;
 }
 .section-title {
   font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800;
@@ -146,7 +173,7 @@ onMounted(() => fetchServices());
   font-size: 1rem; color: #5c6e96; line-height: 1.7; margin: 0;
 }
 
-/* Grid — 3 kolom */
+/* Grid */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -155,9 +182,8 @@ onMounted(() => fetchServices());
   margin: 0 auto;
 }
 
-/* Card */
+/* Card — smooth zoom saja, tanpa warna/angka/emoji */
 .service-card {
-  position: relative;
   background: rgba(12, 18, 38, 0.85);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
@@ -165,130 +191,29 @@ onMounted(() => fetchServices());
   display: flex;
   flex-direction: column;
   gap: 24px;
-  overflow: hidden;
-  transition: border-color 0.3s, transform 0.25s, box-shadow 0.3s;
-  animation: cardIn 0.5s ease both;
-  animation-delay: var(--delay, 0s);
   cursor: default;
-}
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Spotlight layer — ikut kursor */
-.service-card::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(
-    400px circle at var(--mx, -100px) var(--my, -100px),
-    rgba(99, 130, 255, 0.10),
-    transparent 60%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 0;
-  border-radius: 16px;
-}
-
-/* Shimmer border layer */
-.service-card::after {
-  content: '';
-  position: absolute; inset: 0;
-  border-radius: 16px;
-  padding: 1px;
-  background: radial-gradient(
-    300px circle at var(--mx, -100px) var(--my, -100px),
-    rgba(99, 130, 255, 0.55),
-    transparent 60%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.service-card:hover::before,
-.service-card:hover::after {
-  opacity: 1;
+  transition: transform 0.3s ease;
 }
 
 .service-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+  transform: scale(1.03);
 }
 
-/* Sweep line — full width loop seperti Metronic */
-.service-card .card-sweep {
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 100%; height: 2px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    transparent 25%,
-    var(--accent, rgba(59,130,246,0.9)) 50%,
-    transparent 75%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  background-position: 200% 0;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 3;
-  transition: opacity 0.3s;
-}
-.service-card:hover .card-sweep {
-  opacity: 1;
-  animation: sweepLine 2s linear infinite;
-}
-@keyframes sweepLine {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-.card-bottom-line { display: none; }
-
-/* Top row */
-.card-top-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-
-/* Icon */
+/* Icon — netral, satu warna untuk semua card */
 .icon-wrapper {
   width: 52px; height: 52px;
-  background: color-mix(in srgb, var(--accent, rgba(59,130,246,0.9)) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent, rgba(59,130,246,0.9)) 25%, transparent);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.3s;
+  color: #e2eaff;
 }
-.service-card:hover .icon-wrapper { transform: scale(1.06); }
 .service-icon {
   width: 26px; height: 26px; object-fit: contain;
+}
+img.service-icon {
   filter: brightness(0) invert(1);
-}
-.default-icon { font-size: 22px; }
-
-/* Stat (pojok kanan atas) */
-.card-stat {
-  text-align: right;
-  display: flex; flex-direction: column; gap: 2px;
-}
-.stat-num {
-  font-size: 1.6rem; font-weight: 800; line-height: 1;
-  color: #e2eaff; letter-spacing: -0.02em;
-}
-.stat-label {
-  font-size: 0.62rem; font-weight: 700;
-  letter-spacing: 0.1em; color: #475569;
-  text-transform: uppercase;
 }
 
 /* Body */
@@ -297,15 +222,11 @@ onMounted(() => fetchServices());
   font-size: 1.25rem; font-weight: 700;
   color: #f1f5f9; margin: 0;
   letter-spacing: -0.01em; line-height: 1.3;
-  transition: color 0.2s;
 }
-.service-card:hover .card-title { color: #ffffff; }
 .card-desc {
   font-size: 0.9rem; color: #4b5e7a;
   line-height: 1.7; margin: 0;
-  transition: color 0.2s;
 }
-.service-card:hover .card-desc { color: #5c7099; }
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -318,7 +239,6 @@ onMounted(() => fetchServices());
   .services-section { padding: 56px 14px 64px; }
   .section-title { font-size: 1.6rem; }
   .services-header { margin-bottom: 40px; }
-  .stat-num { font-size: 1.2rem; }
 }
 @media (max-width: 360px) {
   .section-title { font-size: 1.4rem; }

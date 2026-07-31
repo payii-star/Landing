@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios, { AxiosError } from "axios";
-import { mockContent, mockNavbar } from "@/mocks/landingMock";
+import { mockContent, mockNavbar, mockTestimonials, type Testimonial } from "@/mocks/landingMock";
 
 // ── TYPE DEFINITIONS ───────────────────────────────────────────────
 
@@ -67,6 +67,7 @@ export const useLandingStore = defineStore("landing", () => {
     const menus = ref<MenuItem[]>([]);
     const statistics = ref<Statistic[]>([]);
     const teams = ref<TeamMember[]>([]);
+    const testimonials = ref<Testimonial[]>([]);
 
     const loading = ref(false);
     const error = ref<string | null>(null);
@@ -170,6 +171,33 @@ export const useLandingStore = defineStore("landing", () => {
         }
     }
 
+    /**
+     * Fetch testimonials klien.
+     * Dipakai bersama oleh LandingTestimonials.vue (spotlight/carousel)
+     * dan LandingTestimonialsCust.vue (marquee wall) — satu sumber data,
+     * dua tampilan.
+     * Endpoint: /api/front/testimonials
+     */
+    async function fetchTestimonials() {
+        try {
+            const response = await axios.get(`${API_URL}/front/testimonials`);
+            if (response.data.success) {
+                testimonials.value = response.data.data || [];
+            } else {
+                throw new Error(response.data.message || "Gagal mengambil data testimonials");
+            }
+        } catch (err: any) {
+            console.error("❌ Failed to fetch testimonials:", err);
+
+            if (USE_MOCK_FALLBACK) {
+                console.warn("⚠️ Pakai mockTestimonials — backend belum tersedia. JANGAN lupa dicabut sebelum production.");
+                testimonials.value = mockTestimonials;
+            } else {
+                testimonials.value = [];
+            }
+        }
+    }
+
     async function refreshMenus() {
         const isMobile = window.innerWidth < 992;
         await fetchMenu(isMobile ? "mobile" : "desktop");
@@ -182,7 +210,7 @@ export const useLandingStore = defineStore("landing", () => {
         content.value = {};
         menus.value = [];
         statistics.value = [];
-        teams.value = []; 
+        teams.value = [];
         loading.value = false;
         error.value = null;
     }
@@ -248,6 +276,7 @@ export const useLandingStore = defineStore("landing", () => {
         menus,
         statistics,
         teams,
+        testimonials,
         loading,
         error,
 
@@ -255,7 +284,8 @@ export const useLandingStore = defineStore("landing", () => {
         fetchContent,
         fetchMenu,
         fetchStatistics,
-        fetchTeams, 
+        fetchTeams,
+        fetchTestimonials,
         refreshMenus,
         clearData,
         trackMenuClick,

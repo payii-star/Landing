@@ -68,29 +68,55 @@
       <!-- ═══ SERVICES GRID ═══ -->
       <div v-if="services && services.length" class="cards-wrap">
         <div
-          v-for="(item, idx) in services"
+          v-for="item in services"
           :key="item.id"
           class="svc-card"
-          :class="{ visible: visibleCards.has(idx) }"
-          :style="{ '--accent': cardAccents[idx % cardAccents.length], '--delay': `${idx * 80}ms` }"
-          :ref="(el: any) => setCardRef(el as Element | null, idx)"
         >
-          <span class="card-num">{{ String(idx + 1).padStart(2, '0') }}</span>
-          <div class="card-topbar"></div>
+          <!-- Icon -->
+          <div class="card-icon">
+            <img v-if="item.icon" :src="`/${item.icon}`" :alt="item.title" class="icon-img" />
 
-          <!-- Icon: hanya tampil jika ada gambar -->
-          <div v-if="item.icon" class="card-icon">
-            <img :src="`/${item.icon}`" :alt="item.title" class="icon-img"/>
+            <svg v-else-if="getIconType(item.title) === 'consult'" class="icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+            </svg>
+
+            <svg v-else-if="getIconType(item.title) === 'web'" class="icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
+            </svg>
+
+            <svg v-else-if="getIconType(item.title) === 'mobile'" class="icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="7" y="2" width="10" height="20" rx="2" />
+              <line x1="11" y1="18" x2="13" y2="18" />
+            </svg>
+
+            <svg v-else-if="getIconType(item.title) === 'software'" class="icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2" />
+              <polyline points="2 17 12 22 22 17" />
+              <polyline points="2 12 12 17 22 12" />
+            </svg>
+
+            <svg v-else-if="getIconType(item.title) === 'network'" class="icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="5" cy="6" r="2.5" />
+              <circle cx="19" cy="6" r="2.5" />
+              <circle cx="12" cy="18" r="2.5" />
+              <line x1="7" y1="7.5" x2="10.3" y2="16" />
+              <line x1="17" y1="7.5" x2="13.7" y2="16" />
+            </svg>
+
+            <svg v-else-if="getIconType(item.title) === 'api'" class="icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
+
+            <svg v-else class="icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="3" />
+              <path d="M8 12h8M12 8v8" />
+            </svg>
           </div>
 
           <h3 class="card-title">{{ item.title }}</h3>
           <p class="card-desc">{{ item.description }}</p>
-
-          <div class="card-arrow">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 12L12 2M12 2H5M12 2v7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
         </div>
       </div>
 
@@ -99,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 export interface HeroData {
   title?: string; subtitle?: string;
@@ -139,33 +165,18 @@ const scrollToGrid = () => {
   document.getElementById('layanan-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-const cardAccents = ['#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f59e0b','#10b981','#ef4444','#6366f1'];
-const visibleCards = ref<Set<number>>(new Set());
-const cardRefs = ref<(Element | null)[]>([]);
-let observer: IntersectionObserver | null = null;
-
-const setCardRef = (el: Element | null, idx: number) => { cardRefs.value[idx] = el; };
-
-onMounted(() => {
-  observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(entry => {
-        const idx = parseInt((entry.target as HTMLElement).dataset.idx || '0');
-        if (entry.isIntersecting) visibleCards.value.add(idx);
-      });
-    },
-    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-  );
-  setTimeout(() => {
-    cardRefs.value.forEach((el, idx) => {
-      if (el) {
-        (el as HTMLElement).dataset.idx = String(idx);
-        observer!.observe(el);
-      }
-    });
-  }, 100);
-});
-onUnmounted(() => observer?.disconnect());
+// Icon fallback dipilih berdasarkan kata kunci di judul layanan —
+// dipakai kalau item.icon dari backend belum ada.
+const getIconType = (title = '') => {
+  const t = title.toLowerCase();
+  if (t.includes('konsultasi')) return 'consult';
+  if (t.includes('web')) return 'web';
+  if (t.includes('mobile') || t.includes('aplikasi')) return 'mobile';
+  if (t.includes('network') || t.includes('jaringan')) return 'network';
+  if (t.includes('api') || t.includes('integrasi')) return 'api';
+  if (t.includes('software') || t.includes('engineering') || t.includes('analysis')) return 'software';
+  return 'default';
+};
 </script>
 
 <style scoped>
@@ -296,7 +307,7 @@ onUnmounted(() => observer?.disconnect());
 .divider-line  { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(59,130,246,0.2), transparent); }
 .divider-badge { display: inline-flex; align-items: center; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #64748b; padding: 7px 16px; border-radius: 20px; border: 1px solid rgba(59,130,246,0.15); background: rgba(59,130,246,0.05); white-space: nowrap; }
 
-/* CARDS */
+/* CARDS — disamakan dengan LandingServices.vue: tanpa warna aksen, tanpa angka, tanpa reveal animation, cuma smooth zoom */
 .cards-wrap {
   position: relative; z-index: 2;
   max-width: 1120px; margin: 0 auto;
@@ -309,78 +320,36 @@ onUnmounted(() => observer?.disconnect());
   position: relative;
   padding: 48px 40px 40px;
   border-radius: 22px;
-  border: 1px solid rgba(255,255,255,0.05);
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(12, 18, 38, 0.85);
   display: flex; flex-direction: column;
-  overflow: hidden; cursor: default;
-  opacity: 0; transform: translateY(28px);
-  transition:
-    opacity 0.55s var(--delay, 0ms) ease,
-    transform 0.55s var(--delay, 0ms) cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+  cursor: default;
+  transition: transform 0.3s ease;
 }
-.svc-card.visible { opacity: 1; transform: translateY(0); }
 .svc-card:hover {
-  border-color: color-mix(in srgb, var(--accent, #3b82f6) 35%, transparent);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3), 0 0 0 1px color-mix(in srgb, var(--accent, #3b82f6) 12%, transparent) inset;
-  transform: translateY(-6px);
+  transform: scale(1.03);
 }
 
-.card-topbar {
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--accent, #3b82f6); opacity: 0.5;
-  transform: scaleX(0); transform-origin: left;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s;
-}
-.svc-card:hover .card-topbar { transform: scaleX(1); opacity: 1; }
-
-.card-num {
-  position: absolute; top: 14px; right: 22px;
-  font-size: 6.5rem; font-weight: 900; line-height: 1;
-  color: var(--accent, #3b82f6); opacity: 0.06;
-  letter-spacing: -0.05em; pointer-events: none; user-select: none;
-  transition: opacity 0.35s, transform 0.35s;
-}
-.svc-card:hover .card-num { opacity: 0.12; transform: scale(1.06); }
-
-/* Icon — hanya muncul jika ada gambar */
+/* Icon — netral, satu warna untuk semua card */
 .card-icon {
-  width: 60px; height: 60px; border-radius: 16px; margin-bottom: 28px;
-  background: color-mix(in srgb, var(--accent, #3b82f6) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent, #3b82f6) 22%, transparent);
+  width: 52px; height: 52px; border-radius: 14px; margin-bottom: 28px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+  color: #e2eaff;
 }
-.svc-card:hover .card-icon { transform: scale(1.1) rotate(-4deg); box-shadow: 0 8px 24px color-mix(in srgb, var(--accent, #3b82f6) 30%, transparent); }
-.icon-img { width: 34px; height: 34px; object-fit: contain; filter: brightness(0) invert(1); }
+.icon-img { width: 26px; height: 26px; object-fit: contain; }
+img.icon-img { filter: brightness(0) invert(1); }
 
 .card-title {
   font-size: 1.35rem; font-weight: 700; color: #e2e8f0;
   margin: 0 0 14px; letter-spacing: -0.025em; line-height: 1.3;
-  transition: color 0.25s;
 }
-.svc-card:hover .card-title { color: #fff; }
 
 .card-desc {
   font-size: 0.92rem; color: #64748b; line-height: 1.8; margin: 0;
-  flex: 1; transition: color 0.25s;
-}
-.svc-card:hover .card-desc { color: #94a3b8; }
-
-.card-arrow {
-  align-self: flex-end; margin-top: 28px;
-  width: 36px; height: 36px; border-radius: 9px;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-  display: flex; align-items: center; justify-content: center; color: #475569;
-  transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.svc-card:hover .card-arrow {
-  background: color-mix(in srgb, var(--accent, #3b82f6) 14%, transparent);
-  border-color: color-mix(in srgb, var(--accent, #3b82f6) 35%, transparent);
-  color: var(--accent, #3b82f6); transform: translate(2px, -2px);
+  flex: 1;
 }
 
 /* RESPONSIVE */
@@ -401,7 +370,6 @@ onUnmounted(() => observer?.disconnect());
   .svc-page { padding: 56px 0 72px; }
   .hero-title { font-size: 1.7rem; }
   .svc-card { padding: 28px 22px 24px; }
-  .card-num { font-size: 5rem; }
   .card-title { font-size: 1.15rem; }
 }
 </style>
