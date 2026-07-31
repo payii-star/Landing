@@ -151,3 +151,171 @@ export const mockFooter = {
     { id: 1, platform: "Instagram", url: "https://www.instagram.com/mcflyon.id/" },
   ],
 };
+
+// ── 4. TESTIMONIALS (endpoint /front/testimonials) [TENTATIF — isi karangan, dummy] ──
+// Dipakai bersama oleh 2 tampilan: LandingTestimonials.vue (spotlight/carousel di
+// Beranda) dan LandingTestimonialsCust.vue (marquee wall di halaman Layanan).
+// Skema data HARUS satu sumber (satu endpoint /front/testimonials) biar Tim 2
+// tidak perlu bikin 2 backend untuk hal yang sama — pemisahan tampilan dilakukan
+// lewat field `placement`, BUKAN lewat fetch/endpoint terpisah.
+// PENTING: nama & isi kutipan di bawah ini KARANGAN placeholder — jangan dipakai
+// sebagai testimoni asli sebelum dikonfirmasi ke klien/pembimbing yang bersangkutan.
+export interface Testimonial {
+  id: number;
+  name: string;
+  position: string; // jabatan / perusahaan, mis. "CEO & CTO"
+  avatar: string | null;
+  content: string; // isi kutipan testimoni
+  rating: number; // 1-5
+  order: number;
+  is_active: boolean;
+  // 'beranda'  -> tampil di LandingTestimonials.vue (carousel spotlight)
+  // 'services' -> tampil di LandingTestimonialsCust.vue (marquee klien)
+  placement: "beranda" | "services";
+}
+
+export const mockTestimonials: Testimonial[] = [
+  {
+    id: 1,
+    // Nama & jabatan di bawah ini KARANGAN (contoh dari develop awal), BUKAN
+    // klien asli — jangan dipublish sebelum dikonfirmasi ke pembimbing.
+    // Khusus dipakai di section testimonial Beranda (LandingTestimonials.vue).
+    name: "Fahrur Rozi",
+    position: "CEO & CTO",
+    avatar: null,
+    content:
+      "Menjadi perusahaan teknologi informasi yang berdaya saing dengan memberikan layanan dan solusi yang terbaik bagi customer dan stakeholder.",
+    rating: 5,
+    order: 1,
+    is_active: true,
+    placement: "beranda",
+  },
+  {
+    id: 2,
+    name: "[Nama Klien — perlu dikonfirmasi]",
+    position: "[Jabatan/Perusahaan — perlu dikonfirmasi]",
+    avatar: null,
+    content: "[Kutipan testimoni — perlu dikonfirmasi]",
+    rating: 5,
+    order: 1,
+    is_active: true,
+    placement: "services",
+  },
+  {
+    id: 3,
+    name: "[Nama Klien — perlu dikonfirmasi]",
+    position: "[Jabatan/Perusahaan — perlu dikonfirmasi]",
+    avatar: null,
+    content: "[Kutipan testimoni — perlu dikonfirmasi]",
+    rating: 5,
+    order: 2,
+    is_active: true,
+    placement: "services",
+  },
+  {
+    id: 4,
+    name: "[Nama Klien — perlu dikonfirmasi]",
+    position: "[Jabatan/Perusahaan — perlu dikonfirmasi]",
+    avatar: null,
+    content: "[Kutipan testimoni — perlu dikonfirmasi]",
+    rating: 5,
+    order: 3,
+    is_active: true,
+    placement: "services",
+  },
+];
+
+// ── 5. ABOUT (endpoint /front/landing-about) [SIAP — teks sama dgn default lama LandingAbout.vue] ──
+// PENTING: teks title/subtitle/description di bawah ini BUKAN karangan baru — ini
+// persis teks yang sebelumnya hardcode langsung di ref() dalam LandingAbout.vue.
+// Cuma dipindah ke sini biar satu sumber data terpusat, isinya TIDAK diubah.
+// `image: null` -> fallback ke foto Unsplash yang sudah ada di getImageUrl().
+export interface AboutData {
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string | null;
+  features: string[];
+}
+
+export const mockAbout: AboutData = {
+  title: "Tentang Kami",
+  subtitle:
+    "Kami Profesional Software Developer Menyediakan Solusi Untuk Kebutuhan Anda.",
+  description:
+    "CV. MCFLYON TEKNOLOGI INDONESIA adalah Software Developer yang termotivasi untuk memberikan solusi dalam setiap masalah maupun bisnis.\n\nMemiliki tim dengan SDM yang unggul dan berkualitas dapat menjawab setiap permasalahan yang ada, hingga membantu mengembangkan bisnis Anda meningkat pesat.",
+  image: null,
+  features: [
+    "Tim berpengalaman & profesional",
+    "Solusi teknologi berbasis kebutuhan bisnis",
+    "Support & maintenance jangka panjang",
+    "Desain modern & performa optimal",
+  ],
+};
+
+// ── 6. SERVICES (endpoint /front/services) [TENTATIF — berdasarkan riset publik] ──
+// Dipakai oleh LandingServices.vue (grid "Kenapa Memilih Kami?") dan
+// LandingServicesHero.vue (grid layanan di halaman /services).
+// Isi 6 layanan ini DITURUNKAN dari sumber publik resmi Mcflyon (bio Instagram
+// @mcflyon.id, listing perusahaan di Glints, dan pengalaman kerja mantan karyawan
+// di LinkedIn) — bukan karangan bebas tanpa dasar. TAPI tetap perlu dikonfirmasi
+// ke pembimbing/Tim 2 sebelum jadi final, karena bukan daftar resmi dari internal.
+export interface ServiceItem {
+  id: number;
+  title: string;
+  description: string;
+  icon: string | null; // null -> fallback ke icon outline netral sesuai kata kunci judul (bukan emoji lagi)
+  order: number;
+  is_active: boolean;
+}
+
+export const mockServices: ServiceItem[] = [
+  {
+    id: 1,
+    title: "Konsultasi IT & Bisnis",
+    description: "Analisis kebutuhan teknologi untuk mendukung pertumbuhan bisnis Anda.",
+    icon: null,
+    order: 1,
+    is_active: true,
+  },
+  {
+    id: 2,
+    title: "Pengembangan Website",
+    description: "Pembuatan website custom, company profile, hingga sistem berbasis web.",
+    icon: null,
+    order: 2,
+    is_active: true,
+  },
+  {
+    id: 3,
+    title: "Pengembangan Aplikasi Mobile",
+    description: "Aplikasi Android & iOS sesuai kebutuhan operasional bisnis Anda.",
+    icon: null,
+    order: 3,
+    is_active: true,
+  },
+  {
+    id: 4,
+    title: "Software Analysis & Engineering",
+    description: "Analisis dan perancangan sistem perangkat lunak yang terstruktur.",
+    icon: null,
+    order: 4,
+    is_active: true,
+  },
+  {
+    id: 5,
+    title: "Network Engineering",
+    description: "Instalasi dan konfigurasi infrastruktur jaringan yang stabil dan aman.",
+    icon: null,
+    order: 5,
+    is_active: true,
+  },
+  {
+    id: 6,
+    title: "REST API & Integrasi Sistem",
+    description: "Pengembangan API untuk menghubungkan berbagai sistem/aplikasi.",
+    icon: null,
+    order: 6,
+    is_active: true,
+  },
+];

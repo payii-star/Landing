@@ -36,7 +36,7 @@
             <h3 class="ceo-name" :key="current.name">{{ current.name }}</h3>
           </transition>
           <transition name="txt-fade" mode="out-in">
-            <p class="ceo-role" :key="current.username">{{ current.username }}</p>
+            <p class="ceo-role" :key="current.position">{{ current.position }}</p>
           </transition>
         </div>
 
@@ -66,7 +66,7 @@
               <span class="sig-name" :key="current.name">{{ current.name }}</span>
             </transition>
             <transition name="txt-fade" mode="out-in">
-              <span class="sig-title" :key="current.username">{{ current.username }}</span>
+              <span class="sig-title" :key="current.position">{{ current.position }}</span>
             </transition>
           </div>
 
@@ -132,15 +132,15 @@ import { useLandingStore } from '@/stores/landing';
 
 const landingStore = useLandingStore();
 
-const testimonials = computed(() => landingStore.content?.testimonials || [
-  {
-    id: 1,
-    name: 'Fahrur Rozi',
-    username: 'CEO & CTO',
-    avatar: null,
-    content: 'Menjadi perusahaan teknologi informasi yang berdaya saing dengan memberikan layanan dan solusi yang terbaik bagi customer dan stakeholder.',
-  },
-]);
+// Sumber data terpusat lewat landingStore.testimonials (satu endpoint, satu fetch,
+// dishare dengan LandingTestimonialsCust.vue). Di sini cuma filter placement
+// 'beranda' — testimoni untuk halaman Layanan tidak ikut tampil di carousel ini.
+// (field "position" dipetakan ke "username" biar konsisten dgn nama lama di template)
+const testimonials = computed(() =>
+  landingStore.testimonials
+    .filter(t => t.placement === 'beranda')
+    .map(t => ({ ...t, username: t.position }))
+);
 
 const appName = computed(() => landingStore.content?.app_name ?? 'McFlyon');
 
@@ -183,7 +183,12 @@ const startTimer = () => {
 };
 const resetTimer = () => { clearInterval(timer); progressKey.value++; startTimer(); };
 
-onMounted(() => startTimer());
+onMounted(async () => {
+  if (!landingStore.testimonials.length) {
+    await landingStore.fetchTestimonials();
+  }
+  startTimer();
+});
 onUnmounted(() => clearInterval(timer));
 </script>
 
@@ -373,7 +378,6 @@ onUnmounted(() => clearInterval(timer));
   position: absolute; bottom: 0; left: 0; right: 0;
   height: 2px; background: rgba(59,130,246,0.08);
   border-radius: 0 0 28px 28px; overflow: hidden;
-  /* clip agar tidak meluber keluar card */
   clip-path: inset(0 0 0 0 round 0 0 28px 28px);
 }
 .autoplay-progress {

@@ -39,7 +39,7 @@
                 <div class="card-inner">
                   <div class="card-top">
                     <div class="tst-stars">
-                      <svg v-for="s in 5" :key="s" viewBox="0 0 24 24" width="14" height="14" class="star-icon">
+                      <svg v-for="s in item.rating || 5" :key="s" viewBox="0 0 24 24" width="14" height="14" class="star-icon">
                         <path fill="#fbbf24" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                       </svg>
                     </div>
@@ -49,10 +49,10 @@
                       </svg>
                     </div>
                   </div>
-                  <p class="tst-comment">"{{ item.comment }}"</p>
+                  <p class="tst-comment">"{{ item.content }}"</p>
                   <div class="tst-author">
                     <div class="tst-avatar-wrap">
-                      <img :src="getImageUrl(item.image)" :alt="item.name" class="tst-avatar"/>
+                      <img :src="getImageUrl(item.avatar)" :alt="item.name" class="tst-avatar"/>
                     </div>
                     <div class="tst-author-info">
                       <span class="tst-author-name">{{ item.name }}</span>
@@ -73,26 +73,26 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import axios from 'axios';
+import { useLandingStore } from '@/stores/landing';
 
-const testimonials = ref<any[]>([]);
+const landingStore = useLandingStore();
+
+// Sumber data disatukan dengan LandingTestimonials.vue lewat landingStore.testimonials
+// (dulu component ini fetch sendiri ke endpoint '/landing/testimonials-public' yang
+// tidak pernah terdaftar di backend manapun — selalu gagal diam-diam)
+// Khusus filter placement 'services' — testimoni Beranda (Fahrur Rozi) tidak ikut tampil di sini
+const testimonials = computed(() =>
+  landingStore.testimonials.filter(t => t.placement === 'services')
+);
 const isLoading = ref(true);
 const paused1 = ref(false);
 
-const getImageUrl = (path: string) => {
+const getImageUrl = (path: string | null) => {
   if (!path) return `https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff`;
-  return `http://127.0.0.1:8000/storage/${path}`;
-};
-
-const fetchTestimonials = async () => {
-  try {
-    const res = await axios.get('/landing/testimonials-public');
-    testimonials.value = res.data;
-  } catch (err) {
-    console.error(err);
-  } finally {
-    isLoading.value = false;
-  }
+  const backendUrl = import.meta.env.VITE_API_URL
+    ? import.meta.env.VITE_API_URL.replace('/api', '')
+    : 'http://127.0.0.1:8000';
+  return path.startsWith('http') ? path : `${backendUrl}/storage/${path}`;
 };
 
 const paddedRow1 = computed(() => {
@@ -104,7 +104,12 @@ const paddedRow1 = computed(() => {
 
 const dur1 = computed(() => Math.max(30, paddedRow1.value.length * 4));
 
-onMounted(() => fetchTestimonials());
+onMounted(async () => {
+  if (!landingStore.testimonials.length) {
+    await landingStore.fetchTestimonials();
+  }
+  isLoading.value = false;
+});
 </script>
 
 <style scoped>
