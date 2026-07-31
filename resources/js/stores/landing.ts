@@ -1,6 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios, { AxiosError } from "axios";
+import { mockContent, mockNavbar } from "@/mocks/landingMock";
 
 // ── TYPE DEFINITIONS ───────────────────────────────────────────────
 
@@ -58,6 +59,7 @@ interface TeamMember {
 
 // Mengambil URL dari env atau default ke localhost
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
 export const useLandingStore = defineStore("landing", () => {
     // ── STATE ──────────────────────────────────────────────────────
@@ -73,7 +75,7 @@ export const useLandingStore = defineStore("landing", () => {
 
     /**
      * Fetch content umum (Logo, Judul, Deskripsi)
-     * Endpoint: /api/front/settings
+     * Endpoint: /api/front/content
      */
     async function fetchContent() {
         loading.value = true;
@@ -96,6 +98,11 @@ export const useLandingStore = defineStore("landing", () => {
 
             error.value = errorMessage;
             console.error("❌ Error fetching landing content:", err);
+
+            if (USE_MOCK_FALLBACK) {
+                console.warn("⚠️ Pakai mockContent — backend belum tersedia. JANGAN lupa dicabut sebelum production.");
+                content.value = mockContent;
+            }
         } finally {
             loading.value = false;
         }
@@ -110,7 +117,6 @@ export const useLandingStore = defineStore("landing", () => {
         error.value = null;
 
         try {
-
             const deviceType =
                 device || (window.innerWidth < 992 ? "mobile" : "desktop");
 
@@ -134,9 +140,14 @@ export const useLandingStore = defineStore("landing", () => {
                 "Gagal mengambil data menu";
 
             error.value = errorMessage;
-            menus.value = [];
-
             console.error("❌ Failed to fetch menu:", errorMessage);
+
+            if (USE_MOCK_FALLBACK) {
+                console.warn("⚠️ Pakai mockNavbar — backend belum tersedia. JANGAN lupa dicabut sebelum production.");
+                menus.value = mockNavbar;
+            } else {
+                menus.value = [];
+            }
         }
     }
 

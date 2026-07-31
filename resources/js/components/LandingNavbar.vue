@@ -647,12 +647,23 @@ const onNavMouseLeave = () => {
 
 // === SCROLL ===
 const onScroll = () => {
-    const y = window.scrollY;
-    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const y = scrollContainer === window
+        ? window.scrollY
+        : (scrollContainer as Element).scrollTop;
+
+    const docH = scrollContainer === window
+        ? document.documentElement.scrollHeight - window.innerHeight
+        : (scrollContainer as Element).scrollHeight - (scrollContainer as Element).clientHeight;
+
     scrollProgress.value = docH > 0 ? Math.round((y / docH) * 100) : 0;
     isScrolled.value = y > 20;
-    isHidden.value = y > lastY + 10 && y > 130;
-    if (y < lastY - 5) isHidden.value = false;
+
+    if (y > lastY && y > 130) {
+        isHidden.value = true;
+    } else if (y <= 20) {
+        isHidden.value = false;
+    }
+
     lastY = y <= 0 ? 0 : y;
 };
 
@@ -661,17 +672,23 @@ const onClickOut = (e: MouseEvent) => {
         activeDropdown.value = null;
 };
 
+let scrollContainer: Element | Window = window;
+
 onMounted(async () => {
     await landingStore.fetchMenu(window.innerWidth < 992 ? "mobile" : "desktop");
     await landingStore.fetchContent();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("click", onClickOut);
 
-    console.log("ISI DATA CONTENT:", landingStore.content);
+    // Cari elemen yang benar-benar scroll (bukan window) — struktur project ini
+    // pakai .landing-wrapper sebagai scroll container, bukan window biasa.
+    const wrapper = document.querySelector(".landing-wrapper");
+    scrollContainer = wrapper || window;
+    scrollContainer.addEventListener("scroll", onScroll, { passive: true });
+
+    document.addEventListener("click", onClickOut);
 });
 
 onUnmounted(() => {
-    window.removeEventListener("scroll", onScroll);
+    scrollContainer.removeEventListener("scroll", onScroll);
     document.removeEventListener("click", onClickOut);
     document.body.style.overflow = "";
     if (closeTimer) clearTimeout(closeTimer);

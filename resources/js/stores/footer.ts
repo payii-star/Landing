@@ -1,8 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { mockFooter } from '@/mocks/landingMock'
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
 export const useFooterStore = defineStore('footer', () => {
 
@@ -24,6 +26,13 @@ export const useFooterStore = defineStore('footer', () => {
 
     } catch (error) {
       console.error('Footer fetch error:', error)
+
+      if (USE_MOCK_FALLBACK) {
+        console.warn("⚠️ Pakai mockFooter — backend belum tersedia. JANGAN lupa dicabut sebelum production.")
+        setting.value = mockFooter.setting
+        socials.value = mockFooter.socials
+      }
+
     } finally {
       loading.value = false
     }
