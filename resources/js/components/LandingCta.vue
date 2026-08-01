@@ -45,6 +45,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
+import { mockCta } from '@/mocks/landingMock';
 
 const ctaData = ref(null);
 
@@ -54,6 +55,8 @@ const fetchCtaData = async () => {
     ctaData.value = response.data.data || response.data;
   } catch (error) {
     console.error('Gagal memuat data CTA:', error);
+    // ── SEMENTARA: kalau API gagal (404), pakai dummy data
+    ctaData.value = mockCta;
   }
 };
 

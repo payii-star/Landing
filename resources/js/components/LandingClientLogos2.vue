@@ -71,12 +71,22 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useLandingStore } from '@/stores/landing';
+import { mockClientLogos } from '@/mocks/landingMock';
 
 const landingStore = useLandingStore();
-const paused1 = ref(false);
-const paused2 = ref(false);
+const isPaused     = ref(false);
+
+// ── SEMENTARA: isi dummy client_logos kalau belum ada dari API
+onMounted(() => {
+  if (!landingStore.content?.client_logos) {
+    landingStore.content = {
+      ...landingStore.content,
+      client_logos: mockClientLogos,
+    };
+  }
+});
 
 const clientLogos = computed(() =>
   (landingStore.content?.client_logos || []).filter(l => l.url)

@@ -224,10 +224,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useContactStore } from '@/stores/contact'
+import { mockContactSetting } from '@/mocks/landingMock'
 
 const store = useContactStore()
+
+onMounted(() => {
+  store.setting = mockContactSetting
+})
+
 
 // ── Form state ────────────────────────────────────────────
 const form = ref({

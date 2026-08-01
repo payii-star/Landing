@@ -36,6 +36,11 @@ export const mockContent = {
   cta_secondary_label: "Lihat Proyek Kami",
   cta_secondary_url: "/projects",
   proof_text: "Dipercaya oleh berbagai instansi & klien di Indonesia",
+  client_logos: [
+    { url: "/media/clients/client-placeholder-1.png", name: "[Klien 1 — perlu dikonfirmasi]" },
+    { url: "/media/clients/client-placeholder-2.png", name: "[Klien 2 — perlu dikonfirmasi]" },
+    { url: "/media/clients/client-placeholder-3.png", name: "[Klien 3 — perlu dikonfirmasi]" },
+  ],
 };
 
 // ── 2. NAVBAR MENU (endpoint /front/navbar?device=mobile|desktop) [SIAP] ──
@@ -318,4 +323,75 @@ export const mockServices: ServiceItem[] = [
     order: 6,
     is_active: true,
   },
+];
+
+// ── 7. CONTACT (endpoint /contact/setting) [TENTATIF — nomor WA & alamat perlu dicek ulang] ──
+// Dipakai oleh LandingContact.vue. Field `whatsapp` dipakai untuk link wa.me,
+// jadi HARUS berupa angka saja (kode negara + nomor, tanpa +/spasi/strip).
+export interface ContactSetting {
+  hero_title: string;
+  hero_subtitle: string;
+  email: string;
+  whatsapp: string;
+  phone: string;
+  address: string;
+  maps_url: string;
+  socials: {
+    instagram?: string;
+    facebook?: string;
+    twitter?: string;
+    linkedin?: string;
+    youtube?: string;
+    tiktok?: string;
+  };
+}
+
+export const mockContactSetting: ContactSetting = {
+  hero_title: "Hubungi Kami",
+  hero_subtitle:
+    "Punya kebutuhan sistem atau ingin konsultasi? Tim kami siap membantu.",
+  email: "info@mcflyon.co.id", // [TENTATIF]
+  whatsapp: "6231991657590", // dari nomor telepon resmi 031-99165759, format WA — [TENTATIF, cek ulang]
+  phone: "031-99165759", // [SIAP] dari Instagram resmi @mcflyon.id
+  address: "Surabaya, Jawa Timur", // [TENTATIF] alamat lengkap belum terkonfirmasi
+  maps_url: "", // [TENTATIF] belum ada, kosongkan dulu biar tombol alamat tidak nunjuk ke mana-mana
+  socials: {
+    instagram: "https://www.instagram.com/mcflyon.id/", // [SIAP]
+    // facebook, twitter, linkedin, youtube, tiktok -> sengaja dikosongkan
+    // (belum terkonfirmasi ada/tidaknya akun resmi), biar tombol sosmed
+    // yang tidak relevan otomatis tidak muncul (LandingContact.vue pakai v-if)
+  },
+};
+
+// ── 8. CTA (endpoint /front/landing-cta) [TENTATIF — copy karangan, perlu direview] ──
+// Dipakai oleh LandingCta.vue. `title` boleh multi-kata; komponen otomatis
+// membagi jadi 2 baris & menyorot baris kedua kalau kata > 3.
+export interface CtaData {
+  title: string;
+  description: string;
+  button_text: string;
+  button_link: string;
+}
+
+export const mockCta: CtaData = {
+  title: "Siap Mengembangkan Bisnis Anda Bersama Kami",
+  description:
+    "Konsultasikan kebutuhan sistem atau aplikasi Anda dengan tim kami — gratis, tanpa komitmen.",
+  button_text: "Hubungi Kami",
+  button_link: "/contact",
+};
+
+// ── 9. CLIENT LOGOS (field client_logos di /front/content, ATAU endpoint terpisah — perlu dikonfirmasi ke Tim 2) ──
+// Dipakai oleh LandingClientLogos.vue. Logo di bawah ini PLACEHOLDER murni
+// (path belum tentu ada filenya) — perlu logo asli klien yang boleh dipublikasikan,
+// dikonfirmasi dulu ke pembimbing (etika menampilkan logo klien tanpa izin).
+export interface ClientLogo {
+  url: string;
+  name: string;
+}
+
+export const mockClientLogos: ClientLogo[] = [
+  { url: "/media/clients/client-placeholder-1.png", name: "[Klien 1 — perlu dikonfirmasi]" },
+  { url: "/media/clients/client-placeholder-2.png", name: "[Klien 2 — perlu dikonfirmasi]" },
+  { url: "/media/clients/client-placeholder-3.png", name: "[Klien 3 — perlu dikonfirmasi]" },
 ];

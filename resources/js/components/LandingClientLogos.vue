@@ -55,8 +55,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useLandingStore } from '@/stores/landing';
 
 const landingStore = useLandingStore();
