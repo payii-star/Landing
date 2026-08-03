@@ -395,3 +395,78 @@ export const mockClientLogos: ClientLogo[] = [
   { url: "/media/clients/client-placeholder-2.png", name: "[Klien 2 — perlu dikonfirmasi]" },
   { url: "/media/clients/client-placeholder-3.png", name: "[Klien 3 — perlu dikonfirmasi]" },
 ];
+
+// ── 10. BEST PROJECTS (endpoint /front/best-projects) [TENTATIF — cuma SIPALAPA yang siap] ──
+// Dipakai oleh LandingBestProject.vue (Home). `link_project` = link eksternal ke
+// website/demo proyek (bukan halaman internal), makanya tombolnya target="_blank".
+export interface BestProject {
+  id: number;
+  title: string;
+  image: string;
+  description: string;
+  link_project: string;
+}
+
+export const mockBestProjects: BestProject[] = [
+  {
+    id: 1,
+    title: "SIPALAPA", // [SIAP] satu-satunya proyek yang datanya terkonfirmasi
+    image: "/media/projects/sipalapa-placeholder.png", // [TENTATIF] belum ada file asli
+    description:
+      "Sistem informasi yang dikembangkan untuk mendukung proses administrasi dan pelayanan secara terintegrasi.", // [TENTATIF]
+    link_project: "", // [TENTATIF] belum ada link publik, kosongkan dulu
+  },
+  {
+    id: 2,
+    title: "[Proyek 2 — perlu dikonfirmasi]",
+    image: "/media/projects/project-placeholder-2.png",
+    description: "[Deskripsi proyek — perlu dikonfirmasi]",
+    link_project: "",
+  },
+];
+
+// ── 11. PROJECTS PAGE HERO (endpoint /projects-page) [TENTATIF — copy karangan] ──
+// Dipakai oleh HeroProjects.vue di halaman /projects.
+export interface ProjectsPageSetting {
+  label: string;
+  title: string;
+  subtitle: string;
+}
+
+export const mockProjectsPageSetting: ProjectsPageSetting = {
+  label: "PORTOFOLIO KAMI",
+  title: "Proyek yang Telah Kami Kerjakan",
+  subtitle:
+    "Kumpulan proyek yang telah kami bangun bersama klien dari berbagai latar belakang industri.",
+};
+
+// ── 12. PROJECTS LIST (endpoint SEHARUSNYA /front/best-projects juga — PERLU DIKONFIRMASI
+// ke Tim 2, karena stores/project.ts saat ini masih pakai /landing/projects, endpoint
+// LAMA yang menurut briefing seharusnya tidak dipakai lagi. Field `slug` dipakai untuk
+// link detail internal (/projects/:slug) — beda dari BestProject yang pakai
+// link_project (link eksternal). ──
+export interface ProjectListItem {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  slug: string;
+}
+
+export const mockProjects: ProjectListItem[] = [
+  {
+    id: 1,
+    title: "SIPALAPA", // [SIAP]
+    description:
+      "Sistem informasi yang dikembangkan untuk mendukung proses administrasi dan pelayanan secara terintegrasi.", // [TENTATIF]
+    image: "/media/projects/sipalapa-placeholder.png",
+    slug: "sipalapa",
+  },
+  {
+    id: 2,
+    title: "[Proyek 2 — perlu dikonfirmasi]",
+    description: "[Deskripsi proyek — perlu dikonfirmasi]",
+    image: "/media/projects/project-placeholder-2.png",
+    slug: "proyek-2",
+  },
+];

@@ -70,6 +70,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { mockBestProjects } from '@/mocks/landingMock';
 
 const projects = ref([]);
 
@@ -86,6 +87,8 @@ const fetchProjects = async () => {
     projects.value = response.data;
   } catch (error) {
     console.error('Gagal memuat proyek terbaik:', error);
+    // ── SEMENTARA: kalau API gagal (404), pakai dummy data
+    projects.value = mockBestProjects;
   }
 };
 

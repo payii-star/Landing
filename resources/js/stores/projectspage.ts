@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import axios from 'axios'
+import { mockProjectsPageSetting } from '@/mocks/landingMock'
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+
+
 
 export const useProjectsPageStore = defineStore('projectsPage', () => {
 
@@ -22,6 +25,9 @@ export const useProjectsPageStore = defineStore('projectsPage', () => {
     } catch (error) {
 
       console.error('Projects page fetch error:', error)
+
+      // ── SEMENTARA: kalau API gagal (404), pakai dummy data
+      setting.value = mockProjectsPageSetting
 
     } finally {
 
