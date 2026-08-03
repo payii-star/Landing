@@ -157,7 +157,18 @@ export const mockFooter = {
   ],
 };
 
-// ── 4. TESTIMONIALS (endpoint /front/testimonials) [TENTATIF — isi karangan, dummy] ──
+// ── 4. STATISTICS (endpoint /front/statistics) [TENTATIF — angka masih placeholder] ──
+// Angka di bawah ini KARANGAN sebagai placeholder struktur — WAJIB dikonfirmasi
+// ke pembimbing/HR sebelum jadi konten final yang dipublikasikan.
+// icon pakai nama Font Awesome solid (tanpa prefix "fa-"), karena komponen
+// LandingStatistics.vue merender sebagai `fa-${stat.icon}`.
+export const mockStatistics = [
+  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai" },
+  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya" },
+  { id: 3, icon: "calendar", statistic: "3+", label: "Tahun Pengalaman" },
+];
+
+// ── 5. TESTIMONIALS (endpoint /front/testimonials) [TENTATIF — isi karangan, dummy] ──
 // Dipakai bersama oleh 2 tampilan: LandingTestimonials.vue (spotlight/carousel di
 // Beranda) dan LandingTestimonialsCust.vue (marquee wall di halaman Layanan).
 // Skema data HARUS satu sumber (satu endpoint /front/testimonials) biar Tim 2
@@ -182,9 +193,12 @@ export interface Testimonial {
 export const mockTestimonials: Testimonial[] = [
   {
     id: 1,
-    // Nama & jabatan di bawah ini KARANGAN (contoh dari develop awal), BUKAN
-    // klien asli — jangan dipublish sebelum dikonfirmasi ke pembimbing.
-    // Khusus dipakai di section testimonial Beranda (LandingTestimonials.vue).
+    // PENTING: nama & jabatan ini adalah CEO ASLI perusahaan (dikonfirmasi
+    // langsung, bukan karangan seperti tercatat sebelumnya di file ini).
+    // avatar masih null -> fallback ke foto acak i.pravatar.cc di
+    // LandingTestimonials.vue, itu BUKAN foto beliau -- ganti dengan foto
+    // asli (seizin beliau) sebelum publish, jangan biarkan foto orang lain
+    // ditempel dengan nama beliau.
     name: "Fahrur Rozi",
     position: "CEO & CTO",
     avatar: null,

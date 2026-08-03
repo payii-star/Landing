@@ -240,6 +240,9 @@ const getIconType = (title = '') => {
   color: #e8eeff; margin: 0 0 22px;
   display: flex; flex-wrap: wrap; align-items: baseline;
 }
+.hero-wrap:not(.has-img) .hero-title {
+  justify-content: center;
+}
 .word-wrap { overflow: hidden; display: inline-block; }
 .word { display: inline-block; opacity: 0; transform: translateY(100%); }
 .animate .word { animation: wordReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }

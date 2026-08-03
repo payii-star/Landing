@@ -103,8 +103,9 @@ const duration = computed(() => {
   gap: 18px; margin-bottom: 44px; padding: 0 40px;
 }
 .cls-label {
-  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em;
-  color: #3b5080; white-space: nowrap; flex-shrink: 0;
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.22em;
+  color: #3b82f6; text-transform: uppercase;
+  white-space: nowrap; flex-shrink: 0;
 }
 .cls-line {
   flex: 1; max-width: 180px; height: 1px;

@@ -17,14 +17,13 @@ const landingStore = useLandingStore();
 // Fetch Data saat halaman dimuat
 onMounted(async () => {
     try {
-        await landingStore.fetchContent();
-        
-        // Memunculkan data tim
-        await landingStore.fetchTeams(); 
-        
-        // Memunculkan data statistik
-        await landingStore.fetchStatistics(); 
-        
+        // Jalankan paralel, bukan bergantian — supaya statistics tidak
+        // harus menunggu content & teams selesai duluan satu-satu
+        await Promise.all([
+            landingStore.fetchContent(),
+            landingStore.fetchTeams(),
+            landingStore.fetchStatistics(),
+        ]);
     } catch (error) {
         console.error("Error mounting landing page:", error);
     }

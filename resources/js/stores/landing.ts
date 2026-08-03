@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios, { AxiosError } from "axios";
-import { mockContent, mockNavbar, mockTestimonials, type Testimonial } from "@/mocks/landingMock";
+import { mockContent, mockNavbar, mockStatistics, mockTestimonials, type Testimonial } from "@/mocks/landingMock";
 
 // ── TYPE DEFINITIONS ───────────────────────────────────────────────
 
@@ -36,7 +36,6 @@ interface LandingContent {
     [key: string]: any;
 }
 
-// Interface untuk Statistik
 interface Statistic {
     id: number;
     icon: string;
@@ -57,7 +56,6 @@ interface TeamMember {
     is_active: boolean;
 }
 
-// Mengambil URL dari env atau default ke localhost
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
@@ -66,6 +64,7 @@ export const useLandingStore = defineStore("landing", () => {
     const content = ref<LandingContent>({});
     const menus = ref<MenuItem[]>([]);
     const statistics = ref<Statistic[]>([]);
+    const statisticsLoading = ref(false);
     const teams = ref<TeamMember[]>([]);
     const testimonials = ref<Testimonial[]>([]);
 
@@ -74,10 +73,6 @@ export const useLandingStore = defineStore("landing", () => {
 
     // ── ACTIONS ────────────────────────────────────────────────────
 
-    /**
-     * Fetch content umum (Logo, Judul, Deskripsi)
-     * Endpoint: /api/front/content
-     */
     async function fetchContent() {
         loading.value = true;
         error.value = null;
@@ -109,11 +104,6 @@ export const useLandingStore = defineStore("landing", () => {
         }
     }
 
-    /**
-     * Fetch menu navbar
-     * Endpoint: /api/front/navbar
-     * @param device - 'mobile' | 'desktop'
-     */
     async function fetchMenu(device?: "mobile" | "desktop") {
         error.value = null;
 
@@ -152,12 +142,26 @@ export const useLandingStore = defineStore("landing", () => {
         }
     }
 
+    /**
+     * Fetch statistik (Pencapaian Kami)
+     * Endpoint: /api/front/statistics
+     */
     async function fetchStatistics() {
+        statisticsLoading.value = true;
         try {
             const response = await axios.get(`${API_URL}/front/statistics`);
             statistics.value = response.data.data || response.data || [];
         } catch (err: any) {
             console.error("❌ Failed to fetch statistics:", err);
+
+            if (USE_MOCK_FALLBACK) {
+                console.warn("⚠️ Pakai mockStatistics — backend belum tersedia. JANGAN lupa dicabut sebelum production.");
+                statistics.value = mockStatistics;
+            } else {
+                statistics.value = [];
+            }
+        } finally {
+            statisticsLoading.value = false;
         }
     }
 
@@ -171,21 +175,10 @@ export const useLandingStore = defineStore("landing", () => {
         }
     }
 
-    /**
-     * Fetch testimonials klien.
-     * Dipakai bersama oleh LandingTestimonials.vue (spotlight/carousel)
-     * dan LandingTestimonialsCust.vue (marquee wall) — satu sumber data,
-     * dua tampilan.
-     * Endpoint: /api/front/testimonials
-     */
     async function fetchTestimonials() {
         try {
             const response = await axios.get(`${API_URL}/front/testimonials`);
-            if (response.data.success) {
-                testimonials.value = response.data.data || [];
-            } else {
-                throw new Error(response.data.message || "Gagal mengambil data testimonials");
-            }
+            testimonials.value = response.data.data || response.data || [];
         } catch (err: any) {
             console.error("❌ Failed to fetch testimonials:", err);
 
@@ -203,21 +196,16 @@ export const useLandingStore = defineStore("landing", () => {
         await fetchMenu(isMobile ? "mobile" : "desktop");
     }
 
-    /**
-     * Clear semua data store
-     */
     function clearData() {
         content.value = {};
         menus.value = [];
         statistics.value = [];
         teams.value = [];
+        testimonials.value = [];
         loading.value = false;
         error.value = null;
     }
 
-    /**
-     * Track analytics saat menu diklik
-     */
     async function trackMenuClick(menuId: number) {
         try {
             await axios.post(`${API_URL}/front/navbar/track-click/${menuId}`);
@@ -260,7 +248,6 @@ export const useLandingStore = defineStore("landing", () => {
         );
     }
 
-    // Mengambil semua menu berbentuk tombol
     function getButtonMenus(): MenuItem[] {
         return menus.value.filter(
             (menu) =>
@@ -275,6 +262,7 @@ export const useLandingStore = defineStore("landing", () => {
         content,
         menus,
         statistics,
+        statisticsLoading,
         teams,
         testimonials,
         loading,

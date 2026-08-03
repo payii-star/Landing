@@ -12,7 +12,7 @@
       </div>
 
       <!-- Skeleton -->
-      <div v-if="landingStore.loading" class="stats-grid">
+      <div v-if="landingStore.statisticsLoading" class="stats-grid">
         <div v-for="n in 3" :key="n" class="stat-card stat-skeleton">
           <div class="sk-icon"></div>
           <div class="sk-value"></div>
@@ -21,13 +21,8 @@
         </div>
       </div>
 
-      <!-- Error -->
-      <div v-else-if="landingStore.error" class="stats-error">
-        {{ landingStore.error }}
-      </div>
-
       <!-- Stats -->
-      <div v-else class="stats-grid">
+      <div v-else-if="landingStore.statistics.length" class="stats-grid">
         <div
           v-for="(stat, index) in landingStore.statistics"
           :key="stat.id"
@@ -60,6 +55,11 @@
           <div class="stat-bottom-line"></div>
 
         </div>
+      </div>
+
+      <!-- Kosong total (fallback dimatikan & API gagal) -->
+      <div v-else class="stats-error">
+        Data statistik belum tersedia.
       </div>
 
     </div>

@@ -67,7 +67,7 @@ import ParticleBackground from '@/components/ParticleBackground.vue';
 }
 
 .g-orb{
-  position:absolute;
+  position:fixed;
   border-radius:50%;
   pointer-events:none;
   z-index:0;
