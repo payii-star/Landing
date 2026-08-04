@@ -28,15 +28,17 @@
         @mouseleave="paused1 = false"
       >
         <div class="cls-track" :class="{ paused: paused1 }" :style="{ '--dur': dur1 + 's' }">
-          <div v-for="(logo, i) in row1" :key="'a' + i" class="cls-item">
+          <div v-for="(logo, i) in row1" :key="'b' + i" class="cls-item" aria-hidden="true">
             <div class="cls-card">
-              <img :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <div class="cls-card-name">{{ logo.name }}</div>
             </div>
           </div>
           <div v-for="(logo, i) in row1" :key="'b' + i" class="cls-item" aria-hidden="true">
             <div class="cls-card">
-              <img :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <div class="cls-card-name">{{ logo.name }}</div>
             </div>
           </div>
@@ -76,8 +78,6 @@ import { useLandingStore } from '@/stores/landing';
 import { mockClientLogos } from '@/mocks/landingMock';
 
 const landingStore = useLandingStore();
-const isPaused     = ref(false);
-
 // ── SEMENTARA: isi dummy client_logos kalau belum ada dari API
 onMounted(() => {
   if (!landingStore.content?.client_logos) {
@@ -88,9 +88,7 @@ onMounted(() => {
   }
 });
 
-const clientLogos = computed(() =>
-  (landingStore.content?.client_logos || []).filter(l => l.url)
-);
+const clientLogos = computed(() => landingStore.content?.client_logos || []);
 
 // Pad agar minimal 8 per baris
 const pad = (arr, min = 8) => {
@@ -123,6 +121,20 @@ const dur2 = computed(() => Math.max(20, row2.value.length * 2.4));
 }
 .cls-top-line { top: 0; }
 .cls-bottom-line { bottom: 0; }
+/* ── Badge (fallback teks kalau logo belum ada) ── */
+.cls-badge {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em;
+  color: rgba(226,234,255,0.55);
+  text-align: center; line-height: 1.35;
+  padding: 4px 6px;
+}
+.cls-card:hover .cls-badge {
+  color: #e2eaff;
+}
 
 /* ── Header ── */
 .cls-header {

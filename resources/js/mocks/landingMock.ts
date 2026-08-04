@@ -272,6 +272,7 @@ export interface AboutData {
   subtitle: string;
   description: string;
   vision: string;
+  mission: string[];
   image: string | null;
   features: string[];
 }
@@ -285,14 +286,18 @@ export const mockAbout: AboutData = {
   // menyebut tahun berdiri sama sekali.
   description:
     "CV. MCFLYON TEKNOLOGI INDONESIA adalah perusahaan swasta nasional yang bergerak di bidang pembuatan aplikasi serta perancangan sistem yang terintegrasi. Berdiri secara resmi pada awal Januari 2018, didukung tim dengan SDM yang unggul dan berkualitas.",
-  // [SIAP] Visi resmi dari company profile PDF, ditaruh field terpisah
-  // (bukan digabung ke description) supaya tidak duplikat dengan kalimat
-  // lain, dan bisa dirender sebagai highlight singkat di komponen —
-  // Misi (5 poin) & "Mengapa Harus Kami" sengaja TIDAK dijadikan section
-  // terpisah karena sudah terwakili oleh features di bawah + Statistics +
-  // Testimonials + Client Logos yang sudah ada di halaman About.
+  // [SIAP] Visi & Misi resmi — disalin persis dari halaman "VISI & MISI" company
+  // profile PDF (COMPRO.pdf, hal. 3). Ditampilkan sebagai section tersendiri
+  // (card di bawah foto, di kolom teks) di LandingAbout.vue.
   vision:
     "Menjadi perusahaan teknologi informasi yang berdaya saing dengan memberikan layanan dan solusi terbaik bagi customer dan stakeholder.",
+  mission: [
+    "Memberikan pelayanan terbaik demi tercapainya kepuasan pelanggan dengan jaminan kualitas pekerjaan, kecepatan, ketepatan, dan harga yang kompetitif.",
+    "Meningkatkan benefit dan value bagi konsumen dan stakeholder.",
+    "Mengoptimalkan penggunaan teknologi yang handal, aman, dan menguntungkan.",
+    "Meningkatkan kemampuan dan mengoptimalkan pengelolaan sumber daya manusia yang unggul dan dapat dipercaya.",
+    "Mengembangkan riset yang terpadu, berkesinambungan, dan terarah untuk meningkatkan kompetensi di dalam industri TI.",
+  ],
   image: null,
   // [SIAP] diganti dari 4 bullet generik ke poin "Keuntungan Jasa dan Produk"
   // resmi di company profile PDF — sebelumnya isinya teks generik lama yang
@@ -325,48 +330,48 @@ export interface ServiceItem {
 export const mockServices: ServiceItem[] = [
   {
     id: 1,
-    title: "Konsultasi IT & Bisnis",
-    description: "Analisis kebutuhan teknologi untuk mendukung pertumbuhan bisnis Anda.",
+    title: "Informasi Teknologi",
+    description: "Konsultasi dan solusi teknologi informasi sesuai kebutuhan bisnis Anda.", // [TENTATIF] kalimat sendiri, judul dari PDF
     icon: null,
     order: 1,
     is_active: true,
   },
   {
     id: 2,
-    title: "Pengembangan Website",
-    description: "Pembuatan website custom, company profile, hingga sistem berbasis web.",
+    title: "Software Asli",
+    description: "Pengembangan software original, bukan bajakan, dengan lisensi yang jelas.", // [TENTATIF]
     icon: null,
     order: 2,
     is_active: true,
   },
   {
     id: 3,
-    title: "Pengembangan Aplikasi Mobile",
-    description: "Aplikasi Android & iOS sesuai kebutuhan operasional bisnis Anda.",
+    title: "E-Commerce",
+    description: "Pembuatan platform jual-beli online untuk mendukung penjualan digital Anda.", // [TENTATIF]
     icon: null,
     order: 3,
     is_active: true,
   },
   {
     id: 4,
-    title: "Software Analysis & Engineering",
-    description: "Analisis dan perancangan sistem perangkat lunak yang terstruktur.",
+    title: "Jasa Konsultasi",
+    description: "Pendampingan dan analisis kebutuhan sistem sebelum pengembangan dimulai.", // [TENTATIF]
     icon: null,
     order: 4,
     is_active: true,
   },
   {
     id: 5,
-    title: "Network Engineering",
-    description: "Instalasi dan konfigurasi infrastruktur jaringan yang stabil dan aman.",
+    title: "Pengadaan Hardware",
+    description: "Penyediaan perangkat keras (hardware) sesuai kebutuhan infrastruktur IT Anda.", // [TENTATIF]
     icon: null,
     order: 5,
     is_active: true,
   },
   {
     id: 6,
-    title: "REST API & Integrasi Sistem",
-    description: "Pengembangan API untuk menghubungkan berbagai sistem/aplikasi.",
+    title: "Web Developer",
+    description: "Pembuatan website custom, company profile, hingga sistem berbasis web.", // [TENTATIF]
     icon: null,
     order: 6,
     is_active: true,
