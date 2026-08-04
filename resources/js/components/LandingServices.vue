@@ -62,9 +62,24 @@
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
             </svg>
 
-            <svg v-else class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="3" />
-              <path d="M8 12h8M12 8v8" />
+            <svg v-else-if="getIconType(service.title) === 'infotech'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="13" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+
+            <svg v-else-if="getIconType(service.title) === 'ecommerce'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1.5" />
+              <circle cx="18" cy="21" r="1.5" />
+              <path d="M2.5 3h2l2.6 12.4a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6" />
+            </svg>
+
+            <svg v-else-if="getIconType(service.title) === 'hardware'" class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="6" width="12" height="12" rx="1.5" />
+              <line x1="9" y1="2" x2="9" y2="6" /><line x1="15" y1="2" x2="15" y2="6" />
+              <line x1="9" y1="18" x2="9" y2="22" /><line x1="15" y1="18" x2="15" y2="22" />
+              <line x1="2" y1="9" x2="6" y2="9" /><line x1="2" y1="15" x2="6" y2="15" />
+              <line x1="18" y1="9" x2="22" y2="9" /><line x1="18" y1="15" x2="22" y2="15" />
             </svg>
           </div>
 
@@ -99,6 +114,9 @@ const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 const getIconType = (title = '') => {
   const t = title.toLowerCase();
   if (t.includes('konsultasi')) return 'consult';
+  if (t.includes('informasi teknologi')) return 'infotech'; // cek dulu sebelum 'web'
+  if (t.includes('e-commerce') || t.includes('ecommerce')) return 'ecommerce';
+  if (t.includes('hardware')) return 'hardware';
   if (t.includes('web')) return 'web';
   if (t.includes('mobile') || t.includes('aplikasi')) return 'mobile';
   if (t.includes('network') || t.includes('jaringan')) return 'network';
