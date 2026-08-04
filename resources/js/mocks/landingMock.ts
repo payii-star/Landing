@@ -23,9 +23,10 @@ export const mockContent = {
   logo: "/media/logo/logo-placeholder.png",
   description:
     "Perusahaan swasta nasional yang bergerak di bidang pembuatan aplikasi serta perancangan sistem yang terintegrasi.",
-  email: "info@mcflyon.co.id", // [TENTATIF]
-  telepon: "031-99165759", // dari Instagram resmi @mcflyon.id [SIAP]
-  alamat: "Surabaya, Jawa Timur", // [TENTATIF] alamat lengkap belum terkonfirmasi
+  email: "admin@mcflyon.co.id", // [SIAP]
+  whatsapp: "6285174323674", // [SIAP] dari mcflyon.co.id/contact
+  phone: "085174323674", // [SIAP]
+  address: "Jl. Bungkal Gg. II No. 25B, Kec. Sambikerep, Kota Surabaya", // [SIAP]
 
   // Field untuk LandingHero.vue [TENTATIF — copy belum final]
   hero_title: "Konsultasi IT &\nPembuatan Aplikasi\nUntuk Bisnis Anda",
@@ -147,9 +148,9 @@ export const mockFooter = {
     company_name: "Mcflyon Teknologi Indonesia",
     description:
       "Konsultan Informasi Teknologi | Jasa Pembuatan Aplikasi | Pembuatan Website.",
-    address: "Surabaya, Jawa Timur", // [TENTATIF]
-    email: "info@mcflyon.co.id", // [TENTATIF]
-    phone: "031-99165759",
+    address: "Jl. Bungkal Gg. II No. 25B, Kec. Sambikerep, Kota Surabaya", // [SIAP]
+    email: "admin@mcflyon.co.id", // [SIAP]
+    phone: "085174323674", // [SIAP]
     copyright: `© ${new Date().getFullYear()} Mcflyon Teknologi Indonesia. All rights reserved.`,
   },
   socials: [
@@ -197,8 +198,7 @@ export const mockTestimonials: Testimonial[] = [
     // langsung, bukan karangan seperti tercatat sebelumnya di file ini).
     // avatar masih null -> fallback ke foto acak i.pravatar.cc di
     // LandingTestimonials.vue, itu BUKAN foto beliau -- ganti dengan foto
-    // asli (seizin beliau) sebelum publish, jangan biarkan foto orang lain
-    // ditempel dengan nama beliau.
+    // asli (seizin beliau) sebelum publish.
     name: "Fahrur Rozi",
     position: "CEO & CTO",
     avatar: null,
@@ -364,10 +364,10 @@ export const mockContactSetting: ContactSetting = {
   hero_title: "Hubungi Kami",
   hero_subtitle:
     "Punya kebutuhan sistem atau ingin konsultasi? Tim kami siap membantu.",
-  email: "info@mcflyon.co.id", // [TENTATIF]
-  whatsapp: "6231991657590", // dari nomor telepon resmi 031-99165759, format WA — [TENTATIF, cek ulang]
-  phone: "031-99165759", // [SIAP] dari Instagram resmi @mcflyon.id
-  address: "Surabaya, Jawa Timur", // [TENTATIF] alamat lengkap belum terkonfirmasi
+  email: "admin@mcflyon.co.id", // [TENTATIF]
+  whatsapp: "6231991657590", // dari nomor telepon resmi +62 31 99165759 (WA) [SIAP]
+  phone: "085174323674", // [SIAP] dari Instagram resmi @mcflyon.id
+  address: "Jl. Bungkal Gg. II No. 25B, Kec. Sambikerep, Kota Surabaya", // [SIAP] dari footer mcflyon.co.id
   maps_url: "", // [TENTATIF] belum ada, kosongkan dulu biar tombol alamat tidak nunjuk ke mana-mana
   socials: {
     instagram: "https://www.instagram.com/mcflyon.id/", // [SIAP]
