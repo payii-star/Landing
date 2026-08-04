@@ -14,6 +14,12 @@
  *
  * [SIAP]     -> field sudah dikonfirmasi dari kode asli / sumber publik
  * [TENTATIF] -> boleh disesuaikan saat develop, kabari tim kalau berubah
+ *
+ * UPDATE (Chika): berdasarkan Company Profile PDF resmi Mcflyon, "SI-LABI"
+ * (lihat mockBestProjects #6) kemungkinan besar SUMBER ASLI dari data seed
+ * "e-SAKIP DLH / Dinas Lingkungan Hidup Jatim" yang disebut di atas — itu
+ * proyek asli Mcflyon untuk UPT Laboratorium DLH Provinsi Jatim, bukan sisa
+ * data yang salah. Perlu dikabari ke Tim 2 untuk klarifikasi.
  * ============================================================
  */
 
@@ -37,10 +43,22 @@ export const mockContent = {
   cta_secondary_label: "Lihat Proyek Kami",
   cta_secondary_url: "/projects",
   proof_text: "Dipercaya oleh berbagai instansi & klien di Indonesia",
+  // [SIAP] 11 klien resmi dari company profile PDF. `url` sengaja dikosongkan dulu
+  // (belum ada file logo yang bisa diekstrak dari PDF) — LandingClientLogos.vue
+  // otomatis nampilin badge teks kalau url kosong. `short` = label singkat untuk
+  // badge; `name` = nama lengkap untuk tooltip saat hover.
   client_logos: [
-    { url: "/media/clients/client-placeholder-1.png", name: "[Klien 1 — perlu dikonfirmasi]" },
-    { url: "/media/clients/client-placeholder-2.png", name: "[Klien 2 — perlu dikonfirmasi]" },
-    { url: "/media/clients/client-placeholder-3.png", name: "[Klien 3 — perlu dikonfirmasi]" },
+    { url: "", name: "Pemerintah Provinsi Jawa Timur", short: "Pemprov Jatim" },
+    { url: "", name: "Pemerintah Kabupaten Lamongan", short: "Pemkab Lamongan" },
+    { url: "", name: "Pemerintah Kabupaten Halmahera Timur", short: "Pemkab Halmahera Timur" },
+    { url: "", name: "Kementerian Perhubungan RI", short: "Kemenhub RI" },
+    { url: "", name: "Pemerintah Kabupaten Tulungagung", short: "Pemkab Tulungagung" },
+    { url: "", name: "Pemerintah Kabupaten Trenggalek", short: "Pemkab Trenggalek" },
+    { url: "", name: "Pemerintah Kabupaten Lumajang", short: "Pemkab Lumajang" },
+    { url: "", name: "Pemerintah Kabupaten Gresik", short: "Pemkab Gresik" },
+    { url: "", name: "Pemerintah Kabupaten Blitar", short: "Pemkab Blitar" },
+    { url: "", name: "Dinas Perpustakaan dan Kearsipan Kabupaten Pamekasan", short: "Disperpusip Pamekasan" },
+    { url: "", name: "Pemerintah Kabupaten Bangkalan", short: "Pemkab Bangkalan" },
   ],
 };
 
@@ -164,8 +182,8 @@ export const mockFooter = {
 // icon pakai nama Font Awesome solid (tanpa prefix "fa-"), karena komponen
 // LandingStatistics.vue merender sebagai `fa-${stat.icon}`.
 export const mockStatistics = [
-  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai" }, // [PERLU KONFIRMASI] belum ada angka pasti dari pembimbing, dan beda dgn klaim web resmi ("2+ Proyek")
-  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya" }, // [PERLU KONFIRMASI] web resmi klaim "15+ Klien" — cek dulu sebelum dipakai
+  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai" }, // [PERLU KONFIRMASI] belum ada angka pasti dari pembimbing, dan beda dgn klaim web resmi ("2+ Proyek") — CATATAN: company profile PDF konfirmasi 17 proyek nyata, angka ini perlu direvisi
+  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya" }, // [PERLU KONFIRMASI] web resmi klaim "15+ Klien" — company profile PDF konfirmasi 11 instansi klien, angka ini perlu direvisi
   { id: 3, icon: "calendar", statistic: "8+", label: "Tahun Pengalaman" }, // [SIAP] dari company profile PDF: berdiri resmi Januari 2018 -> ~8 tahun per 2026
 ];
 
@@ -412,23 +430,46 @@ export const mockCta: CtaData = {
 };
 
 // ── 9. CLIENT LOGOS (field client_logos di /front/content, ATAU endpoint terpisah — perlu dikonfirmasi ke Tim 2) ──
-// Dipakai oleh LandingClientLogos.vue. Logo di bawah ini PLACEHOLDER murni
-// (path belum tentu ada filenya) — perlu logo asli klien yang boleh dipublikasikan,
-// dikonfirmasi dulu ke pembimbing (etika menampilkan logo klien tanpa izin).
+// Dipakai oleh LandingClientLogos.vue. [SIAP] 11 klien resmi dari company profile
+// PDF. `url` dikosongkan (belum ada file logo yang bisa diekstrak dari PDF).
 export interface ClientLogo {
   url: string;
   name: string;
+  short?: string; // label singkat buat badge kalau logo (url) belum ada
 }
 
+// CATATAN: export ini saat ini tidak dipakai komponen manapun (LandingClientLogos.vue
+// baca dari mockContent.client_logos, bukan dari sini) — disinkronkan isinya biar
+// tidak beda data kalau nanti dipakai/endpoint terpisah jadi kesepakatan final Tim 2.
 export const mockClientLogos: ClientLogo[] = [
-  { url: "/media/clients/client-placeholder-1.png", name: "[Klien 1 — perlu dikonfirmasi]" },
-  { url: "/media/clients/client-placeholder-2.png", name: "[Klien 2 — perlu dikonfirmasi]" },
-  { url: "/media/clients/client-placeholder-3.png", name: "[Klien 3 — perlu dikonfirmasi]" },
+  { url: "", name: "Pemerintah Provinsi Jawa Timur", short: "Pemprov Jatim" },
+  { url: "", name: "Pemerintah Kabupaten Lamongan", short: "Pemkab Lamongan" },
+  { url: "", name: "Pemerintah Kabupaten Halmahera Timur", short: "Pemkab Halmahera Timur" },
+  { url: "", name: "Kementerian Perhubungan RI", short: "Kemenhub RI" },
+  { url: "", name: "Pemerintah Kabupaten Tulungagung", short: "Pemkab Tulungagung" },
+  { url: "", name: "Pemerintah Kabupaten Trenggalek", short: "Pemkab Trenggalek" },
+  { url: "", name: "Pemerintah Kabupaten Lumajang", short: "Pemkab Lumajang" },
+  { url: "", name: "Pemerintah Kabupaten Gresik", short: "Pemkab Gresik" },
+  { url: "", name: "Pemerintah Kabupaten Blitar", short: "Pemkab Blitar" },
+  { url: "", name: "Dinas Perpustakaan dan Kearsipan Kabupaten Pamekasan", short: "Disperpusip Pamekasan" },
+  { url: "", name: "Pemerintah Kabupaten Bangkalan", short: "Pemkab Bangkalan" },
 ];
 
-// ── 10. BEST PROJECTS (endpoint /front/best-projects) [TENTATIF — cuma SIPALAPA yang siap] ──
-// Dipakai oleh LandingBestProject.vue (Home). `link_project` = link eksternal ke
-// website/demo proyek (bukan halaman internal), makanya tombolnya target="_blank".
+// ── 10. BEST PROJECTS (endpoint /front/best-projects) [SIAP — 17 proyek dari company
+// profile PDF resmi]. Dipakai oleh LandingBestProject.vue (Home). `link_project`
+// dikosongkan semua karena semua proyek ini sistem internal instansi pemerintah,
+// tidak ada URL publik yang bisa dikunjungi — tombol "Kunjungi Website" otomatis
+// tidak muncul (LandingBestProject.vue pakai v-if="project.link_project").
+//
+// CATATAN PENTING: "SI-LABI" (item #6) kemungkinan besar adalah SUMBER ASLI dari
+// data seed "e-SAKIP DLH / Dinas Lingkungan Hidup Jatim" yang disebut briefing
+// sebagai "data nyasar di database" — ternyata itu proyek asli Mcflyon (UPT
+// Laboratorium DLH Provinsi Jatim), bukan sisa data salah. Perlu dikabari ke Tim 2.
+//
+// CATATAN: karena semua 17 masuk ke Best Project (Home), section ini akan cukup
+// panjang. mockProjects (section 12, dipakai /projects) MASIH versi lama (cuma
+// SIPALAPA + placeholder) — belum disinkronkan dengan daftar ini, worth
+// didiskusikan ke tim apakah perlu disamakan juga.
 export interface BestProject {
   id: number;
   title: string;
@@ -440,17 +481,138 @@ export interface BestProject {
 export const mockBestProjects: BestProject[] = [
   {
     id: 1,
-    title: "SIPALAPA", // [SIAP] satu-satunya proyek yang datanya terkonfirmasi
-    image: "/media/projects/sipalapa-placeholder.png", // [TENTATIF] belum ada file asli
+    title: "E-TPP",
+    image: "/media/projects/e-tpp-placeholder.png",
     description:
-      "Sistem informasi yang dikembangkan untuk mendukung proses administrasi dan pelayanan secara terintegrasi.", // [TENTATIF]
-    link_project: "", // [TENTATIF] belum ada link publik, kosongkan dulu
+      "Pemerintah Daerah Kabupaten Halmahera Timur. Mempermudah rekap dan pelaporan tunjangan kinerja pegawai beserta absensi pegawai.",
+    link_project: "",
   },
   {
     id: 2,
-    title: "[Proyek 2 — perlu dikonfirmasi]",
-    image: "/media/projects/project-placeholder-2.png",
-    description: "[Deskripsi proyek — perlu dikonfirmasi]",
+    title: "SIJAWARA+",
+    image: "/media/projects/sijawara-plus-placeholder.png",
+    description:
+      "Dinas Koperasi Usaha Mikro Kecil dan Menengah Provinsi Jawa Timur. Pengembangan fitur dan konten aplikasi untuk mempercepat pelayanan pelatihan di UPT Pelatihan Koperasi.",
+    link_project: "",
+  },
+  {
+    id: 3,
+    title: "SIMELA",
+    image: "/media/projects/simela-placeholder.png",
+    description:
+      "Badan Perencanaan Pembangunan Daerah (BAPPEDA) Kabupaten Lamongan. Mempermudah evaluasi Renja, monitoring, evaluasi, dan penyusunan laporan berkala pelaksanaan pembangunan daerah.",
+    link_project: "",
+  },
+  {
+    id: 4,
+    title: "E-SPJ",
+    image: "/media/projects/e-spj-placeholder.png",
+    description:
+      "Pemerintahan Provinsi Jawa Timur (Biro Umum Sekretariat Daerah). Mempercepat proses pelaksanaan SPJ dengan penomoran otomatis dan mempermudah tracking.",
+    link_project: "",
+  },
+  {
+    id: 5,
+    title: "SI-KARESOI",
+    image: "/media/projects/si-karesoi-placeholder.png",
+    description:
+      "Dinas Perhubungan, Badan Layanan Umum Politeknik Pelayaran Barombong. Mempermudah pengukuran kinerja dan rekap absensi pegawai untuk pembayaran remunerasi.",
+    link_project: "",
+  },
+  {
+    id: 6,
+    title: "SI-LABI",
+    image: "/media/projects/si-labi-placeholder.png",
+    description:
+      "UPT Laboratorium, Dinas Lingkungan Hidup Provinsi Jawa Timur. Mempercepat proses pendaftaran dan pengujian sampel hingga terbitnya sertifikat produk, menggantikan proses manual sebelumnya.",
+    link_project: "",
+  },
+  {
+    id: 7,
+    title: "SI-MANIS",
+    image: "/media/projects/si-manis-placeholder.png",
+    description:
+      "Badan Perencanaan dan Penelitian Pengembangan Pembangunan Daerah Kabupaten Lamongan (Bapelitbang). Mempermudah pengukuran kinerja dan rekap absensi pegawai untuk pembayaran remunerasi.",
+    link_project: "",
+  },
+  {
+    id: 8,
+    title: "LKR-ESAKIP",
+    image: "/media/projects/lkr-esakip-placeholder.png",
+    description:
+      "Dinas Pekerjaan Umum Sumber Daya Air (PU SDA). Mempermudah pelaporan IKI, Perjanjian Kinerja, dan pengukuran kinerja per triwulan/tahunan, serta penyusunan laporan LKJIP dan LKR.",
+    link_project: "",
+  },
+  {
+    id: 9,
+    title: "SI-PALAPA (Web)",
+    image: "/media/projects/si-palapa-placeholder.png",
+    description:
+      "Dinas Perpustakaan dan Kearsipan Kabupaten Pamekasan. Aplikasi perpustakaan untuk mempermudah peminjaman buku secara online, terintegrasi dengan Aplikasi Perpustakaan SLIM.",
+    link_project: "",
+  },
+  {
+    id: 10,
+    title: "SI-INEM",
+    image: "/media/projects/si-inem-placeholder.png",
+    description:
+      "BP3IP Jakarta. Mempermudah pengukuran kinerja dan rekap absensi pegawai untuk pembayaran remunerasi.",
+    link_project: "",
+  },
+  {
+    id: 11,
+    title: "SI-PADI",
+    image: "/media/projects/si-padi-placeholder.png",
+    description:
+      "Dinas Tanaman Pangan, Hortikultura dan Perkebunan. Mempermudah pemantauan laporan luas lahan, luas tanam, dan panen, termasuk harga jual padi, jagung, dan komoditas lainnya.",
+    link_project: "",
+  },
+  {
+    id: 12,
+    title: "SIKENEL",
+    image: "/media/projects/sikenel-placeholder.png",
+    description:
+      "Dinas Kelautan dan Perikanan Provinsi Jawa Timur. Sistem informasi kenelayanan untuk mempermudah pemberian hibah kepada nelayan dan merekap data secara online.",
+    link_project: "",
+  },
+  {
+    id: 13,
+    title: "SI-ARIF",
+    image: "/media/projects/si-arif-placeholder.png",
+    description:
+      "Kementerian Perhubungan, Direktorat Jenderal Perkeretaapian. Meningkatkan kualitas kearsipan kereta api dan optimalisasi perlindungan data perkeretaapian.",
+    link_project: "",
+  },
+  {
+    id: 14,
+    title: "SI-RAJA",
+    image: "/media/projects/si-raja-placeholder.png",
+    description:
+      "BPSDM Kementerian Perhubungan. Aplikasi surat-menyurat untuk mengatur seluruh jenis surat masuk dan keluar, dilengkapi laporan dan jadwal tugas/kerja.",
+    link_project: "",
+  },
+  {
+    id: 15,
+    title: "Mobile SI-PALAPA",
+    image: "/media/projects/mobile-si-palapa-placeholder.png",
+    description:
+      "Dinas Perpustakaan dan Kearsipan Kabupaten Pamekasan. Versi aplikasi mobile dari SI-PALAPA untuk mempermudah peminjaman buku, terintegrasi dengan Aplikasi Perpustakaan SLIM.",
+    link_project: "",
+  },
+  {
+    id: 16,
+    title: "Mobile SIJAWARA+",
+    image: "/media/projects/mobile-sijawara-plus-placeholder.png",
+    description:
+      "Dinas Koperasi Usaha Mikro Kecil dan Menengah Provinsi Jawa Timur. Versi aplikasi mobile dari SIJAWARA+ untuk mempercepat pelayanan pelatihan di UPT Pelatihan Koperasi.",
+    link_project: "",
+  },
+  {
+    id: 17,
+    title: "Mobile E-TPP",
+    image: "/media/projects/mobile-e-tpp-placeholder.png",
+    description:
+      "Pemerintah Daerah Kabupaten Halmahera Timur. Versi aplikasi mobile dari E-TPP untuk mempermudah rekap dan pelaporan tunjangan kinerja beserta absensi pegawai.",
     link_project: "",
   },
 ];
@@ -474,7 +636,11 @@ export const mockProjectsPageSetting: ProjectsPageSetting = {
 // ke Tim 2, karena stores/project.ts saat ini masih pakai /landing/projects, endpoint
 // LAMA yang menurut briefing seharusnya tidak dipakai lagi. Field `slug` dipakai untuk
 // link detail internal (/projects/:slug) — beda dari BestProject yang pakai
-// link_project (link eksternal). ──
+// link_project (link eksternal).
+//
+// CATATAN: BELUM disinkronkan dengan 17 proyek asli di mockBestProjects (section 10)
+// — masih versi lama placeholder. Worth didiskusikan ke tim apakah daftar ini perlu
+// disamakan juga, mengingat halaman /projects seharusnya jadi daftar lengkap. ──
 export interface ProjectListItem {
   id: number;
   title: string;

@@ -36,14 +36,16 @@
           <!-- Set A -->
           <div v-for="(logo, i) in paddedLogos" :key="'a' + i" class="cls-item">
             <div class="cls-card">
-              <img :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <span class="cls-tip">{{ logo.name }}</span>
             </div>
           </div>
           <!-- Set B — salinan identik, untuk sambungan seamless -->
           <div v-for="(logo, i) in paddedLogos" :key="'b' + i" class="cls-item" aria-hidden="true">
             <div class="cls-card">
-              <img :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <span class="cls-tip">{{ logo.name }}</span>
             </div>
           </div>
@@ -175,6 +177,7 @@ const duration = computed(() => {
   position: relative;
   display: flex; align-items: center; justify-content: center;
   padding: 18px 32px;
+  min-height: 56px;
   border-radius: 16px;
   border: 1px solid transparent;
   transition:
@@ -203,6 +206,24 @@ const duration = computed(() => {
 .cls-card:hover .cls-img {
   opacity: 1;
   filter: none;
+}
+
+/* ── Badge (fallback teks kalau logo/url belum ada) ── */
+.cls-badge {
+  display: inline-flex; align-items: center;
+  white-space: nowrap;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em;
+  color: rgba(226,234,255,0.4);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: color 0.3s, border-color 0.3s, background 0.3s;
+  pointer-events: none; user-select: none;
+}
+.cls-card:hover .cls-badge {
+  color: #e2eaff;
+  border-color: rgba(59,130,246,0.45);
+  background: rgba(59,130,246,0.06);
 }
 
 /* ── Tooltip ── */
@@ -247,17 +268,20 @@ const duration = computed(() => {
 @media (max-width: 768px) {
   .cls-section { padding: 44px 0 52px; }
   .cls-img { height: 44px; max-width: 110px; }
+  .cls-badge { font-size: 0.7rem; padding: 7px 12px; }
   .cls-fade { width: 60px; }
   .cls-header { margin-bottom: 32px; }
 }
 @media (max-width: 480px) {
   .cls-img { height: 36px; max-width: 90px; }
+  .cls-badge { font-size: 0.65rem; padding: 6px 10px; }
   .cls-card { padding: 12px 18px; }
   .cls-fade { width: 40px; }
 }
 @media (max-width: 360px) {
   .cls-section { padding: 36px 0 44px; }
   .cls-img { height: 28px; max-width: 72px; }
+  .cls-badge { font-size: 0.6rem; padding: 5px 8px; }
   .cls-card { padding: 10px 14px; }
   .cls-label { font-size: 0.6rem; }
 }
