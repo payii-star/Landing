@@ -365,7 +365,7 @@ export const mockContactSetting: ContactSetting = {
   hero_subtitle:
     "Punya kebutuhan sistem atau ingin konsultasi? Tim kami siap membantu.",
   email: "admin@mcflyon.co.id", // [TENTATIF]
-  whatsapp: "6231991657590", // dari nomor telepon resmi +62 31 99165759 (WA) [SIAP]
+  whatsapp: "6285174323674", // dari nomor telepon resmi +62 31 99165759 (WA) [SIAP]
   phone: "085174323674", // [SIAP] dari Instagram resmi @mcflyon.id
   address: "Jl. Bungkal Gg. II No. 25B, Kec. Sambikerep, Kota Surabaya", // [SIAP] dari footer mcflyon.co.id
   maps_url: "", // [TENTATIF] belum ada, kosongkan dulu biar tombol alamat tidak nunjuk ke mana-mana
