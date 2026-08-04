@@ -1,8 +1,10 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { mockContactSetting } from '@/mocks/landingMock'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'
+const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== 'false'
 
 export const useContactStore = defineStore('contact', () => {
 
@@ -24,6 +26,12 @@ async function fetchSetting() {
     isFetched.value = true
     } catch (e) {
     console.error('Contact setting fetch error:', e)
+
+    if (USE_MOCK_FALLBACK) {
+        console.warn('⚠️ Pakai mockContactSetting — backend belum tersedia. JANGAN lupa dicabut sebelum production.')
+        setting.value = mockContactSetting
+        isFetched.value = true
+    }
     } finally {
     loading.value = false
     }

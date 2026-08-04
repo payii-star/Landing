@@ -24,9 +24,9 @@ export const mockContent = {
   description:
     "Perusahaan swasta nasional yang bergerak di bidang pembuatan aplikasi serta perancangan sistem yang terintegrasi.",
   email: "admin@mcflyon.co.id", // [SIAP]
-  whatsapp: "6285174323674", // [SIAP] dari mcflyon.co.id/contact
-  phone: "085174323674", // [SIAP]
-  address: "Jl. Bungkal Gg. II No. 25B, Kec. Sambikerep, Kota Surabaya", // [SIAP]
+  whatsapp: "6285174323674", // [PERLU KONFIRMASI] beda dari hotline di company profile PDF, belum tentu WA aktif sama
+  phone: "0897-7266-144", // [PERLU KONFIRMASI] dari company profile PDF (hotline) — beda dari versi web resmi 085174323674, konfirmasi ke pembimbing sebelum final
+  address: "JL. Dk. Bungkal no 25b Gang II RT.010 RW.003 Kel. Sambikerep Kec. Sambikerep Kota Surabaya", // [SIAP] dari company profile PDF, lebih lengkap dari versi sebelumnya
 
   // Field untuk LandingHero.vue [TENTATIF — copy belum final]
   hero_title: "Konsultasi IT &\nPembuatan Aplikasi\nUntuk Bisnis Anda",
@@ -148,9 +148,9 @@ export const mockFooter = {
     company_name: "Mcflyon Teknologi Indonesia",
     description:
       "Konsultan Informasi Teknologi | Jasa Pembuatan Aplikasi | Pembuatan Website.",
-    address: "Jl. Bungkal Gg. II No. 25B, Kec. Sambikerep, Kota Surabaya", // [SIAP]
+    address: "JL. Dk. Bungkal no 25b Gang II RT.010 RW.003 Kel. Sambikerep Kec. Sambikerep Kota Surabaya", // [SIAP] dari company profile PDF
     email: "admin@mcflyon.co.id", // [SIAP]
-    phone: "085174323674", // [SIAP]
+    phone: "0897-7266-144", // [PERLU KONFIRMASI] dari company profile PDF (hotline) — beda dari versi web resmi
     copyright: `© ${new Date().getFullYear()} Mcflyon Teknologi Indonesia. All rights reserved.`,
   },
   socials: [
@@ -164,9 +164,9 @@ export const mockFooter = {
 // icon pakai nama Font Awesome solid (tanpa prefix "fa-"), karena komponen
 // LandingStatistics.vue merender sebagai `fa-${stat.icon}`.
 export const mockStatistics = [
-  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai" },
-  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya" },
-  { id: 3, icon: "calendar", statistic: "3+", label: "Tahun Pengalaman" },
+  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai" }, // [PERLU KONFIRMASI] belum ada angka pasti dari pembimbing, dan beda dgn klaim web resmi ("2+ Proyek")
+  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya" }, // [PERLU KONFIRMASI] web resmi klaim "15+ Klien" — cek dulu sebelum dipakai
+  { id: 3, icon: "calendar", statistic: "8+", label: "Tahun Pengalaman" }, // [SIAP] dari company profile PDF: berdiri resmi Januari 2018 -> ~8 tahun per 2026
 ];
 
 // ── 5. TESTIMONIALS (endpoint /front/testimonials) [TENTATIF — isi karangan, dummy] ──
@@ -253,6 +253,7 @@ export interface AboutData {
   title: string;
   subtitle: string;
   description: string;
+  vision: string;
   image: string | null;
   features: string[];
 }
@@ -261,14 +262,29 @@ export const mockAbout: AboutData = {
   title: "Tentang Kami",
   subtitle:
     "Kami Profesional Software Developer Menyediakan Solusi Untuk Kebutuhan Anda.",
+  // [SIAP] disamakan dengan mockContent.description + company profile PDF —
+  // sebelumnya dua sumber teks "tentang perusahaan" ini beda kalimat & tidak
+  // menyebut tahun berdiri sama sekali.
   description:
-    "CV. MCFLYON TEKNOLOGI INDONESIA adalah Software Developer yang termotivasi untuk memberikan solusi dalam setiap masalah maupun bisnis.\n\nMemiliki tim dengan SDM yang unggul dan berkualitas dapat menjawab setiap permasalahan yang ada, hingga membantu mengembangkan bisnis Anda meningkat pesat.",
+    "CV. MCFLYON TEKNOLOGI INDONESIA adalah perusahaan swasta nasional yang bergerak di bidang pembuatan aplikasi serta perancangan sistem yang terintegrasi. Berdiri secara resmi pada awal Januari 2018, didukung tim dengan SDM yang unggul dan berkualitas.",
+  // [SIAP] Visi resmi dari company profile PDF, ditaruh field terpisah
+  // (bukan digabung ke description) supaya tidak duplikat dengan kalimat
+  // lain, dan bisa dirender sebagai highlight singkat di komponen —
+  // Misi (5 poin) & "Mengapa Harus Kami" sengaja TIDAK dijadikan section
+  // terpisah karena sudah terwakili oleh features di bawah + Statistics +
+  // Testimonials + Client Logos yang sudah ada di halaman About.
+  vision:
+    "Menjadi perusahaan teknologi informasi yang berdaya saing dengan memberikan layanan dan solusi terbaik bagi customer dan stakeholder.",
   image: null,
+  // [SIAP] diganti dari 4 bullet generik ke poin "Keuntungan Jasa dan Produk"
+  // resmi di company profile PDF — sebelumnya isinya teks generik lama yang
+  // tidak berasal dari PDF/sumber resmi manapun.
   features: [
-    "Tim berpengalaman & profesional",
-    "Solusi teknologi berbasis kebutuhan bisnis",
-    "Support & maintenance jangka panjang",
-    "Desain modern & performa optimal",
+    "Pelayanan yang diberikan selalu prima",
+    "Proses pemesanan dilakukan cepat dan tepat waktu",
+    "Harga bersaing namun jaminan kualitas dan mutu terbaik",
+    "Aplikasi yang kami buat bisa custom sesuai kebutuhan Anda",
+    "Aplikasi yang kami kembangkan bisa terintegrasi dengan aplikasi lain",
   ],
 };
 
@@ -364,10 +380,10 @@ export const mockContactSetting: ContactSetting = {
   hero_title: "Hubungi Kami",
   hero_subtitle:
     "Punya kebutuhan sistem atau ingin konsultasi? Tim kami siap membantu.",
-  email: "admin@mcflyon.co.id", // [TENTATIF]
-  whatsapp: "6285174323674", // dari nomor telepon resmi +62 31 99165759 (WA) [SIAP]
-  phone: "085174323674", // [SIAP] dari Instagram resmi @mcflyon.id
-  address: "Jl. Bungkal Gg. II No. 25B, Kec. Sambikerep, Kota Surabaya", // [SIAP] dari footer mcflyon.co.id
+  email: "admin@mcflyon.co.id", // [SIAP]
+  whatsapp: "6285174323674", // [PERLU KONFIRMASI] tiga sumber beda: Instagram, web resmi, PDF — cek mana nomor WA aktif
+  phone: "0897-7266-144", // [PERLU KONFIRMASI] dari company profile PDF (hotline) — beda dari web resmi 085174323674 & Instagram 031-99165759
+  address: "JL. Dk. Bungkal no 25b Gang II RT.010 RW.003 Kel. Sambikerep Kec. Sambikerep Kota Surabaya", // [SIAP] dari company profile PDF
   maps_url: "", // [TENTATIF] belum ada, kosongkan dulu biar tombol alamat tidak nunjuk ke mana-mana
   socials: {
     instagram: "https://www.instagram.com/mcflyon.id/", // [SIAP]
