@@ -34,6 +34,9 @@ class LandingSeeder extends Seeder
             'cta_secondary_label' => 'Lihat Proyek Kami',
             'cta_secondary_url' => '/projects',
             'proof_text' => 'Dipercaya oleh berbagai instansi & klien di Indonesia',
+            'contact_hero_title' => 'Hubungi Kami',
+            'contact_hero_subtitle' => 'Punya kebutuhan sistem atau ingin konsultasi? Tim kami siap membantu.',
+            'contact_maps_url' => '',
             'client_logos' => json_encode([
                 ['url' => '', 'name' => 'Pemerintah Provinsi Jawa Timur', 'short' => 'Pemprov Jatim'],
                 ['url' => '', 'name' => 'Pemerintah Kabupaten Lamongan', 'short' => 'Pemkab Lamongan'],

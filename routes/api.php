@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\FooterController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,11 @@ Route::get('front/testimonials', [TestimonialController::class, 'index']);
 Route::get('front/landing-cta', [LandingController::class, 'landingCta']);
 Route::get('front/landing-about', [LandingController::class, 'landingAbout']);
 Route::get('front/services', [ServiceController::class, 'index']);
+
+Route::prefix('contact')->group(function () {
+    Route::get('setting', [ContactController::class, 'setting']);
+    Route::post('messages', [ContactController::class, 'store']);
+});
 
 Route::prefix('setting')->group(function () {
     Route::get('', [SettingController::class, 'index']);
