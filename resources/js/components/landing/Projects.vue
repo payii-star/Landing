@@ -46,14 +46,14 @@
         >
           <div class="row align-items-center" :class="{ 'flex-row-reverse': index % 2 !== 0 }">
 
-            <!-- IMAGE -->
+            <!-- IMAGE / PLACEHOLDER -->
             <div class="col-lg-6">
-              <img
-                :src="project.image"
-                class="featured-image"
-                :alt="project.title"
-                loading="lazy"
-              />
+              <div
+                class="featured-image featured-placeholder"
+                :style="{ background: getGradient(project.id) }"
+              >
+                <span class="placeholder-initials">{{ getInitials(project.title) }}</span>
+              </div>
             </div>
 
             <!-- TEXT -->
@@ -77,13 +77,12 @@
           >
             <div class="project-card">
               <div class="project-image-wrapper">
-                <img
-                  v-if="project.image"
-                  :src="project.image"
-                  class="project-image"
-                  :alt="project.title"
-                  loading="lazy"
-                />
+                <div
+                  class="project-image project-placeholder"
+                  :style="{ background: getGradient(project.id) }"
+                >
+                  <span class="placeholder-initials">{{ getInitials(project.title) }}</span>
+                </div>
                 <div class="project-overlay">
                   <h5 class="overlay-title">{{ project.title }}</h5>
                 </div>
@@ -116,6 +115,29 @@ const projectStore = useProjectStore()
 
 const featuredProjects = computed(() => projectStore.projects.slice(0, 3))
 const gridProjects = computed(() => projectStore.projects.slice(3))
+
+// ── PLACEHOLDER VISUAL (sementara, sampai ada gambar asli tiap proyek) ──
+// Ganti <img> broken jadi kotak gradient + inisial nama, biar semua card
+// konsisten tampilannya (nggak ada yang collapse/pecah beda-beda).
+const GRADIENTS = [
+  'linear-gradient(135deg, #1d4ed8, #0f172a)',
+  'linear-gradient(135deg, #7c3aed, #1e1b4b)',
+  'linear-gradient(135deg, #0891b2, #0c2f3d)',
+  'linear-gradient(135deg, #059669, #052e22)',
+  'linear-gradient(135deg, #dc2626, #2b0a0a)',
+  'linear-gradient(135deg, #d97706, #2b1a05)',
+]
+function getGradient(id) {
+  return GRADIENTS[id % GRADIENTS.length]
+}
+function getInitials(title) {
+  if (!title) return '?'
+  const clean = title.replace(/[^A-Za-z0-9\s]/g, ' ').trim()
+  const parts = clean.split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return (parts[0][0] + parts[1][0]).toUpperCase()
+}
 
 onMounted(async () => {
   // Hanya fetch jika belum ada data (cache Pinia)
@@ -186,6 +208,24 @@ onMounted(async () => {
   transform: scale(1.08);
 }
 
+/* ════ PLACEHOLDER (gradient + inisial, pengganti sementara gambar asli) ════ */
+.project-placeholder,
+.featured-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.placeholder-initials {
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.28);
+  user-select: none;
+}
+.featured-placeholder .placeholder-initials {
+  font-size: 4rem;
+}
+
 /* ════ OVERLAY ════ */
 .project-overlay {
   position: absolute;
@@ -234,6 +274,7 @@ onMounted(async () => {
 }
 .featured-image {
   width: 100%;
+  height: 340px;
   border-radius: 16px;
   object-fit: cover;
   box-shadow: 0 20px 50px rgba(0,0,0,0.35);
