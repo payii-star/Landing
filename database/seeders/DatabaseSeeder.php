@@ -17,6 +17,10 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserSeeder::class,
             SettingSeeder::class,
+            LandingSeeder::class,
+            AboutSeeder::class,
+            ProjectTestimonialSeeder::class,
+            ServiceSeeder::class,
         ]);
     }
 }
