@@ -5,7 +5,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
-use App\Http\Controllers\Api\LandingController; // <--- 1. INI KITA TAMBAHKAN
+use App\Http\Controllers\Api\LandingController;
+use App\Http\Controllers\Api\MenuController;
+use App\Http\Controllers\Api\FooterController;
+use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\TestimonialController;
+use App\Http\Controllers\Api\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +19,17 @@ use App\Http\Controllers\Api\LandingController; // <--- 1. INI KITA TAMBAHKAN
 */
 
 
-Route::get('landing-content', [LandingController::class, 'index']); // <--- 2. INI ROUTE BARUNYA
+Route::get('landing-content', [LandingController::class, 'index']);
+Route::get('front/content', [LandingController::class, 'frontContent']);
+Route::get('front/navbar', [MenuController::class, 'index']);
+Route::get('footer/landing', [FooterController::class, 'index']);
+
+Route::get('front/projects', [ProjectController::class, 'index']);
+Route::get('front/best-projects', [ProjectController::class, 'featured']);
+Route::get('front/testimonials', [TestimonialController::class, 'index']);
+Route::get('front/landing-cta', [LandingController::class, 'landingCta']);
+Route::get('front/landing-about', [LandingController::class, 'landingAbout']);
+Route::get('front/services', [ServiceController::class, 'index']);
 
 Route::prefix('setting')->group(function () {
     Route::get('', [SettingController::class, 'index']);

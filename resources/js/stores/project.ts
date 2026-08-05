@@ -7,16 +7,12 @@ const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api"
 export const useProjectStore = defineStore('project', () => {
   const projects = ref([])
   const loading = ref(false)
-  const isFetched = ref(false)  // flag: sudah pernah fetch atau belum
+  const isFetched = ref(false)  
   async function fetchProjects() {
-    // Kalau sudah pernah fetch, skip — pakai data yang ada di memory
     if (isFetched.value) return
     loading.value = true
     try {
-      // CATATAN: endpoint ini masih /landing/projects (lama). Menurut briefing
-      // seharusnya pakai /front/best-projects — perlu dikonfirmasi ulang ke Tim 2
-      // sebelum dianggap final.
-      const res = await axios.get(`${API_URL}/landing/projects`)
+      const res = await axios.get(`${API_URL}/front/projects`)
       projects.value = res.data.data
       isFetched.value = true
       console.log("✅ Projects loaded:", projects.value)
