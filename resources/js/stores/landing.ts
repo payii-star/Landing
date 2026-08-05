@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios, { AxiosError } from "axios";
-import { mockContent, mockNavbar, mockStatistics, mockTestimonials, type Testimonial } from "@/mocks/landingMock";
+import { mockContent, mockNavbar, mockStatistics, mockTeams, mockTestimonials, type Testimonial } from "@/mocks/landingMock";
 
 // ── TYPE DEFINITIONS ───────────────────────────────────────────────
 
@@ -172,6 +172,13 @@ export const useLandingStore = defineStore("landing", () => {
             teams.value = response.data.data || response.data || [];
         } catch (err: any) {
             console.error("❌ Failed to fetch teams:", err);
+
+            if (USE_MOCK_FALLBACK) {
+                console.warn("⚠️ Pakai mockTeams — backend belum tersedia. JANGAN lupa dicabut sebelum production.");
+                teams.value = mockTeams;
+            } else {
+                teams.value = [];
+            }
         }
     }
 
