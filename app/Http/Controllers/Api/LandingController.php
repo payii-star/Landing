@@ -23,9 +23,14 @@ class LandingController extends Controller
     {
         $data = LandingContent::pluck('value', 'key');
 
+        $result = $data->toArray();
+        if (isset($result['client_logos'])) {
+            $result['client_logos'] = json_decode($result['client_logos']);
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $data,
+            'data' => $result,
         ]);
     }
 
@@ -43,7 +48,7 @@ class LandingController extends Controller
             ],
         ]);
     }
-    
+
     public function landingAbout()
     {
         $data = LandingContent::pluck('value', 'key');

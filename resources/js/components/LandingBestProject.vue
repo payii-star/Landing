@@ -84,7 +84,7 @@ const getImageUrl = (path) => {
 const fetchProjects = async () => {
   try {
     const response = await axios.get('/front/best-projects');
-    projects.value = response.data;
+    projects.value = response.data.data || [];
   } catch (error) {
     console.error('Gagal memuat proyek terbaik:', error);
     // ── SEMENTARA: kalau API gagal (404), pakai dummy data

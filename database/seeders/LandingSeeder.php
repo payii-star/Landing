@@ -25,7 +25,7 @@ class LandingSeeder extends Seeder
             'description' => 'Perusahaan swasta nasional yang bergerak di bidang pembuatan aplikasi serta perancangan sistem yang terintegrasi.',
             'email' => 'admin@mcflyon.co.id',
             'whatsapp' => '6285174323674',
-            'phone' => '0897-7266-144', 
+            'phone' => '0897-7266-144',
             'address' => 'JL. Dk. Bungkal no 25b Gang II RT.010 RW.003 Kel. Sambikerep Kec. Sambikerep Kota Surabaya',
             'hero_title' => "Konsultasi IT &\nPembuatan Aplikasi\nUntuk Bisnis Anda",
             'hero_desc' => 'Kami membantu merancang dan membangun sistem terintegrasi — dari konsultasi, pengembangan aplikasi, hingga infrastruktur jaringan.',
@@ -34,6 +34,19 @@ class LandingSeeder extends Seeder
             'cta_secondary_label' => 'Lihat Proyek Kami',
             'cta_secondary_url' => '/projects',
             'proof_text' => 'Dipercaya oleh berbagai instansi & klien di Indonesia',
+            'client_logos' => json_encode([
+                ['url' => '', 'name' => 'Pemerintah Provinsi Jawa Timur', 'short' => 'Pemprov Jatim'],
+                ['url' => '', 'name' => 'Pemerintah Kabupaten Lamongan', 'short' => 'Pemkab Lamongan'],
+                ['url' => '', 'name' => 'Pemerintah Kabupaten Halmahera Timur', 'short' => 'Pemkab Halmahera Timur'],
+                ['url' => '', 'name' => 'Kementerian Perhubungan RI', 'short' => 'Kemenhub RI'],
+                ['url' => '', 'name' => 'Pemerintah Kabupaten Tulungagung', 'short' => 'Pemkab Tulungagung'],
+                ['url' => '', 'name' => 'Pemerintah Kabupaten Trenggalek', 'short' => 'Pemkab Trenggalek'],
+                ['url' => '', 'name' => 'Pemerintah Kabupaten Lumajang', 'short' => 'Pemkab Lumajang'],
+                ['url' => '', 'name' => 'Pemerintah Kabupaten Gresik', 'short' => 'Pemkab Gresik'],
+                ['url' => '', 'name' => 'Pemerintah Kabupaten Blitar', 'short' => 'Pemkab Blitar'],
+                ['url' => '', 'name' => 'Dinas Perpustakaan dan Kearsipan Kabupaten Pamekasan', 'short' => 'Disperpusip Pamekasan'],
+                ['url' => '', 'name' => 'Pemerintah Kabupaten Bangkalan', 'short' => 'Pemkab Bangkalan'],
+            ]),
         ];
 
         foreach ($content as $key => $value) {
