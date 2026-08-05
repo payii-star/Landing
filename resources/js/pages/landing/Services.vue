@@ -21,17 +21,19 @@ const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
 const fetchPublicData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/landing/service-public`);
+    const response = await axios.get(`${API_URL}/front/services`);
 
-    // 2. PERBAIKAN: Tangkap KEDUA datanya dari API Laravel
-    if (response.data) {
-        heroData.value = response.data.hero || {
-            title: "Layanan Unggulan Untuk Bisnis Anda",
-            subtitle: "Kami menyediakan berbagai layanan profesional untuk membantu bisnis Anda tumbuh dan berkembang di era digital.",
-            image: null
-        };
-        // Menangkap data kotak-kotak layanan
-        servicesData.value = response.data.services || [];
+    // Hero tetap hardcode (belum ada di backend, sengaja)
+    heroData.value = {
+        title: "Layanan Unggulan Untuk Bisnis Anda",
+        subtitle: "Kami menyediakan berbagai layanan profesional untuk membantu bisnis Anda tumbuh dan berkembang di era digital.",
+        image: null
+    };
+
+    if (response.data.success) {
+        servicesData.value = response.data.data || [];
+    } else {
+        servicesData.value = [];
     }
   } catch (error) {
     console.error("❌ Gagal mengambil data layanan publik:", error);

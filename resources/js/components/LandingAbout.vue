@@ -50,7 +50,7 @@
 
           <!-- Feature list -->
           <ul class="about-features">
-            <li v-for="feat in features" :key="feat">
+            <li v-for="feat in aboutData.features" :key="feat">
               <span class="feat-icon">
                 <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
                   <path d="M2 5.5l2.5 2.5L9 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -79,13 +79,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { mockAbout } from '@/mocks/landingMock';
 
-// Nilai awal sekarang diambil dari mockAbout (landingMock.ts), bukan hardcode
-// di sini lagi — isinya PERSIS sama seperti sebelumnya, cuma dipindah sumbernya.
 const aboutData = ref({ ...mockAbout });
-
-// features tetap statis (bukan dari backend), tapi sumbernya sekarang
-// dari mockAbout supaya satu tempat rujukan dengan bagian About lainnya.
-const features = mockAbout.features;
 
 // Sama seperti pola di stores/landing.ts — bisa dimatikan lewat .env kalau perlu
 const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
