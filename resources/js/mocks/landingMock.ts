@@ -182,9 +182,44 @@ export const mockFooter = {
 // icon pakai nama Font Awesome solid (tanpa prefix "fa-"), karena komponen
 // LandingStatistics.vue merender sebagai `fa-${stat.icon}`.
 export const mockStatistics = [
-  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai" }, // [PERLU KONFIRMASI] belum ada angka pasti dari pembimbing, dan beda dgn klaim web resmi ("2+ Proyek") — CATATAN: company profile PDF konfirmasi 17 proyek nyata, angka ini perlu direvisi
-  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya" }, // [PERLU KONFIRMASI] web resmi klaim "15+ Klien" — company profile PDF konfirmasi 11 instansi klien, angka ini perlu direvisi
-  { id: 3, icon: "calendar", statistic: "8+", label: "Tahun Pengalaman" }, // [SIAP] dari company profile PDF: berdiri resmi Januari 2018 -> ~8 tahun per 2026
+  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai", is_active: true, order: 1 }, // [PERLU KONFIRMASI] belum ada angka pasti dari pembimbing, dan beda dgn klaim web resmi ("2+ Proyek") — CATATAN: company profile PDF konfirmasi 17 proyek nyata, angka ini perlu direvisi
+  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya", is_active: true, order: 2 }, // [PERLU KONFIRMASI] web resmi klaim "15+ Klien" — company profile PDF konfirmasi 11 instansi klien, angka ini perlu direvisi
+  { id: 3, icon: "calendar", statistic: "8+", label: "Tahun Pengalaman", is_active: true, order: 3 }, // [SIAP] dari company profile PDF: berdiri resmi Januari 2018 -> ~8 tahun per 2026
+];
+
+// ── 4b. TEAM (endpoint /front/teams) [TENTATIF — cuma 1 nama terkonfirmasi publik] ──
+// CEO yang terkonfirmasi publik: Aang Kurniawan (Group CEO, dari LinkedIn).
+// Anggota lain masih placeholder — perlu daftar struktur tim resmi dari kantor,
+// JANGAN publish nama karangan sebagai anggota tim asli.
+export interface TeamMemberMock {
+  id: number;
+  name: string;
+  position: string;
+  image: string;
+  image_url: string;
+  order: number;
+  is_active: boolean;
+}
+
+export const mockTeams: TeamMemberMock[] = [
+  {
+    id: 1,
+    name: "Aang Kurniawan",
+    position: "Group CEO",
+    image: "/media/team/placeholder.jpg",
+    image_url: "/media/team/placeholder.jpg",
+    order: 1,
+    is_active: true,
+  },
+  {
+    id: 2,
+    name: "[Nama — perlu dikonfirmasi]",
+    position: "[Jabatan — perlu dikonfirmasi]",
+    image: "/media/team/placeholder.jpg",
+    image_url: "/media/team/placeholder.jpg",
+    order: 2,
+    is_active: true,
+  },
 ];
 
 // ── 5. TESTIMONIALS (endpoint /front/testimonials) [TENTATIF — isi karangan, dummy] ──

@@ -54,13 +54,15 @@
         <div class="cls-track reverse" :class="{ paused: paused2 }" :style="{ '--dur': dur2 + 's' }">
           <div v-for="(logo, i) in row2" :key="'c' + i" class="cls-item">
             <div class="cls-card">
-              <img :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <div class="cls-card-name">{{ logo.name }}</div>
             </div>
           </div>
           <div v-for="(logo, i) in row2" :key="'d' + i" class="cls-item" aria-hidden="true">
             <div class="cls-card">
-              <img :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <div class="cls-card-name">{{ logo.name }}</div>
             </div>
           </div>
@@ -89,6 +91,12 @@ onMounted(() => {
 });
 
 const clientLogos = computed(() => landingStore.content?.client_logos || []);
+
+// State pause-on-hover untuk 2 baris marquee (dipakai di template tapi
+// sebelumnya tidak pernah dideklarasikan — bikin "paused1/paused2 is not
+// defined" tiap kali di-hover, dan animasi tidak pernah berhenti)
+const paused1 = ref(false);
+const paused2 = ref(false);
 
 // Pad agar minimal 8 per baris
 const pad = (arr, min = 8) => {
