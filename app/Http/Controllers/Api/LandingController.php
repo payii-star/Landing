@@ -66,4 +66,17 @@ class LandingController extends Controller
             ],
         ]);
     }
+
+    public function projectsPage()
+    {
+        $data = LandingContent::pluck('value', 'key');
+
+        return response()->json([
+            'setting' => [
+                'label' => $data['projects_page_label'] ?? null,
+                'title' => $data['projects_page_title'] ?? null,
+                'subtitle' => $data['projects_page_subtitle'] ?? null,
+            ],
+        ]);
+    }
 }

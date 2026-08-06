@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\StatisticController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,11 @@ Route::get('front/best-projects', [ProjectController::class, 'featured']);
 Route::get('front/testimonials', [TestimonialController::class, 'index']);
 Route::get('front/landing-cta', [LandingController::class, 'landingCta']);
 Route::get('front/landing-about', [LandingController::class, 'landingAbout']);
+
 Route::get('front/services', [ServiceController::class, 'index']);
+Route::get('front/statistics', [StatisticController::class, 'index']);
+Route::get('projects-page', [LandingController::class, 'projectsPage']);
+Route::post('front/navbar/track-click/{menuId}', [MenuController::class, 'trackClick']);
 
 Route::prefix('contact')->group(function () {
     Route::get('setting', [ContactController::class, 'setting']);

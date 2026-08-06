@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             AboutSeeder::class,
             ProjectTestimonialSeeder::class,
             ServiceSeeder::class,
+            StatisticSeeder::class,
         ]);
     }
 }

@@ -29,4 +29,15 @@ class MenuController extends Controller
             'data' => $menus,
         ]);
     }
+
+    public function trackClick($menuId)
+    {
+        $menu = Menu::find($menuId);
+
+        if ($menu) {
+            $menu->increment('click_count');
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

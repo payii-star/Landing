@@ -50,6 +50,9 @@ class LandingSeeder extends Seeder
                 ['url' => '', 'name' => 'Dinas Perpustakaan dan Kearsipan Kabupaten Pamekasan', 'short' => 'Disperpusip Pamekasan'],
                 ['url' => '', 'name' => 'Pemerintah Kabupaten Bangkalan', 'short' => 'Pemkab Bangkalan'],
             ]),
+            'projects_page_label' => 'PORTOFOLIO KAMI',
+            'projects_page_title' => 'Proyek yang Telah Kami Kerjakan',
+            'projects_page_subtitle' => 'Kumpulan proyek yang telah kami bangun bersama klien dari berbagai latar belakang industri.',
         ];
 
         foreach ($content as $key => $value) {
