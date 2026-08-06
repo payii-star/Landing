@@ -20,6 +20,11 @@
  * "e-SAKIP DLH / Dinas Lingkungan Hidup Jatim" yang disebut di atas — itu
  * proyek asli Mcflyon untuk UPT Laboratorium DLH Provinsi Jatim, bukan sisa
  * data yang salah. Perlu dikabari ke Tim 2 untuk klarifikasi.
+ *
+ * UPDATE (Chika): field `landing_logo` ditambahkan karena ditemukan field
+ * mismatch — LandingNavbar.vue baca dari `landing_logo`, bukan `logo` yang
+ * sudah ada sebelumnya. Field `logo` lama dibiarkan (mungkin dipakai
+ * komponen lain), `landing_logo` ini pakai logo asli dari mcflyon.co.id.
  * ============================================================
  */
 
@@ -27,6 +32,11 @@
 export const mockContent = {
   app_name: "Mcflyon Teknologi Indonesia",
   logo: "/media/logo/logo-placeholder.png",
+  // [SIAP] field terpisah untuk LandingNavbar.vue, yang baca dari
+  // `landing_logo` (bukan `logo`) — field mismatch ini sudah ada sejak awal,
+  // ditambahkan field baru ini supaya navbar bisa nampilin logo asli tanpa
+  // mengubah field `logo` yang mungkin dipakai komponen lain.
+  landing_logo: "/media/logo/logo-mcflyon.png", // [SIAP] logo asli dari mcflyon.co.id
   description:
     "Perusahaan swasta nasional yang bergerak di bidang pembuatan aplikasi serta perancangan sistem yang terintegrasi.",
   email: "admin@mcflyon.co.id", // [SIAP]
@@ -182,44 +192,9 @@ export const mockFooter = {
 // icon pakai nama Font Awesome solid (tanpa prefix "fa-"), karena komponen
 // LandingStatistics.vue merender sebagai `fa-${stat.icon}`.
 export const mockStatistics = [
-  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai", is_active: true, order: 1 }, // [PERLU KONFIRMASI] belum ada angka pasti dari pembimbing, dan beda dgn klaim web resmi ("2+ Proyek") — CATATAN: company profile PDF konfirmasi 17 proyek nyata, angka ini perlu direvisi
-  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya", is_active: true, order: 2 }, // [PERLU KONFIRMASI] web resmi klaim "15+ Klien" — company profile PDF konfirmasi 11 instansi klien, angka ini perlu direvisi
-  { id: 3, icon: "calendar", statistic: "8+", label: "Tahun Pengalaman", is_active: true, order: 3 }, // [SIAP] dari company profile PDF: berdiri resmi Januari 2018 -> ~8 tahun per 2026
-];
-
-// ── 4b. TEAM (endpoint /front/teams) [TENTATIF — cuma 1 nama terkonfirmasi publik] ──
-// CEO yang terkonfirmasi publik: Aang Kurniawan (Group CEO, dari LinkedIn).
-// Anggota lain masih placeholder — perlu daftar struktur tim resmi dari kantor,
-// JANGAN publish nama karangan sebagai anggota tim asli.
-export interface TeamMemberMock {
-  id: number;
-  name: string;
-  position: string;
-  image: string;
-  image_url: string;
-  order: number;
-  is_active: boolean;
-}
-
-export const mockTeams: TeamMemberMock[] = [
-  {
-    id: 1,
-    name: "Aang Kurniawan",
-    position: "Group CEO",
-    image: "/media/team/placeholder.jpg",
-    image_url: "/media/team/placeholder.jpg",
-    order: 1,
-    is_active: true,
-  },
-  {
-    id: 2,
-    name: "[Nama — perlu dikonfirmasi]",
-    position: "[Jabatan — perlu dikonfirmasi]",
-    image: "/media/team/placeholder.jpg",
-    image_url: "/media/team/placeholder.jpg",
-    order: 2,
-    is_active: true,
-  },
+  { id: 1, icon: "briefcase", statistic: "10+", label: "Proyek Selesai" }, // [PERLU KONFIRMASI] belum ada angka pasti dari pembimbing, dan beda dgn klaim web resmi ("2+ Proyek") — CATATAN: company profile PDF konfirmasi 17 proyek nyata, angka ini perlu direvisi
+  { id: 2, icon: "users", statistic: "8+", label: "Klien Terpercaya" }, // [PERLU KONFIRMASI] web resmi klaim "15+ Klien" — company profile PDF konfirmasi 11 instansi klien, angka ini perlu direvisi
+  { id: 3, icon: "calendar", statistic: "8+", label: "Tahun Pengalaman" }, // [SIAP] dari company profile PDF: berdiri resmi Januari 2018 -> ~8 tahun per 2026
 ];
 
 // ── 5. TESTIMONIALS (endpoint /front/testimonials) [TENTATIF — isi karangan, dummy] ──
@@ -307,7 +282,6 @@ export interface AboutData {
   subtitle: string;
   description: string;
   vision: string;
-  mission: string[];
   image: string | null;
   features: string[];
 }
@@ -321,18 +295,14 @@ export const mockAbout: AboutData = {
   // menyebut tahun berdiri sama sekali.
   description:
     "CV. MCFLYON TEKNOLOGI INDONESIA adalah perusahaan swasta nasional yang bergerak di bidang pembuatan aplikasi serta perancangan sistem yang terintegrasi. Berdiri secara resmi pada awal Januari 2018, didukung tim dengan SDM yang unggul dan berkualitas.",
-  // [SIAP] Visi & Misi resmi — disalin persis dari halaman "VISI & MISI" company
-  // profile PDF (COMPRO.pdf, hal. 3). Ditampilkan sebagai section tersendiri
-  // (card di bawah foto, di kolom teks) di LandingAbout.vue.
+  // [SIAP] Visi resmi dari company profile PDF, ditaruh field terpisah
+  // (bukan digabung ke description) supaya tidak duplikat dengan kalimat
+  // lain, dan bisa dirender sebagai highlight singkat di komponen —
+  // Misi (5 poin) & "Mengapa Harus Kami" sengaja TIDAK dijadikan section
+  // terpisah karena sudah terwakili oleh features di bawah + Statistics +
+  // Testimonials + Client Logos yang sudah ada di halaman About.
   vision:
     "Menjadi perusahaan teknologi informasi yang berdaya saing dengan memberikan layanan dan solusi terbaik bagi customer dan stakeholder.",
-  mission: [
-    "Memberikan pelayanan terbaik demi tercapainya kepuasan pelanggan dengan jaminan kualitas pekerjaan, kecepatan, ketepatan, dan harga yang kompetitif.",
-    "Meningkatkan benefit dan value bagi konsumen dan stakeholder.",
-    "Mengoptimalkan penggunaan teknologi yang handal, aman, dan menguntungkan.",
-    "Meningkatkan kemampuan dan mengoptimalkan pengelolaan sumber daya manusia yang unggul dan dapat dipercaya.",
-    "Mengembangkan riset yang terpadu, berkesinambungan, dan terarah untuk meningkatkan kompetensi di dalam industri TI.",
-  ],
   image: null,
   // [SIAP] diganti dari 4 bullet generik ke poin "Keuntungan Jasa dan Produk"
   // resmi di company profile PDF — sebelumnya isinya teks generik lama yang
@@ -365,48 +335,48 @@ export interface ServiceItem {
 export const mockServices: ServiceItem[] = [
   {
     id: 1,
-    title: "Informasi Teknologi",
-    description: "Konsultasi dan solusi teknologi informasi sesuai kebutuhan bisnis Anda.", // [TENTATIF] kalimat sendiri, judul dari PDF
+    title: "Konsultasi IT & Bisnis",
+    description: "Analisis kebutuhan teknologi untuk mendukung pertumbuhan bisnis Anda.",
     icon: null,
     order: 1,
     is_active: true,
   },
   {
     id: 2,
-    title: "Software Asli",
-    description: "Pengembangan software original, bukan bajakan, dengan lisensi yang jelas.", // [TENTATIF]
+    title: "Pengembangan Website",
+    description: "Pembuatan website custom, company profile, hingga sistem berbasis web.",
     icon: null,
     order: 2,
     is_active: true,
   },
   {
     id: 3,
-    title: "E-Commerce",
-    description: "Pembuatan platform jual-beli online untuk mendukung penjualan digital Anda.", // [TENTATIF]
+    title: "Pengembangan Aplikasi Mobile",
+    description: "Aplikasi Android & iOS sesuai kebutuhan operasional bisnis Anda.",
     icon: null,
     order: 3,
     is_active: true,
   },
   {
     id: 4,
-    title: "Jasa Konsultasi",
-    description: "Pendampingan dan analisis kebutuhan sistem sebelum pengembangan dimulai.", // [TENTATIF]
+    title: "Software Analysis & Engineering",
+    description: "Analisis dan perancangan sistem perangkat lunak yang terstruktur.",
     icon: null,
     order: 4,
     is_active: true,
   },
   {
     id: 5,
-    title: "Pengadaan Hardware",
-    description: "Penyediaan perangkat keras (hardware) sesuai kebutuhan infrastruktur IT Anda.", // [TENTATIF]
+    title: "Network Engineering",
+    description: "Instalasi dan konfigurasi infrastruktur jaringan yang stabil dan aman.",
     icon: null,
     order: 5,
     is_active: true,
   },
   {
     id: 6,
-    title: "Web Developer",
-    description: "Pembuatan website custom, company profile, hingga sistem berbasis web.", // [TENTATIF]
+    title: "REST API & Integrasi Sistem",
+    description: "Pengembangan API untuk menghubungkan berbagai sistem/aplikasi.",
     icon: null,
     order: 6,
     is_active: true,
@@ -527,8 +497,9 @@ export const mockBestProjects: BestProject[] = [
   },
 ];
 
-// ── 11. PROJECTS PAGE HERO (endpoint /projects-page) [TENTATIF — copy karangan] ──
-// Dipakai oleh HeroProjects.vue di halaman /projects.
+// ── 11. PROJECTS PAGE HERO (endpoint /projects-page) [TENTATIF — copy karangan, MASIH 404 di
+// backend, fallback dummy ini yang dipakai — sudah dilaporkan ke Tim 2]. Dipakai oleh
+// HeroProjects.vue di halaman /projects.
 export interface ProjectsPageSetting {
   label: string;
   title: string;
