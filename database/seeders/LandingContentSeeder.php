@@ -18,6 +18,7 @@ class LandingContentSeeder extends Seeder
             ['contact_email', 'info@mcflyon.com', 'text'],
             ['contact_phone', '+62 812 3456 7890', 'text'],
             ['about_us', 'McFlyon adalah perusahaan teknologi yang berfokus pada...', 'text'],
+            ['landing_logo', '/media/logo/logo-mcflyon.png', 'text'],
         ];
 
         foreach ($contents as $content) {

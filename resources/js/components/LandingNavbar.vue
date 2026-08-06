@@ -45,7 +45,7 @@
                                 />
                                 <img
                                     v-else
-                                    src="/media/logos/logo-custom.png"
+                                    src="/media/logo/logo-mcflyon.png"
                                     alt="Logo"
                                     class="brand-img"
                                 />
@@ -99,7 +99,7 @@
                                         <div class="drop-glow"></div>
                                         <div class="drop-arrow"></div>
                                         <div class="drop-items">
-                                            <!-- 
+                                            <!--
                                                 Dropdown children:
                                                 - Link eksternal (target="_blank") → tetap pakai <a>
                                                 - Link internal → pakai <router-link>
