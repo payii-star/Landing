@@ -25,6 +25,9 @@
  * mismatch — LandingNavbar.vue baca dari `landing_logo`, bukan `logo` yang
  * sudah ada sebelumnya. Field `logo` lama dibiarkan (mungkin dipakai
  * komponen lain), `landing_logo` ini pakai logo asli dari mcflyon.co.id.
+ *
+ * UPDATE: `mockTeams` dikembalikan (sempat hilang saat file ini di-replace) —
+ * dipakai oleh stores/landing.ts (fetchTeams -> fallback mockTeams).
  * ============================================================
  */
 
@@ -197,6 +200,39 @@ export const mockStatistics = [
   { id: 3, icon: "calendar", statistic: "8+", label: "Tahun Pengalaman" }, // [SIAP] dari company profile PDF: berdiri resmi Januari 2018 -> ~8 tahun per 2026
 ];
 
+// ── 4b. TEAM MEMBERS (endpoint /front/teams) [TENTATIF — 1 nama asli, sisanya perlu dikonfirmasi] ──
+// Dipakai oleh stores/landing.ts (fetchTeams -> fallback mockTeams kalau API gagal).
+export interface TeamMemberMock {
+  id: number;
+  name: string;
+  position: string;
+  image: string;
+  image_url: string;
+  order: number;
+  is_active: boolean;
+}
+
+export const mockTeams: TeamMemberMock[] = [
+  {
+    id: 1,
+    name: "Aang Kurniawan",
+    position: "Group CEO",
+    image: "/media/team/placeholder.jpg",
+    image_url: "/media/team/placeholder.jpg",
+    order: 1,
+    is_active: true,
+  },
+  {
+    id: 2,
+    name: "[Nama — perlu dikonfirmasi]",
+    position: "[Jabatan — perlu dikonfirmasi]",
+    image: "/media/team/placeholder.jpg",
+    image_url: "/media/team/placeholder.jpg",
+    order: 2,
+    is_active: true,
+  },
+];
+
 // ── 5. TESTIMONIALS (endpoint /front/testimonials) [TENTATIF — isi karangan, dummy] ──
 // Dipakai bersama oleh 2 tampilan: LandingTestimonials.vue (spotlight/carousel di
 // Beranda) dan LandingTestimonialsCust.vue (marquee wall di halaman Layanan).
@@ -272,7 +308,7 @@ export const mockTestimonials: Testimonial[] = [
   },
 ];
 
-// ── 5. ABOUT (endpoint /front/landing-about) [SIAP — teks sama dgn default lama LandingAbout.vue] ──
+// ── 6. ABOUT (endpoint /front/landing-about) [SIAP — teks sama dgn default lama LandingAbout.vue] ──
 // PENTING: teks title/subtitle/description di bawah ini BUKAN karangan baru — ini
 // persis teks yang sebelumnya hardcode langsung di ref() dalam LandingAbout.vue.
 // Cuma dipindah ke sini biar satu sumber data terpusat, isinya TIDAK diubah.
@@ -316,7 +352,7 @@ export const mockAbout: AboutData = {
   ],
 };
 
-// ── 6. SERVICES (endpoint /front/services) [TENTATIF — berdasarkan riset publik] ──
+// ── 7. SERVICES (endpoint /front/services) [TENTATIF — berdasarkan riset publik] ──
 // Dipakai oleh LandingServices.vue (grid "Kenapa Memilih Kami?") dan
 // LandingServicesHero.vue (grid layanan di halaman /services).
 // Isi 6 layanan ini DITURUNKAN dari sumber publik resmi Mcflyon (bio Instagram
@@ -383,7 +419,7 @@ export const mockServices: ServiceItem[] = [
   },
 ];
 
-// ── 7. CONTACT (endpoint /contact/setting) [TENTATIF — nomor WA & alamat perlu dicek ulang] ──
+// ── 8. CONTACT (endpoint /contact/setting) [TENTATIF — nomor WA & alamat perlu dicek ulang] ──
 // Dipakai oleh LandingContact.vue. Field `whatsapp` dipakai untuk link wa.me,
 // jadi HARUS berupa angka saja (kode negara + nomor, tanpa +/spasi/strip).
 export interface ContactSetting {
@@ -421,7 +457,7 @@ export const mockContactSetting: ContactSetting = {
   },
 };
 
-// ── 8. CTA (endpoint /front/landing-cta) [TENTATIF — copy karangan, perlu direview] ──
+// ── 9. CTA (endpoint /front/landing-cta) [TENTATIF — copy karangan, perlu direview] ──
 // Dipakai oleh LandingCta.vue. `title` boleh multi-kata; komponen otomatis
 // membagi jadi 2 baris & menyorot baris kedua kalau kata > 3.
 export interface CtaData {
@@ -439,7 +475,7 @@ export const mockCta: CtaData = {
   button_link: "/contact",
 };
 
-// ── 9. CLIENT LOGOS (field client_logos di /front/content, ATAU endpoint terpisah — perlu dikonfirmasi ke Tim 2) ──
+// ── 10. CLIENT LOGOS (field client_logos di /front/content, ATAU endpoint terpisah — perlu dikonfirmasi ke Tim 2) ──
 // Dipakai oleh LandingClientLogos.vue. [SIAP] 11 klien resmi dari company profile
 // PDF. `url` dikosongkan (belum ada file logo yang bisa diekstrak dari PDF).
 export interface ClientLogo {
@@ -465,9 +501,9 @@ export const mockClientLogos: ClientLogo[] = [
   { url: "", name: "Pemerintah Kabupaten Bangkalan", short: "Pemkab Bangkalan" },
 ];
 
-// ── 10. BEST PROJECTS (endpoint /front/best-projects) [SIAP] ──
+// ── 11. BEST PROJECTS (endpoint /front/best-projects) [SIAP] ──
 // Dipakai oleh LandingBestProject.vue (Home). Cuma 2 proyek unggulan yang
-// ditampilkan di Home — sisa 15 proyek lainnya ada di mockProjects (section 12,
+// ditampilkan di Home — sisa 15 proyek lainnya ada di mockProjects (section 13,
 // halaman /projects). `link_project` dikosongkan karena semua proyek ini sistem
 // internal instansi pemerintah, tidak ada URL publik.
 export interface BestProject {
@@ -497,7 +533,7 @@ export const mockBestProjects: BestProject[] = [
   },
 ];
 
-// ── 11. PROJECTS PAGE HERO (endpoint /projects-page) [TENTATIF — copy karangan, MASIH 404 di
+// ── 12. PROJECTS PAGE HERO (endpoint /projects-page) [TENTATIF — copy karangan, MASIH 404 di
 // backend, fallback dummy ini yang dipakai — sudah dilaporkan ke Tim 2]. Dipakai oleh
 // HeroProjects.vue di halaman /projects.
 export interface ProjectsPageSetting {
@@ -513,7 +549,7 @@ export const mockProjectsPageSetting: ProjectsPageSetting = {
     "Kumpulan proyek yang telah kami bangun bersama klien dari berbagai latar belakang industri.",
 };
 
-// ── 12. PROJECTS LIST (endpoint SEHARUSNYA /front/best-projects juga — PERLU
+// ── 13. PROJECTS LIST (endpoint SEHARUSNYA /front/best-projects juga — PERLU
 // DIKONFIRMASI ke Tim 2, karena stores/project.ts saat ini masih pakai
 // /landing/projects, endpoint LAMA yang menurut briefing seharusnya tidak
 // dipakai lagi. Field `slug` dipakai untuk link detail internal (/projects/:slug).
