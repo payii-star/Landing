@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\StatisticController;
+use App\Http\Controllers\Api\TeamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,7 @@ Route::get('front/landing-about', [LandingController::class, 'landingAbout']);
 
 Route::get('front/services', [ServiceController::class, 'index']);
 Route::get('front/statistics', [StatisticController::class, 'index']);
+Route::get('front/teams', [TeamController::class, 'index']);
 Route::get('projects-page', [LandingController::class, 'projectsPage']);
 Route::post('front/navbar/track-click/{menuId}', [MenuController::class, 'trackClick']);
 
