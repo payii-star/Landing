@@ -62,14 +62,6 @@
       </div>
 
       </div>
-      <!-- Visi & Misi — di LUAR about-grid biar bisa lebar & center -->
-      <div class="vm-panel">
-        <p class="vm-visi"><strong class="vm-label">Visi</strong><br> {{ aboutData.vision }}</p>
-        <p class="vm-misi-heading"><strong class="vm-label">Misi</strong></p>
-        <ol class="vm-misi-list">
-          <li v-for="(m, i) in aboutData.mission" :key="i">{{ m }}</li>
-        </ol>
-      </div>
     </div>
   </section>
 </template>
@@ -297,55 +289,6 @@ onMounted(() => fetchAboutData());
   margin: 0 0 30px;
 }
 
-/* Visi & Misi — sekarang jadi card TERSENDIRI di bawah foto (area terpisah
-   dari kolom deskripsi), bukan lagi menyatu dengan .about-desc seperti
-   revisi sebelumnya — karena posisinya sudah beda tempat, wajar dikasih
-   pembeda visual sendiri (bukan lagi masalah "kepisah" yang dulu dikeluhkan,
-   itu terjadi waktu dia numpang di ALUR yang sama dengan deskripsi) */
-.vm-panel {
-  position: relative;
-  max-width: 980px;
-  margin: 64px auto 0;
-  padding: 44px 56px;
-  border-radius: 18px;
-  background: rgba(59,130,246,0.045);
-  border: 1px solid rgba(59,130,246,0.16);
-  text-align: center;
-}
-.vm-visi {
-  font-size: 1.15rem;
-  color: #a9bcdd;
-  line-height: 1.85;
-  margin: 0 0 26px;
-  max-width: 760px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.vm-misi-heading {
-  font-size: 1.15rem;
-  color: #a9bcdd;
-  margin: 0 0 18px;
-}
-.vm-label {
-  color: #93c5fd;
-  font-weight: 700;
-}
-.vm-misi-list {
-  list-style-position: inside;
-  padding-left: 0;
-  margin: 0 auto;
-  max-width: 720px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  text-align: left;
-}
-.vm-misi-list li {
-  font-size: 1.05rem;
-  color: #a9bcdd;
-  line-height: 1.8;
-}
-
 /* Feature list */
 .about-features {
   list-style: none;
@@ -382,17 +325,6 @@ onMounted(() => fetchAboutData());
 @media (max-width: 640px) {
   .about-section { padding: 80px 16px 90px; }
   .about-title { font-size: 1.6rem; }
-  .vm-panel {
-    margin-top: 44px;
-    padding: 32px 24px;
-  }
-  .vm-visi,
-  .vm-misi-heading {
-    font-size: 1rem;
-  }
-  .vm-misi-list li {
-    font-size: 0.95rem;
-  }
 
   .about-img-block {
     max-width: 540px;
