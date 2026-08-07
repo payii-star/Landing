@@ -33,13 +33,16 @@ const routes: Array<RouteRecordRaw> = [
         path: "/about",
         name: "About",
         component: () => import("@/pages/landing/About.vue"),
+        meta: {
+            pageTitle: "Tentang Kami",
+        },
     },
     {
         path: "/projects",
         name: "projects",
         component: () => import("@/pages/landing/ProjectsPage.vue"),
         meta: {
-            pageTitle: "Our Projects",
+            pageTitle: "Projek Kami",
         },
     },
     {
@@ -56,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'contact',
         component: () => import('@/pages/landing/ContactPage.vue'),
         meta: { 
-            pageTitle: 'Contact'
+            pageTitle: 'Hubungi Kami'
         },
     },
 

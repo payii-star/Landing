@@ -98,8 +98,9 @@ const landingStore = useLandingStore();
 
 /* ── Grid ── */
 .team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px; max-width: 1100px; margin: 0 auto;
 }
 
@@ -109,6 +110,7 @@ const landingStore = useLandingStore();
   background: transparent;
   border: 1px solid rgba(255,255,255,0.07);
   overflow: hidden; display: flex; flex-direction: column;
+  width: 220px; flex: 0 0 220px;
   animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both;
   animation-delay: var(--delay, 0ms);
   transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), border-color 0.3s, box-shadow 0.3s;
@@ -221,10 +223,11 @@ const landingStore = useLandingStore();
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .team-section { padding: 72px 16px 80px; }
-  .team-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
-
+  .team-grid { gap: 14px; }
+  .team-card { width: 160px; flex: 0 0 160px; }
 }
 @media (max-width: 480px) {
-  .team-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .team-grid { gap: 12px; }
+  .team-card { width: calc(50% - 6px); flex: 0 0 calc(50% - 6px); }
 }
 </style>
