@@ -215,8 +215,8 @@ export interface TeamMemberMock {
 export const mockTeams: TeamMemberMock[] = [
   {
     id: 1,
-    name: "Aang Kurniawan",
-    position: "Group CEO",
+    name: "Fahrur Rozi",
+    position: "Chief Executive Officer (CEO)",
     image: "/media/team/placeholder.jpg",
     image_url: "/media/team/placeholder.jpg",
     order: 1,
@@ -224,11 +224,24 @@ export const mockTeams: TeamMemberMock[] = [
   },
   {
     id: 2,
-    name: "[Nama — perlu dikonfirmasi]",
-    position: "[Jabatan — perlu dikonfirmasi]",
+    name: "Aang Kurniawan",
+    position: "Kepala Divisi Implementator",
     image: "/media/team/placeholder.jpg",
     image_url: "/media/team/placeholder.jpg",
     order: 2,
+    is_active: true,
+  },
+  {
+    // [PERLU KONFIRMASI] Website resmi menampilkan nama "Saeni" (Database
+    // Administrator) di posisi ini, tapi belum dikonfirmasi ke pembimbing/HR
+    // -> sengaja ditahan jadi placeholder dulu. Kalau sudah fix, tinggal ganti
+    // 'name' jadi "Saeni" dan hapus komentar ini.
+    id: 3,
+    name: "[Nama — perlu dikonfirmasi]",
+    position: "Database Administrator",
+    image: "/media/team/placeholder.jpg",
+    image_url: "/media/team/placeholder.jpg",
+    order: 3,
     is_active: true,
   },
 ];
