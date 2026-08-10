@@ -21,7 +21,7 @@
 
       <!-- Description -->
       <p class="hero-desc" :class="{ visible: animate }">
-        {{ content.hero_desc || 'Satu platform terintegrasi untuk mencatat, menganalisa, dan mengelola arus kas perusahaan dengan akurat dan real-time.' }}
+        {{ content.hero_desc || 'Kami membantu merancang dan membangun sistem terintegrasi — dari konsultasi, pengembangan aplikasi, hingga infrastruktur jaringan.' }}
       </p>
 
       <!-- CTA Buttons -->
@@ -34,7 +34,7 @@
               <path d="M11 2h3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               <path d="M14 2L9.5 6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            {{ content.cta_primary_label || 'Mulai Gratis Sekarang' }}
+            {{ content.cta_primary_label || 'Konsultasi Sekarang' }}
           </span>
         </a>
 
@@ -44,7 +44,7 @@
               <path d="M1 1.5l8 4.5-8 4.5V1.5z"/>
             </svg>
           </span>
-          {{ content.cta_secondary_label || 'Lihat Demo' }}
+          {{ content.cta_secondary_label || 'Lihat Proyek Kami' }}
         </a>
       </div>
 
@@ -85,7 +85,7 @@
               <path d="M6 1l1.236 2.636L10 4.118l-2 1.99.472 2.892L6 7.636 3.528 9 4 6.108 2 4.118l2.764-.482L6 1z"/>
             </svg>
           </div>
-          <span>{{ content.proof_text || 'Dipercaya 2.000+ bisnis di Indonesia' }}</span>
+          <span>{{ content.proof_text || 'Dipercaya oleh berbagai instansi & klien di Indonesia' }}</span>
         </div>
       </div>
 
@@ -163,7 +163,7 @@ const content = computed(() => landingStore.content || {});
 
 // ── Split title jadi baris dengan highlight ──
 const titleLines = computed(() => {
-  const raw = content.value.hero_title || 'Kelola Keuangan\nBisnis Lebih\nCerdas & Cepat';
+  const raw = content.value.hero_title || 'Konsultasi IT &\nPembuatan Aplikasi\nUntuk Bisnis Anda';
   return raw.split('\n').map((text: string, i: number) => ({
     text,
     highlight: i === 1, // baris kedua diberi highlight gradient
@@ -192,7 +192,7 @@ onMounted(() => {
   --muted: #5c6e96;
   --glass: rgba(2, 6, 23, 0.7);
   --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
-  
+
   position: relative;
   min-height: calc(100vh - 72px);
   width: 100%;
@@ -201,11 +201,11 @@ onMounted(() => {
   padding-top: 60px;
   padding-bottom: 80px;
   box-sizing: border-box;
-  
+
   /* 👇 INI YANG DIRUBAH AGAR PARTIKEL TERLIHAT 👇 */
   background: transparent !important;
   z-index: 1;
-  
+
 }
 
 /* ── Backgrounds ── */
