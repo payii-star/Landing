@@ -195,17 +195,18 @@ const duration = computed(() => {
 
 /* ── Image ── */
 .cls-img {
-  height: 56px; max-width: 140px;
+  height: 84px; max-width: 200px;
   object-fit: contain; display: block;
-  opacity: 0.28;
-  filter: grayscale(100%) brightness(1.6);
-  transition: opacity 0.3s, filter 0.3s;
+  opacity: 0.75;
+  filter: grayscale(35%) brightness(1.05);
+  transition: opacity 0.3s, filter 0.3s, transform 0.3s;
   pointer-events: none; user-select: none;
   -webkit-user-drag: none;
 }
 .cls-card:hover .cls-img {
   opacity: 1;
   filter: none;
+  transform: scale(1.05);
 }
 
 /* ── Badge (fallback teks kalau logo/url belum ada) ── */
@@ -267,20 +268,20 @@ const duration = computed(() => {
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .cls-section { padding: 44px 0 52px; }
-  .cls-img { height: 44px; max-width: 110px; }
+  .cls-img { height: 66px; max-width: 160px; }
   .cls-badge { font-size: 0.7rem; padding: 7px 12px; }
   .cls-fade { width: 60px; }
   .cls-header { margin-bottom: 32px; }
 }
 @media (max-width: 480px) {
-  .cls-img { height: 36px; max-width: 90px; }
+  .cls-img { height: 54px; max-width: 130px; }
   .cls-badge { font-size: 0.65rem; padding: 6px 10px; }
   .cls-card { padding: 12px 18px; }
   .cls-fade { width: 40px; }
 }
 @media (max-width: 360px) {
   .cls-section { padding: 36px 0 44px; }
-  .cls-img { height: 28px; max-width: 72px; }
+  .cls-img { height: 42px; max-width: 100px; }
   .cls-badge { font-size: 0.6rem; padding: 5px 8px; }
   .cls-card { padding: 10px 14px; }
   .cls-label { font-size: 0.6rem; }
