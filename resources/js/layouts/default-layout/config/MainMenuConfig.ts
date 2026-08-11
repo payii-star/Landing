@@ -42,6 +42,16 @@ const MainMenuConfig: Array<MenuItem> = [
                             },
                         ],
                     },
+                    {
+                        heading: "Projects",
+                        name: "master-projects",
+                        route: "/dashboard/master/projects",
+                    },
+                    {
+                        heading: "Statistics",
+                        name: "master-statistics",
+                        route: "/dashboard/master/statistics",
+                    },
                 ],
             },
             {

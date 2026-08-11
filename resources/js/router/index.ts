@@ -38,14 +38,6 @@ const routes: Array<RouteRecordRaw> = [
         },
     },
     {
-        path: "/projects",
-        name: "projects",
-        component: () => import("@/pages/landing/ProjectsPage.vue"),
-        meta: {
-            pageTitle: "Projek Kami",
-        },
-    },
-    {
         path: "/services",
         name: "services",
         component: () => import("@/pages/landing/Services.vue"),
@@ -120,6 +112,16 @@ const routes: Array<RouteRecordRaw> = [
                 meta: {
                     pageTitle: "Users",
                     breadcrumbs: ["Master", "Users"],
+                },
+            },
+            {
+                path: "master/projects",
+                name: "dashboard.master.projects",
+                component: () =>
+                    import("@/pages/dashboard/master/projects/Index.vue"),
+                meta: {
+                    pageTitle: "Projects",
+                    breadcrumbs: ["Master", "Projects"],
                 },
             },
         ],
