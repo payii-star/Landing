@@ -7,6 +7,8 @@ import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 
 import ApiService from "./core/services/ApiService";
+import i18n from "./core/plugins/i18n";
+import { initKtIcon } from "./core/plugins/keenthemes";
 
 import { VueQueryPlugin, QueryClient, QueryCache } from "@tanstack/vue-query";
 import Vue3Toastify, { type ToastContainerOptions } from "vue3-toastify";
@@ -14,9 +16,12 @@ import "vue3-toastify/dist/index.css";
 
 const app = createApp(App);
 
+initKtIcon(app);
+
 app.use(createPinia());
 app.use(router);
 app.use(ElementPlus);
+app.use(i18n);
 
 const queryClient = new QueryClient({
     queryCache: new QueryCache({

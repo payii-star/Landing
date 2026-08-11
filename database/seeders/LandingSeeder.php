@@ -70,7 +70,7 @@ class LandingSeeder extends Seeder
             ['label' => 'Layanan', 'mobile_label' => 'Layanan', 'url' => '/services', 'urutan' => 3],
             ['label' => 'Proyek', 'mobile_label' => 'Proyek', 'url' => '/projects', 'urutan' => 4],
             ['label' => 'Kontak', 'mobile_label' => 'Kontak', 'url' => '/contact', 'urutan' => 5],
-            ['label' => 'Masuk', 'url' => '#', 'type' => 'button-primary', 'visibility' => 'guest', 'urutan' => 6],
+            ['label' => 'Masuk', 'url' => '/sign-in', 'type' => 'button-primary', 'visibility' => 'guest', 'urutan' => 6],
         ];
 
         foreach ($menus as $menu) {

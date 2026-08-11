@@ -37,7 +37,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
 
     async function login(credentials: any) {
-        return ApiService.post("portal/login", credentials)
+        return ApiService.post("auth/login", credentials)
             .then(({ data }) => {
                 if (data.token) {
                     setAuth(data.user, data.token);
@@ -55,7 +55,7 @@ export const useAuthStore = defineStore("auth", () => {
         if (JwtService.getToken()) {
             ApiService.setHeader();
 
-            await ApiService.delete("portal/logout").catch(() => {});
+            await ApiService.delete("auth/logout").catch(() => {});
             purgeAuth();
         } else {
             purgeAuth();
@@ -66,7 +66,7 @@ export const useAuthStore = defineStore("auth", () => {
         if (JwtService.getToken()) {
             ApiService.setHeader();
 
-            await ApiService.get("portal/me")
+            await ApiService.get("auth/me")
                 .then(({ data }) => {
                     const userData = data.user || data;
                     setAuth(userData);

@@ -215,7 +215,7 @@ router.beforeEach(async (to, from, next) => {
     configStore.resetLayoutConfig();
 
     // Verify Auth Token
-    if (!authStore.isAuthenticated) await authStore.verifyAuth();
+    if (!authStore.isAuthenticated || !authStore.user?.id) await authStore.verifyAuth();
 
     // Logic Middleware
     if (to.meta.middleware == "auth") {

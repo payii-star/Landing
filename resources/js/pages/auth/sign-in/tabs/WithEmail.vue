@@ -8,7 +8,7 @@
 
             <!--begin::Input-->
             <Field tabindex="1" class="form-control form-control-lg form-control-solid" type="text" name="email"
-                autocomplete="off" v-model="data.email" />
+                 autocomplete="off" />
             <!--end::Input-->
             <div class="fv-plugins-message-container">
                 <div class="fv-help-block">
@@ -38,7 +38,7 @@
             <div class="position-relative mb-3">
                 <!--begin::Input-->
                 <Field tabindex="2" class="form-control form-control-lg form-control-solid" type="password" name="password"
-                    v-model="data.password" autocomplete="off" />
+    autocomplete="off" />
                 <!--end::Input-->
 
                 <!--begin::Visibility toggle-->
@@ -82,6 +82,7 @@
 
 <script lang="ts">
 import { getAssetPath } from "@/core/helpers/assets";
+import { Field, Form as VForm, ErrorMessage } from "vee-validate";
 import { defineComponent, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
@@ -91,6 +92,11 @@ import { toast } from "vue3-toastify"
 import { blockBtn, unblockBtn } from "@/libs/utils"
 
 export default defineComponent({
+    components: {
+        Field,
+        VForm,
+        ErrorMessage,
+    },
     setup() {
         const store = useAuthStore();
         const router = useRouter();
@@ -119,18 +125,18 @@ export default defineComponent({
         }
     },
     methods: {
-        submit() {
-            blockBtn(this.submitButton);
+        submit(values) {
+    blockBtn(this.submitButton);
 
-            axios.post("/auth/login", { ...this.data, type: "email" }).then(res => {
-                this.store.setAuth(res.data.user, res.data.token);
-                this.router.push("/dashboard");
-            }).catch(error => {
-                toast.error(error.response.data.message);
-            }).finally(() => {
-                unblockBtn(this.submitButton);
-            });
-        },
+    axios.post("/auth/login", { ...values, type: "email" }).then(res => {
+        this.store.setAuth(res.data.user, res.data.token);
+        this.router.push("/dashboard");
+    }).catch(error => {
+        toast.error(error.response.data.message);
+    }).finally(() => {
+        unblockBtn(this.submitButton);
+    });
+},
         togglePassword(ev) {
             const type = document.querySelector("[name=password]").type;
 
