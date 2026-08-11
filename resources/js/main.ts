@@ -13,9 +13,10 @@ import { initKtIcon } from "./core/plugins/keenthemes";
 import { VueQueryPlugin, QueryClient, QueryCache } from "@tanstack/vue-query";
 import Vue3Toastify, { type ToastContainerOptions } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import { initGlobalComponents } from "./core/plugins/global-components";
 
 const app = createApp(App);
-
+initGlobalComponents(app);
 initKtIcon(app);
 
 app.use(createPinia());

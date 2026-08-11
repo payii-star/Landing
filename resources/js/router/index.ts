@@ -124,6 +124,25 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Master", "Projects"],
                 },
             },
+            {
+                path: "master/statistics",
+                name: "dashboard.master.statistics",
+                component: () =>
+                    import("@/pages/dashboard/master/statistics/Index.vue"),
+                meta: {
+                    pageTitle: "Statistics",
+                    breadcrumbs: ["Master", "Statistics"],
+                },
+            },
+            { path: "master/footer", 
+                name: "dashboard.master.footer", 
+                component: () => 
+                    import("@/pages/dashboard/master/footer/Index.vue"), 
+                meta: { 
+                    pageTitle: "Footer", 
+                    breadcrumbs: ["Master", "Footer"], 
+                }, 
+            },
         ],
     },
 
