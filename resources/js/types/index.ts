@@ -4,3 +4,8 @@ export type { Setting } from "./setting";
 export type { Project } from "./project";
 export type { Statistic } from "./statistic";
 export type { FooterSetting, FooterSocial } from "./footer";
+export type { Menu } from "./menu";
+export type { Service } from "./service";
+export type { Testimonial } from "./testimonial";
+export type { Team } from "./team";
+export type { ContactMessage } from "./contact-message";
