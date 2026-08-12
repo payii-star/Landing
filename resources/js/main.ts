@@ -19,6 +19,12 @@ const app = createApp(App);
 initGlobalComponents(app);
 initKtIcon(app);
 
+// Safety net: kalau ada error tak terduga di satu komponen/watcher,
+// jangan sampai mematikan seluruh SPA (hanya log ke console).
+app.config.errorHandler = (err, instance, info) => {
+    console.error("[Global Error]", err, info);
+};
+
 app.use(createPinia());
 app.use(router);
 app.use(ElementPlus);

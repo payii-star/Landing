@@ -129,7 +129,10 @@ export default defineComponent({
                 if (page.value > data.last_page) page.value = data.last_page;
             },
             onError: (err) => {
-                toast.error(err.response.data.message);
+                const message =
+                    err?.response?.data?.message ||
+                    "Terjadi kesalahan saat mengambil data";
+                toast.error(message);
             }
         });
 
@@ -166,7 +169,10 @@ export default defineComponent({
             this.refetch();
         },
         isFetching(val) {
-            if (val && !document.querySelector(`#${this.id} table`).querySelector(".blockui-overlay")) block(`#${this.id} table`);
+            const tableEl = document.querySelector(`#${this.id} table`);
+            if (!tableEl) return;
+
+            if (val && !tableEl.querySelector(".blockui-overlay")) block(`#${this.id} table`);
             else unblock(`#${this.id} table`);
         },
         payload(val, oldVal) {
