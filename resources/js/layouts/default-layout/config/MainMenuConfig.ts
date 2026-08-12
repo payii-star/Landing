@@ -56,6 +56,26 @@ const MainMenuConfig: Array<MenuItem> = [
                         name: "master-footer", 
                         route: "/dashboard/master/footer", 
                     },
+                    {
+                        heading: "Landing Content",
+                        name: "master-landing-content",
+                        route: "/dashboard/master/landing-content",
+                    },
+                    {
+    heading: "Menu",
+    name: "master-menu",
+    route: "/dashboard/master/menu",
+},
+{
+    heading: "Services",
+    name: "master-services",
+    route: "/dashboard/master/services",
+},
+{
+    heading: "Testimonials",
+    name: "master-testimonials",
+    route: "/dashboard/master/testimonials",
+},
                 ],
             },
             {

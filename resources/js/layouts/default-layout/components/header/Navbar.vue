@@ -30,7 +30,9 @@ for (let i = new Date().getFullYear(); i >= new Date().getFullYear() - 2; i--) {
     <div class="app-navbar flex-shrink-0">
         <!--begin::Theme mode-->
         <div class="app-navbar-item me-10">
-            <select2 class="form-select-solid w-125px" :options="tahuns" v-model="tahun.tahun"></select2>
+            <select class="form-select form-select-solid w-125px" v-model="tahun.tahun">
+    <option v-for="t in tahuns" :key="String(t)" :value="t">{{ t }}</option>
+</select>
         </div>
         <!--end::Theme mode-->
 

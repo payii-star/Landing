@@ -14,9 +14,13 @@ import { VueQueryPlugin, QueryClient, QueryCache } from "@tanstack/vue-query";
 import Vue3Toastify, { type ToastContainerOptions } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import { initGlobalComponents } from "./core/plugins/global-components";
+import { debounce } from "./core/directives/debounce";
+import { tooltip } from "./core/directives/tooltip";
 
 const app = createApp(App);
 initGlobalComponents(app);
+app.directive("debounce", debounce);
+app.directive("tooltip", tooltip);
 initKtIcon(app);
 
 // Safety net: kalau ada error tak terduga di satu komponen/watcher,

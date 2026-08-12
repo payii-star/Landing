@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\StatisticController;
 use App\Http\Controllers\Api\TeamController;
+use App\Http\Controllers\Api\LandingContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,10 +100,19 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
         Route::put('menu/{menu}', [MenuController::class, 'update']);
         Route::delete('menu/{menu}', [MenuController::class, 'destroy']);
 
+        Route::post('services', [ServiceController::class, 'adminIndex']);
+        Route::post('services/store', [ServiceController::class, 'store']);
+        Route::get('services/{service}', [ServiceController::class, 'show']);
+        Route::put('services/{service}', [ServiceController::class, 'update']);
+        Route::delete('services/{service}', [ServiceController::class, 'destroy']);
+
         Route::get('footer', [FooterController::class, 'adminShow']);
         Route::post('footer/setting', [FooterController::class, 'updateSetting']);
         Route::post('footer/socials/store', [FooterController::class, 'socialStore']);
         Route::put('footer/socials/{footerSocial}', [FooterController::class, 'socialUpdate']);
         Route::delete('footer/socials/{footerSocial}', [FooterController::class, 'socialDestroy']);
+
+        Route::get('landing-content', [LandingContentController::class, 'adminIndex']);
+Route::post('landing-content', [LandingContentController::class, 'update']);
     });
 });

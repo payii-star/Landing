@@ -5,8 +5,9 @@
                 <label htmlFor="limit" class="form-label">
                     Tampilkan
                 </label>
-                <select2 class="w-75px form-select-solid" v-model="per" placeholder="Per" :options="[5, 10, 25, 50, 100]">
-                </select2>
+                <select class="w-75px form-select form-select-solid" v-model="per">
+    <option v-for="opt in [5, 10, 25, 50, 100]" :key="opt" :value="opt">{{ opt }}</option>
+</select>
             </div>
             <form @submit.prevent="refetch" class="w-100 w-sm-auto">
                 <input type="search" class="form-control form-control-solid" placeholder="Cari ..." v-model="search"
