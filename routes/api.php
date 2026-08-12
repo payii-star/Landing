@@ -106,6 +106,18 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
         Route::put('services/{service}', [ServiceController::class, 'update']);
         Route::delete('services/{service}', [ServiceController::class, 'destroy']);
 
+        Route::post('testimonials', [TestimonialController::class, 'adminIndex']);
+        Route::post('testimonials/store', [TestimonialController::class, 'store']);
+        Route::get('testimonials/{testimonial}', [TestimonialController::class, 'show']);
+        Route::put('testimonials/{testimonial}', [TestimonialController::class, 'update']);
+        Route::delete('testimonials/{testimonial}', [TestimonialController::class, 'destroy']);
+
+        Route::post('teams', [TeamController::class, 'adminIndex']);
+        Route::post('teams/store', [TeamController::class, 'store']);
+        Route::get('teams/{team}', [TeamController::class, 'show']);
+        Route::put('teams/{team}', [TeamController::class, 'update']);
+        Route::delete('teams/{team}', [TeamController::class, 'destroy']);
+
         Route::get('footer', [FooterController::class, 'adminShow']);
         Route::post('footer/setting', [FooterController::class, 'updateSetting']);
         Route::post('footer/socials/store', [FooterController::class, 'socialStore']);

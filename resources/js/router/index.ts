@@ -66,7 +66,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/contact',
         name: 'contact',
         component: () => import('@/pages/landing/ContactPage.vue'),
-        meta: { 
+        meta: {
             pageTitle: 'Hubungi Kami'
         },
     },
@@ -150,24 +150,24 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Master", "Statistics"],
                 },
             },
-            { path: "master/footer", 
-                name: "dashboard.master.footer", 
-                component: () => 
-                    import("@/pages/dashboard/master/footer/Index.vue"), 
-                meta: { 
-                    pageTitle: "Footer", 
-                    breadcrumbs: ["Master", "Footer"], 
-                }, 
+            { path: "master/footer",
+                name: "dashboard.master.footer",
+                component: () =>
+                    import("@/pages/dashboard/master/footer/Index.vue"),
+                meta: {
+                    pageTitle: "Footer",
+                    breadcrumbs: ["Master", "Footer"],
+                },
             },
 
-            { path: "master/footer", 
-    name: "dashboard.master.footer", 
-    component: () => 
-        import("@/pages/dashboard/master/footer/Index.vue"), 
-    meta: { 
-        pageTitle: "Footer", 
-        breadcrumbs: ["Master", "Footer"], 
-    }, 
+            { path: "master/footer",
+    name: "dashboard.master.footer",
+    component: () =>
+        import("@/pages/dashboard/master/footer/Index.vue"),
+    meta: {
+        pageTitle: "Footer",
+        breadcrumbs: ["Master", "Footer"],
+    },
 },
 {
     path: "master/landing-content",
@@ -207,6 +207,16 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
         pageTitle: "Testimonials",
         breadcrumbs: ["Master", "Testimonials"],
+    },
+},
+{
+    path: "master/teams",
+    name: "dashboard.master.teams",
+    component: () =>
+        import("@/pages/dashboard/master/teams/Index.vue"),
+    meta: {
+        pageTitle: "Teams",
+        breadcrumbs: ["Master", "Teams"],
     },
 },
         ],

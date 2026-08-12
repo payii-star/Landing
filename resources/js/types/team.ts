@@ -3,6 +3,7 @@ export interface Team {
     no?: number;
     name: string;
     position: string;
-    photo?: string;
+    image?: string;
+    image_url?: string;
     order: number;
 }
