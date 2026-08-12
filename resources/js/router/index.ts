@@ -45,6 +45,22 @@ const routes: Array<RouteRecordRaw> = [
             pageTitle: "Layanan Kami",
         },
     },
+    {
+        path: "/projects",
+        name: "projects",
+        component: () => import("@/pages/landing/ProjectsPage.vue"),
+        meta: {
+            pageTitle: "Projects",
+        },
+    },
+    {
+        path: "/projects/:slug",
+        name: "project-detail",
+        component: () => import("@/pages/landing/ProjectDetail.vue"),
+        meta: {
+            pageTitle: "Project Detail",
+        },
+    },
 
     {
         path: '/contact',

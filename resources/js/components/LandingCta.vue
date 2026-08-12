@@ -51,7 +51,7 @@ const ctaData = ref(null);
 
 const fetchCtaData = async () => {
   try {
-    const response = await axios.get('/front/landing-cta');
+    const response = await axios.get('/api/front/landing-cta');
     ctaData.value = response.data.data || response.data;
   } catch (error) {
     console.error('Gagal memuat data CTA:', error);

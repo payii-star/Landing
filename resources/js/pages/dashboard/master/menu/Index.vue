@@ -47,7 +47,6 @@ const columns = [
                     {
                         class: "btn btn-sm btn-icon btn-danger",
                         onClick: () =>
-                            // TODO: cocokkan endpoint ini dengan API Destria
                             deleteMenu(`/master/menu/${cell.getValue()}`),
                     },
                     h("i", { class: "la la-trash fs-2" })

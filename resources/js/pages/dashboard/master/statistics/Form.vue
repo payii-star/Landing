@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { block, unblock } from "@/libs/utils";
 import { onMounted, ref, watch } from "vue";
 import * as Yup from "yup";
+import axios from "@/libs/axios";
+import { toast } from "vue3-toastify";
 import type { Statistic } from "@/types";
 
 const props = defineProps({
@@ -47,8 +50,7 @@ function resetForm() {
 }
 
 function submit() {
-    // TODO: nanti diganti manggil API (POST /master/statistics/store atau PUT /master/statistics/{uuid})
-    const data = {
+    const payload = {
         icon: statistic.value.icon,
         statistic: statistic.value.statistic,
         label: statistic.value.label,
@@ -56,11 +58,27 @@ function submit() {
         is_active: !!statistic.value.is_active,
     };
 
-    console.log(data);
-
-    formRef.value?.resetForm();
-    emit("close");
-    emit("refresh");
+    block(document.getElementById("form-statistic"));
+    axios({
+        method: props.selected ? "put" : "post",
+        url: props.selected ? `/master/statistics/${props.selected.id}` : "/master/statistics/store",
+        data: payload,
+    })
+        .then(() => {
+            toast.success("Statistik berhasil disimpan");
+            formRef.value?.resetForm();
+            emit("close");
+            emit("refresh");
+        })
+        .catch((err: any) => {
+            if (err.response?.data?.errors) {
+                formRef.value.setErrors(err.response.data.errors);
+            }
+            toast.error(err.response?.data?.message ?? "Gagal menyimpan statistik");
+        })
+        .finally(() => {
+            unblock(document.getElementById("form-statistic"));
+        });
 }
 
 onMounted(() => {

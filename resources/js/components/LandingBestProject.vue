@@ -83,7 +83,7 @@ const getImageUrl = (path) => {
 
 const fetchProjects = async () => {
   try {
-    const response = await axios.get('/front/best-projects');
+    const response = await axios.get('/api/front/best-projects');
     projects.value = response.data.data || [];
   } catch (error) {
     console.error('Gagal memuat proyek terbaik:', error);

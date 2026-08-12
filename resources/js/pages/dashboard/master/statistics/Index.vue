@@ -1,51 +1,30 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { toast } from "vue3-toastify";
+import Swal from "sweetalert2";
+import axios from "@/libs/axios";
 import Form from "./Form.vue";
 import type { Statistic } from "@/types";
 
-// TODO: nanti diganti fetch dari API (GET /master/statistics) pakai <paginate>,
-// sekarang masih pakai data dummy biar UI-nya bisa langsung dicek.
-const statistics = ref<Statistic[]>([
-    {
-        id: 1,
-        uuid: "dummy-uuid-1",
-        icon: "briefcase",
-        statistic: "10+",
-        label: "Proyek Selesai",
-        urutan: 1,
-        is_active: true,
-    },
-    {
-        id: 2,
-        uuid: "dummy-uuid-2",
-        icon: "users",
-        statistic: "8+",
-        label: "Klien Terpercaya",
-        urutan: 2,
-        is_active: true,
-    },
-    {
-        id: 3,
-        uuid: "dummy-uuid-3",
-        icon: "calendar",
-        statistic: "8+",
-        label: "Tahun Pengalaman",
-        urutan: 3,
-        is_active: true,
-    },
-    {
-        id: 4,
-        uuid: "dummy-uuid-4",
-        icon: "star",
-        statistic: "95%",
-        label: "Kepuasan Klien",
-        urutan: 4,
-        is_active: false,
-    },
-]);
-
+const statistics = ref<Statistic[]>([]);
+const loading = ref(false);
 const selected = ref<Statistic | null>(null);
 const openForm = ref<boolean>(false);
+
+function fetchStatistics() {
+    loading.value = true;
+    axios
+        .get("/master/statistics")
+        .then(({ data }) => {
+            statistics.value = data.data;
+        })
+        .catch((err: any) => {
+            toast.error(err.response?.data?.message ?? "Gagal memuat data statistik");
+        })
+        .finally(() => {
+            loading.value = false;
+        });
+}
 
 function onEdit(statistic: Statistic) {
     selected.value = statistic;
@@ -53,24 +32,43 @@ function onEdit(statistic: Statistic) {
 }
 
 function onDelete(statistic: Statistic) {
-    // TODO: nanti diganti manggil API DELETE /master/statistics/{uuid}
-    if (!confirm(`Hapus statistik "${statistic.label}"?`)) return;
-
-    statistics.value = statistics.value.filter(
-        (s: Statistic) => s.uuid !== statistic.uuid
-    );
+    Swal.fire({
+        title: "Apakah anda yakin?",
+        text: `Hapus statistik "${statistic.label}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, hapus",
+        cancelButtonText: "Batalkan",
+        reverseButtons: true,
+        customClass: {
+            confirmButton: "btn btn-danger btn-sm",
+            cancelButton: "btn btn-secondary btn-sm",
+        },
+        buttonsStyling: false,
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+        axios
+            .delete(`/master/statistics/${statistic.id}`)
+            .then(() => {
+                toast.success("Statistik berhasil dihapus");
+                fetchStatistics();
+            })
+            .catch((err: any) => {
+                toast.error(err.response?.data?.message ?? "Gagal menghapus statistik");
+            });
+    });
 }
 
 function refresh() {
-    // TODO: nanti diganti paginateRef.value.refetch() setelah API tersedia
+    fetchStatistics();
 }
 
 watch(openForm, (val) => {
-    if (!val) {
-        selected.value = null;
-    }
+    if (!val) selected.value = null;
     window.scrollTo(0, 0);
 });
+
+onMounted(fetchStatistics);
 </script>
 
 <template>
@@ -112,8 +110,11 @@ watch(openForm, (val) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-if="statistics.length">
-                            <tr v-for="(statistic, index) in statistics" :key="statistic.uuid">
+                        <tr v-if="loading">
+                            <td colspan="7" class="text-center py-4">Memuat data...</td>
+                        </tr>
+                        <template v-else-if="statistics.length">
+                            <tr v-for="(statistic, index) in statistics" :key="statistic.id">
                                 <td class="py-4">{{ index + 1 }}</td>
                                 <td class="py-4">
                                     <i

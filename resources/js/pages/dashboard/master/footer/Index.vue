@@ -1,23 +1,20 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import * as Yup from "yup";
+import axios from "@/libs/axios";
+import { toast } from "vue3-toastify";
+import Swal from "sweetalert2";
+import { block, unblock } from "@/libs/utils";
 import type { FooterSetting, FooterSocial } from "@/types";
 
-// =========================================================
-// SECTION 1: Company Info (Footer Setting)
-// =========================================================
-// TODO: ganti dengan data dari API (GET /footer/setting) setelah
-// backend-nya siap. Untuk sekarang pakai data dummy biar tampilan
-// & alur formnya bisa dites duluan.
+// ===== Company Info =====
 const footer = ref<FooterSetting>({
-    company_name: "Mcflyon Teknologi Indonesia",
-    description:
-        "Konsultan Informasi Teknologi | Jasa Pembuatan Aplikasi | Pembuatan Website.",
-    address:
-        "JL. Dk. Bungkal no 25b Gang II RT.010 RW.003 Kel. Sambikerep Kec. Sambikerep Kota Surabaya",
-    email: "admin@mcflyon.co.id",
-    phone: "0897-7266-144",
-    copyright: `© ${new Date().getFullYear()} Mcflyon Teknologi Indonesia. All rights reserved.`,
+    company_name: "",
+    description: "",
+    address: "",
+    email: "",
+    phone: "",
+    copyright: "",
 });
 
 const formSchema = Yup.object().shape({
@@ -30,75 +27,113 @@ const formSchema = Yup.object().shape({
 });
 
 function submitFooter() {
-    // TODO: ganti console.log ini dengan axios POST ke /footer/setting
-    // setelah endpoint backend-nya siap.
-    console.log("submit footer setting (dummy):", footer.value);
+    block(document.getElementById("form-footer-setting"));
+    axios
+        .post("/master/footer/setting", footer.value)
+        .then(({ data }) => {
+            footer.value = data.data;
+            toast.success("Info perusahaan berhasil disimpan");
+        })
+        .catch((err: any) => {
+            if (err.response?.data?.errors) {
+                footerFormRef.value?.setErrors(err.response.data.errors);
+            }
+            toast.error(err.response?.data?.message ?? "Gagal menyimpan info perusahaan");
+        })
+        .finally(() => {
+            unblock(document.getElementById("form-footer-setting"));
+        });
 }
 
-// =========================================================
-// SECTION 2: Social Media Links
-// =========================================================
-const socials = ref<FooterSocial[]>([
-    {
-        uuid: "social-1",
-        platform: "Instagram",
-        url: "https://www.instagram.com/mcflyon.id/",
-    },
-]);
+const footerFormRef = ref();
+
+function fetchFooter() {
+    axios
+        .get("/master/footer")
+        .then(({ data }) => {
+            if (data.setting) footer.value = data.setting;
+            socials.value = data.socials ?? [];
+        })
+        .catch((err: any) => {
+            toast.error(err.response?.data?.message ?? "Gagal memuat data footer");
+        });
+}
+
+// ===== Socials =====
+const socials = ref<FooterSocial[]>([]);
 
 const socialForm = ref<FooterSocial>({ platform: "", url: "" });
-const editingUuid = ref<string>("");
+const editingId = ref<number | null>(null);
 const showSocialForm = ref<boolean>(false);
 
 function addSocial() {
     socialForm.value = { platform: "", url: "" };
-    editingUuid.value = "";
+    editingId.value = null;
     showSocialForm.value = true;
 }
 
 function editSocial(social: FooterSocial) {
     socialForm.value = { ...social };
-    editingUuid.value = social.uuid as string;
+    editingId.value = social.id ?? null;
     showSocialForm.value = true;
 }
 
 function cancelSocialForm() {
     showSocialForm.value = false;
     socialForm.value = { platform: "", url: "" };
-    editingUuid.value = "";
+    editingId.value = null;
 }
 
 function submitSocial() {
     if (!socialForm.value.platform || !socialForm.value.url) {
+        toast.error("Platform dan URL wajib diisi");
         return;
     }
 
-    // TODO: ganti dengan axios POST/PUT ke /footer/socials setelah
-    // endpoint backend-nya siap.
-    console.log("submit social (dummy):", socialForm.value);
+    const request = editingId.value
+        ? axios.put(`/master/footer/socials/${editingId.value}`, socialForm.value)
+        : axios.post("/master/footer/socials/store", socialForm.value);
 
-    if (editingUuid.value) {
-        const idx = socials.value.findIndex(
-            (s) => s.uuid === editingUuid.value
-        );
-        if (idx !== -1) {
-            socials.value[idx] = { ...socialForm.value, uuid: editingUuid.value };
-        }
-    } else {
-        socials.value.push({
-            ...socialForm.value,
-            uuid: `social-${Date.now()}`,
+    request
+        .then(() => {
+            toast.success("Social media berhasil disimpan");
+            cancelSocialForm();
+            fetchFooter();
+        })
+        .catch((err: any) => {
+            toast.error(err.response?.data?.message ?? "Gagal menyimpan social media");
         });
-    }
-
-    cancelSocialForm();
 }
 
 function removeSocial(social: FooterSocial) {
-    if (!confirm(`Hapus social "${social.platform}"?`)) return;
-    // TODO: ganti dengan axios DELETE ke /footer/socials/{uuid}
-    socials.value = socials.value.filter((s) => s.uuid !== social.uuid);
+    Swal.fire({
+        title: "Apakah anda yakin?",
+        text: `Hapus social "${social.platform}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, hapus",
+        cancelButtonText: "Batalkan",
+        reverseButtons: true,
+        customClass: {
+            confirmButton: "btn btn-danger btn-sm",
+            cancelButton: "btn btn-secondary btn-sm",
+        },
+        buttonsStyling: false,
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+        axios
+            .delete(`/master/footer/socials/${social.id}`)
+            .then(() => {
+                toast.success("Social media berhasil dihapus");
+                fetchFooter();
+            })
+            .catch((err: any) => {
+                toast.error(err.response?.data?.message ?? "Gagal menghapus social media");
+            });
+    });
 }
+
+onMounted(fetchFooter);
 </script>
 
 <template>
@@ -108,6 +143,7 @@ function removeSocial(social: FooterSocial) {
         @submit="submitFooter"
         :validation-schema="formSchema"
         id="form-footer-setting"
+        ref="footerFormRef"
     >
         <div class="card-header align-items-center">
             <h2 class="mb-0">Footer - Info Perusahaan</h2>
@@ -315,7 +351,7 @@ function removeSocial(social: FooterSocial) {
                         <template v-if="socials.length">
                             <tr
                                 v-for="(social, index) in socials"
-                                :key="social.uuid"
+                                :key="social.id"
                             >
                                 <td class="py-4">{{ index + 1 }}</td>
                                 <td class="py-4">{{ social.platform }}</td>

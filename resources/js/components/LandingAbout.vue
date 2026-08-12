@@ -78,7 +78,7 @@ const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
 const fetchAboutData = async () => {
   try {
-    const response = await axios.get('/front/landing-about');
+    const response = await axios.get('/api/front/landing-about');
     if (response.data.data) aboutData.value = response.data.data;
   } catch (error) {
     console.error('❌ Gagal memuat data About:', error);

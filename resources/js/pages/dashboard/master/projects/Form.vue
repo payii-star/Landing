@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { block, unblock } from "@/libs/utils";
 import { ref, watch } from "vue";
 import * as Yup from "yup";
+import axios from "@/libs/axios";
+import { toast } from "vue3-toastify";
 import type { Project } from "@/types";
 
 const props = defineProps({
     selected: {
-        type: String,
+        type: Number,
         default: null,
     },
 });
@@ -34,29 +37,61 @@ const formSchema = Yup.object().shape({
 });
 
 function getEdit() {
-    // TODO: ganti dengan ApiService.get("master/projects", props.selected)
-    // setelah endpoint backend-nya siap. Untuk sekarang cuma placeholder
-    // supaya form Edit tetap kebuka tanpa error.
-    console.log("getEdit (dummy) untuk uuid:", props.selected);
+    block(document.getElementById("form-project"));
+    axios
+        .get(`/master/projects/${props.selected}`)
+        .then(({ data }) => {
+            project.value = {
+                ...data.data,
+                url: data.data.link_project,
+            };
+            thumbnail.value = data.data.image ? ["/storage/" + data.data.image] : [];
+        })
+        .catch((err: any) => {
+            toast.error(err.response?.data?.message ?? "Gagal memuat data");
+        })
+        .finally(() => {
+            unblock(document.getElementById("form-project"));
+        });
 }
 
 function submit() {
-    const payload = {
-        title: project.value.title,
-        description: project.value.description,
-        url: project.value.url,
-        is_featured: project.value.is_featured,
-        urutan: project.value.urutan,
-        thumbnail: thumbnail.value.length ? thumbnail.value[0].file : null,
-    };
+    const formData = new FormData();
+    formData.append("title", project.value.title);
+    formData.append("description", project.value.description ?? "");
+    formData.append("url", project.value.url ?? "");
+    formData.append("urutan", String(project.value.urutan));
+    formData.append("is_featured", project.value.is_featured ? "1" : "0");
 
-    // TODO: ganti console.log ini dengan axios POST/PUT ke
-    // /master/projects/store atau /master/projects/{uuid} setelah
-    // endpoint backend-nya siap (pola sama seperti Form.vue Users).
-    console.log("submit project (dummy):", payload);
+    if (thumbnail.value.length && thumbnail.value[0].file) {
+        formData.append("thumbnail", thumbnail.value[0].file);
+    }
+    if (props.selected) {
+        formData.append("_method", "PUT");
+    }
 
-    emit("close");
-    emit("refresh");
+    block(document.getElementById("form-project"));
+    axios({
+        method: "post",
+        url: props.selected ? `/master/projects/${props.selected}` : "/master/projects/store",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+    })
+        .then(() => {
+            emit("close");
+            emit("refresh");
+            toast.success("Project berhasil disimpan");
+            formRef.value.resetForm();
+        })
+        .catch((err: any) => {
+            if (err.response?.data?.errors) {
+                formRef.value.setErrors(err.response.data.errors);
+            }
+            toast.error(err.response?.data?.message ?? "Gagal menyimpan project");
+        })
+        .finally(() => {
+            unblock(document.getElementById("form-project"));
+        });
 }
 
 watch(

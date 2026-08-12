@@ -28,6 +28,7 @@ Route::get('front/navbar', [MenuController::class, 'index']);
 Route::get('footer/landing', [FooterController::class, 'index']);
 
 Route::get('front/projects', [ProjectController::class, 'index']);
+Route::get('front/projects/{slug}', [ProjectController::class, 'showBySlug']);
 Route::get('front/best-projects', [ProjectController::class, 'featured']);
 Route::get('front/testimonials', [TestimonialController::class, 'index']);
 Route::get('front/landing-cta', [LandingController::class, 'landingCta']);
@@ -79,5 +80,29 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
             Route::apiResource('roles', RoleController::class)
                 ->except(['index', 'store']);
         });
+
+        Route::get('projects', [ProjectController::class, 'adminIndex']);
+        Route::post('projects/store', [ProjectController::class, 'store']);
+        Route::get('projects/{project}', [ProjectController::class, 'show']);
+        Route::put('projects/{project}', [ProjectController::class, 'update']);
+        Route::delete('projects/{project}', [ProjectController::class, 'destroy']);
+
+        Route::get('statistics', [StatisticController::class, 'adminIndex']);
+        Route::post('statistics/store', [StatisticController::class, 'store']);
+        Route::get('statistics/{statistic}', [StatisticController::class, 'show']);
+        Route::put('statistics/{statistic}', [StatisticController::class, 'update']);
+        Route::delete('statistics/{statistic}', [StatisticController::class, 'destroy']);
+
+        Route::post('menu', [MenuController::class, 'adminIndex']);
+        Route::post('menu/store', [MenuController::class, 'store']);
+        Route::get('menu/{menu}', [MenuController::class, 'show']);
+        Route::put('menu/{menu}', [MenuController::class, 'update']);
+        Route::delete('menu/{menu}', [MenuController::class, 'destroy']);
+
+        Route::get('footer', [FooterController::class, 'adminShow']);
+        Route::post('footer/setting', [FooterController::class, 'updateSetting']);
+        Route::post('footer/socials/store', [FooterController::class, 'socialStore']);
+        Route::put('footer/socials/{footerSocial}', [FooterController::class, 'socialUpdate']);
+        Route::delete('footer/socials/{footerSocial}', [FooterController::class, 'socialDestroy']);
     });
 });

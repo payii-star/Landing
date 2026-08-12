@@ -29,7 +29,6 @@ const formSchema = Yup.object().shape({
 
 function getEdit() {
     block(document.getElementById("form-menu"));
-    // TODO: cocokkan endpoint ini dengan API Destria
     ApiService.get("master/menu", props.selected)
         .then(({ data }) => {
             menu.value = data.menu;
@@ -55,7 +54,6 @@ function submit() {
     block(document.getElementById("form-menu"));
     axios({
         method: "post",
-        // TODO: cocokkan endpoint ini dengan API Destria
         url: props.selected
             ? `/master/menu/${props.selected}`
             : "/master/menu/store",

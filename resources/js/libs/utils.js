@@ -22,6 +22,37 @@ export function unblockBtn(elem) {
 
 let elBlockPosition = null;
 export function block(target, options) {
+    const elTarget = checkElem(target);
+    if (!elTarget) return;
+
+    if (typeof window === "undefined" || typeof window.$ === "undefined") {
+        if (elTarget.querySelector('.blockUI')) return;
+
+        elBlockPosition = elTarget.style.position || "";
+        if (getComputedStyle(elTarget).position === "static") {
+            elTarget.style.position = "relative";
+        }
+
+        const overlay = document.createElement("div");
+        overlay.className = "blockUI blockOverlay";
+        overlay.setAttribute(
+            "style",
+            "z-index: 10; border: none; margin: 0; padding: 0; width: 100%; height: 100%; top: 0; left: 0; background-color: rgb(90, 90, 90); opacity: 0.05; cursor: wait; position: absolute;"
+        );
+
+        const loader = document.createElement("div");
+        loader.className = "blockUI blockMsg blockElement";
+        loader.setAttribute(
+            "style",
+            "z-index: 1011; position: absolute; padding: 0; margin: 0; width: auto; top: 50%; left: 50%; transform: translateX(-50%); text-align: center; color: rgb(90, 90, 90); border: 0; cursor: wait;"
+        );
+        loader.innerHTML = '<span class="spinner spinner-primary"></span>';
+
+        elTarget.appendChild(overlay);
+        elTarget.appendChild(loader);
+        return;
+    }
+
     var el = $(target);
     elBlockPosition = el.css('position'); // save default position attribute
 
@@ -54,6 +85,15 @@ export function block(target, options) {
 }
 
 export function unblock(target) {
+    const elTarget = checkElem(target);
+    if (!elTarget) return;
+
+    if (typeof window === "undefined" || typeof window.$ === "undefined") {
+        elTarget.querySelectorAll('.blockUI').forEach((node) => node.remove());
+        elTarget.style.position = elBlockPosition || "";
+        return;
+    }
+
     var el = $(target);
     el.find('.blockUI').remove();
     el.css('position', elBlockPosition); // restore default position attribute

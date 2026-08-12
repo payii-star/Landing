@@ -1,73 +1,72 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { toast } from "vue3-toastify";
+import Swal from "sweetalert2";
+import axios from "@/libs/axios";
 import Form from "./Form.vue";
 import type { Project } from "@/types";
 
-const selected = ref<string>("");
+const projects = ref<Project[]>([]);
+const loading = ref(false);
+const selected = ref<number | null>(null);
 const openForm = ref<boolean>(false);
 
-// TODO: ganti dengan data dari API (GET /master/projects) setelah backend siap.
-// Untuk sekarang pakai data dummy biar tampilan & alur CRUD-nya bisa dites duluan.
-const projects = ref<Project[]>([
-    {
-        uuid: "dummy-1",
-        title: "Website Profil Desa",
-        description: "Landing page profil dan potensi desa.",
-        thumbnail: "media/stock/dummy-project-1.jpg",
-        url: "https://example.com/project-1",
-        is_featured: true,
-        urutan: 1,
-    },
-    {
-        uuid: "dummy-2",
-        title: "Aplikasi Layanan Surat Online",
-        description: "Sistem pengajuan surat administrasi warga.",
-        thumbnail: "media/stock/dummy-project-2.jpg",
-        url: "https://example.com/project-2",
-        is_featured: false,
-        urutan: 2,
-    },
-    {
-        uuid: "dummy-3",
-        title: "Sistem Informasi UMKM",
-        description: "Pendataan dan promosi UMKM lokal.",
-        thumbnail: "media/stock/dummy-project-3.jpg",
-        url: "https://example.com/project-3",
-        is_featured: true,
-        urutan: 3,
-    },
-    {
-        uuid: "dummy-4",
-        title: "Dashboard Statistik Penduduk",
-        description: "Visualisasi data kependudukan real-time.",
-        thumbnail: "media/stock/dummy-project-4.jpg",
-        url: "https://example.com/project-4",
-        is_featured: false,
-        urutan: 4,
-    },
-]);
+function fetchProjects() {
+    loading.value = true;
+    axios
+        .get("/master/projects")
+        .then(({ data }) => {
+            projects.value = data.data;
+        })
+        .catch((err: any) => {
+            toast.error(err.response?.data?.message ?? "Gagal memuat data project");
+        })
+        .finally(() => {
+            loading.value = false;
+        });
+}
 
 function edit(project: Project) {
-    selected.value = project.uuid as string;
+    selected.value = project.id as number;
     openForm.value = true;
 }
 
 function remove(project: Project) {
-    if (!confirm(`Hapus project "${project.title}"?`)) return;
-    // TODO: ganti dengan panggilan API DELETE /master/projects/{uuid}
-    projects.value = projects.value.filter((p) => p.uuid !== project.uuid);
+    Swal.fire({
+        title: "Apakah anda yakin?",
+        text: `Hapus project "${project.title}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, hapus",
+        cancelButtonText: "Batalkan",
+        reverseButtons: true,
+        customClass: {
+            confirmButton: "btn btn-danger btn-sm",
+            cancelButton: "btn btn-secondary btn-sm",
+        },
+        buttonsStyling: false,
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+        axios
+            .delete(`/master/projects/${project.id}`)
+            .then(() => {
+                toast.success("Project berhasil dihapus");
+                fetchProjects();
+            })
+            .catch((err: any) => {
+                toast.error(err.response?.data?.message ?? "Gagal menghapus project");
+            });
+    });
 }
 
-const refresh = () => {
-    // TODO: refetch dari API setelah backend siap
-};
+const refresh = () => fetchProjects();
 
 watch(openForm, (val) => {
-    if (!val) {
-        selected.value = "";
-    }
+    if (!val) selected.value = null;
     window.scrollTo(0, 0);
 });
+
+onMounted(fetchProjects);
 </script>
 
 <template>
@@ -109,15 +108,18 @@ watch(openForm, (val) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-if="projects.length">
+                        <tr v-if="loading">
+                            <td colspan="6" class="text-center py-4">Memuat data...</td>
+                        </tr>
+                        <template v-else-if="projects.length">
                             <tr
                                 v-for="(project, index) in projects"
-                                :key="project.uuid"
+                                :key="project.id"
                             >
                                 <td class="py-4">{{ index + 1 }}</td>
                                 <td class="py-4">
                                     <img
-                                        :src="project.thumbnail"
+                                        :src="project.image ? `/storage/${project.image}` : ''"
                                         :alt="project.title"
                                         class="rounded"
                                         style="
