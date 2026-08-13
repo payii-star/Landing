@@ -58,11 +58,12 @@ class TestimonialController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'message' => 'required|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+    'name' => 'required|string|max:255',
+    'position' => 'required|string|max:255',
+    'message' => 'required|string',
+    'placement' => 'required|in:beranda,services',
+    'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -72,13 +73,14 @@ class TestimonialController extends Controller
         }
 
         $data = [
-            'name' => $request->name,
-            'position' => $request->position,
-            'content' => $request->message,
-            'is_active' => true,
-            // Testimonial baru ditaruh paling akhir urutan tampil.
-            'urutan' => Testimonial::max('urutan') + 1,
-        ];
+    'name' => $request->name,
+    'position' => $request->position,
+    'content' => $request->message,
+    'placement' => $request->placement,
+    'is_active' => true,
+    // Testimonial baru ditaruh paling akhir urutan tampil.
+    'urutan' => Testimonial::max('urutan') + 1,
+];
 
         if ($request->hasFile('photo')) {
             $data['avatar'] = $request->file('photo')->store('testimonials', 'public');
@@ -97,11 +99,12 @@ class TestimonialController extends Controller
     public function update(Request $request, Testimonial $testimonial)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'position' => 'required|string|max:255',
-            'message' => 'required|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+    'name' => 'required|string|max:255',
+    'position' => 'required|string|max:255',
+    'message' => 'required|string',
+    'placement' => 'required|in:beranda,services',
+    'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -114,6 +117,7 @@ class TestimonialController extends Controller
             'name' => $request->name,
             'position' => $request->position,
             'content' => $request->message,
+            'placement' => $request->placement,
         ];
 
         if ($request->hasFile('photo')) {
@@ -156,6 +160,7 @@ class TestimonialController extends Controller
             'message' => $testimonial->content,
             'photo' => $testimonial->avatar,
             'order' => $testimonial->urutan,
+            'placement' => $testimonial->placement,
         ];
     }
 }

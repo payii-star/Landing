@@ -25,6 +25,9 @@ interface LandingContentForm {
     projects_page_label: string;
     projects_page_title: string;
     projects_page_subtitle: string;
+    ceo_name: string;
+    ceo_position: string;
+    ceo_comment: string;
 }
 
 const content = ref<LandingContentForm>({
@@ -47,12 +50,16 @@ const content = ref<LandingContentForm>({
     projects_page_label: "",
     projects_page_title: "",
     projects_page_subtitle: "",
+    ceo_name: "",
+    ceo_position: "",
+    ceo_comment: "",
 });
 
 const currentLogo = ref<string | null>(null);
+const currentCeoPhoto = ref<string | null>(null);
 const fileTypes = ref(["image/jpeg", "image/png", "image/jpg", "image/webp"]);
 const logoFile = ref<any>([]);
-const formRef = ref();
+const ceoPhotoFile = ref<any>([]);
 
 const formSchema = Yup.object().shape({
     app_name: Yup.string().required("Nama aplikasi harus diisi"),
@@ -74,6 +81,9 @@ const formSchema = Yup.object().shape({
     projects_page_label: Yup.string().nullable(),
     projects_page_title: Yup.string().nullable(),
     projects_page_subtitle: Yup.string().nullable(),
+    ceo_name: Yup.string().nullable(),
+    ceo_position: Yup.string().nullable(),
+    ceo_comment: Yup.string().nullable(),
 });
 
 function fetchContent() {
@@ -88,6 +98,7 @@ function fetchContent() {
                 }
             });
             currentLogo.value = result.logo ? "/storage/" + result.logo : null;
+            currentCeoPhoto.value = result.ceo_photo ? "/storage/" + result.ceo_photo : null;
         })
         .catch((err: any) => {
             toast.error(err.response?.data?.message ?? "Gagal memuat landing content");
@@ -107,6 +118,9 @@ function submit() {
     if (logoFile.value.length && logoFile.value[0].file) {
         formData.append("logo", logoFile.value[0].file);
     }
+    if (ceoPhotoFile.value.length && ceoPhotoFile.value[0].file) {
+    formData.append("ceo_photo", ceoPhotoFile.value[0].file);
+}
 
     block(document.getElementById("form-landing-content"));
     axios
@@ -382,6 +396,69 @@ onMounted(fetchContent);
             </div>
         </div>
         <!--end::Contact Page-->
+
+        <!--begin::Komentar CEO-->
+<div class="card mb-10">
+    <div class="card-header align-items-center">
+        <h2 class="mb-0">Landing Content - Komentar CEO (Beranda)</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="fv-row mb-7">
+                    <label class="form-label fw-bold fs-6">Nama CEO</label>
+                    <Field
+                        class="form-control form-control-lg form-control-solid"
+                        type="text"
+                        name="ceo_name"
+                        v-model="content.ceo_name"
+                    />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="fv-row mb-7">
+                    <label class="form-label fw-bold fs-6">Jabatan CEO</label>
+                    <Field
+                        class="form-control form-control-lg form-control-solid"
+                        type="text"
+                        name="ceo_position"
+                        v-model="content.ceo_position"
+                    />
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="fv-row mb-7">
+                    <label class="form-label fw-bold fs-6">Komentar</label>
+                    <Field
+                        as="textarea"
+                        class="form-control form-control-lg form-control-solid"
+                        name="ceo_comment"
+                        rows="3"
+                        v-model="content.ceo_comment"
+                        placeholder="Boleh multi-baris"
+                    />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="fv-row mb-7">
+                    <label class="form-label fw-bold fs-6">Foto CEO</label>
+                    <file-upload
+                        :files="ceoPhotoFile"
+                        :accepted-file-types="fileTypes"
+                        v-on:updatefiles="(file) => (ceoPhotoFile = file)"
+                    ></file-upload>
+                    <img
+                        v-if="currentCeoPhoto && !ceoPhotoFile.length"
+                        :src="currentCeoPhoto"
+                        alt="Foto CEO saat ini"
+                        style="height: 80px; margin-top: 8px; border-radius: 50%;"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Komentar CEO-->
 
         <!--begin::Projects Page-->
         <div class="card mb-10">

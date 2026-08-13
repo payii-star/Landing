@@ -25,6 +25,7 @@ const formSchema = Yup.object().shape({
     name: Yup.string().required("Nama harus diisi"),
     position: Yup.string().required("Jabatan / instansi harus diisi"),
     message: Yup.string().required("Isi testimoni harus diisi"),
+    placement: Yup.string().required("Pilih tempat tampil"),
 });
 
 function getEdit() {
@@ -50,6 +51,7 @@ function submit() {
     formData.append("name", testimonial.value.name);
     formData.append("position", testimonial.value.position);
     formData.append("message", testimonial.value.message);
+    formData.append("placement", testimonial.value.placement);
 
     if (photo.value.length) {
         formData.append("photo", photo.value[0].file);
@@ -186,6 +188,30 @@ watch(
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
                                 <ErrorMessage name="message" />
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Input group-->
+                </div>
+                <div class="col-md-12">
+                    <!--begin::Input group-->
+                    <div class="fv-row mb-7">
+                        <label class="form-label fw-bold fs-6 required">
+                            Tampilkan di
+                        </label>
+                        <Field
+                            as="select"
+                            class="form-select form-select-lg form-select-solid"
+                            name="placement"
+                            v-model="testimonial.placement"
+                        >
+                            <option value="" disabled>Pilih lokasi tampil</option>
+                            <option value="services">Halaman Layanan (Klien)</option>
+                            <option value="beranda">Beranda (Testimoni CEO)</option>
+                        </Field>
+                        <div class="fv-plugins-message-container">
+                            <div class="fv-help-block">
+                                <ErrorMessage name="placement" />
                             </div>
                         </div>
                     </div>

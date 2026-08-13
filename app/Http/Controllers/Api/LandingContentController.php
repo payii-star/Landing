@@ -18,6 +18,7 @@ class LandingContentController extends Controller
         'cta_secondary_label', 'cta_secondary_url', 'proof_text',
         'contact_hero_title', 'contact_hero_subtitle', 'contact_maps_url',
         'projects_page_label', 'projects_page_title', 'projects_page_subtitle',
+        'ceo_name', 'ceo_position', 'ceo_comment', 'ceo_photo',
     ];
 
     // Route: GET /master/landing-content
@@ -37,11 +38,11 @@ class LandingContentController extends Controller
     public function update(Request $request)
     {
         $rules = [];
-        foreach (self::EDITABLE_KEYS as $key) {
-            $rules[$key] = $key === 'logo'
-                ? 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
-                : 'nullable|string';
-        }
+foreach (self::EDITABLE_KEYS as $key) {
+    $rules[$key] = in_array($key, ['logo', 'ceo_photo'])
+        ? 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
+        : 'nullable|string';
+}
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -53,25 +54,26 @@ class LandingContentController extends Controller
         }
 
         foreach (self::EDITABLE_KEYS as $key) {
-            if ($key === 'logo') {
-                if ($request->hasFile('logo')) {
-                    $old = LandingContent::where('key', 'logo')->first();
-                    if ($old && $old->value && Storage::disk('public')->exists($old->value)) {
-                        Storage::disk('public')->delete($old->value);
-                    }
-                    $path = $request->file('logo')->store('logo', 'public');
-                    LandingContent::updateOrCreate(['key' => 'logo'], ['value' => $path, 'type' => 'image']);
-                }
-                continue;
+    if (in_array($key, ['logo', 'ceo_photo'])) {
+        if ($request->hasFile($key)) {
+            $old = LandingContent::where('key', $key)->first();
+            if ($old && $old->value && Storage::disk('public')->exists($old->value)) {
+                Storage::disk('public')->delete($old->value);
             }
-
-            if ($request->has($key)) {
-                LandingContent::updateOrCreate(
-                    ['key' => $key],
-                    ['value' => $request->input($key), 'type' => 'text']
-                );
-            }
+            $folder = $key === 'logo' ? 'logo' : 'ceo';
+            $path = $request->file($key)->store($folder, 'public');
+            LandingContent::updateOrCreate(['key' => $key], ['value' => $path, 'type' => 'image']);
         }
+        continue;
+    }
+
+    if ($request->has($key)) {
+        LandingContent::updateOrCreate(
+            ['key' => $key],
+            ['value' => $request->input($key), 'type' => 'text']
+        );
+    }
+}
 
         return response()->json([
             'success' => true,
