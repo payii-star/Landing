@@ -70,9 +70,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { mockBestProjects } from '@/mocks/landingMock';
+
+// ── Samain sama pola di stores/project.ts, biar konsisten dan gak salah host ──
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
 
 const projects = ref([]);
+const loading = ref(true);
+const loadError = ref(false);
 
 const getImageUrl = (path) => {
   if (!path) return '';
@@ -82,13 +86,21 @@ const getImageUrl = (path) => {
 };
 
 const fetchProjects = async () => {
+  loading.value = true;
+  loadError.value = false;
   try {
-    const response = await axios.get('/api/front/best-projects');
+    const response = await axios.get(`${API_URL}/front/best-projects`);
     projects.value = response.data.data || [];
   } catch (error) {
+    // ── Jangan ditutupin pakai dummy data lagi. Kalau API gagal, tampilkan
+    // apa adanya (section otomatis nge-hide karena projects.length === 0),
+    // biar bug beneran (404/500/route salah) langsung ketauan, bukan
+    // malah ketutup data karangan.
     console.error('Gagal memuat proyek terbaik:', error);
-    // ── SEMENTARA: kalau API gagal (404), pakai dummy data
-    projects.value = mockBestProjects;
+    projects.value = [];
+    loadError.value = true;
+  } finally {
+    loading.value = false;
   }
 };
 
