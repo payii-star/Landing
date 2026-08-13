@@ -53,9 +53,9 @@
                 <span class="fp-bracket fp-tr"></span>
                 <span class="fp-bracket fp-bl"></span>
                 <span class="fp-bracket fp-br"></span>
-                <span class="platform-badge" :class="getPlatform(project.title)">
-                  <i class="fa-solid" :class="getPlatform(project.title) === 'mobile' ? 'fa-mobile-screen-button' : 'fa-globe'"></i>
-                  {{ getPlatform(project.title) === 'mobile' ? 'Mobile App' : 'Web App' }}
+                <span class="platform-badge" :class="getPlatform(project)">
+                  <i class="fa-solid" :class="getPlatform(project) === 'mobile' ? 'fa-mobile-screen-button' : 'fa-globe'"></i>
+                  {{ getPlatform(project) === 'mobile' ? 'Mobile App' : 'Web App' }}
                 </span>
               </div>
             </div>
@@ -102,9 +102,9 @@
               >
                 <span class="placeholder-initials">{{ getInitials(project.title) }}</span>
               </div>
-              <span class="platform-badge small" :class="getPlatform(project.title)">
-                <i class="fa-solid" :class="getPlatform(project.title) === 'mobile' ? 'fa-mobile-screen-button' : 'fa-globe'"></i>
-                {{ getPlatform(project.title) === 'mobile' ? 'Mobile' : 'Web' }}
+              <span class="platform-badge small" :class="getPlatform(project)">
+                <i class="fa-solid" :class="getPlatform(project) === 'mobile' ? 'fa-mobile-screen-button' : 'fa-globe'"></i>
+                {{ getPlatform(project) === 'mobile' ? 'Mobile' : 'Web' }}
               </span>
               <div class="project-overlay">
                 <h5 class="overlay-title">{{ project.title }}</h5>
@@ -141,9 +141,14 @@ const featuredProjects = computed(() =>
   projectStore.projects.filter(p => p.is_featured)
 )
 
-// ── Deteksi platform dari judul (sementara, sampai ada kolom `platform` di backend) ──
-function getPlatform(title) {
-  return title?.startsWith('Mobile') ? 'mobile' : 'web'
+// ── Kategori Web/Mobile: baca kolom `category` asli dari backend.
+// Fallback ke tebakan dari title HANYA untuk data lama/mock yang belum
+// punya field `category` (mis. saat API gagal dan fallback ke mockProjects). ──
+function getPlatform(project) {
+  if (project?.category === 'mobile' || project?.category === 'web') {
+    return project.category
+  }
+  return project?.title?.startsWith('Mobile') ? 'mobile' : 'web'
 }
 
 // ── Grid: semua yang bukan featured ──
@@ -154,8 +159,8 @@ const gridSource = computed(() =>
 const activeFilter = ref('all')
 
 const filters = computed(() => {
-  const web = gridSource.value.filter(p => getPlatform(p.title) === 'web').length
-  const mobile = gridSource.value.filter(p => getPlatform(p.title) === 'mobile').length
+  const web = gridSource.value.filter(p => getPlatform(p) === 'web').length
+  const mobile = gridSource.value.filter(p => getPlatform(p) === 'mobile').length
   return [
     { value: 'all', label: 'Semua', icon: 'fa-layer-group', count: gridSource.value.length },
     { value: 'web', label: 'Web', icon: 'fa-globe', count: web },
@@ -165,7 +170,7 @@ const filters = computed(() => {
 
 const filteredGrid = computed(() => {
   if (activeFilter.value === 'all') return gridSource.value
-  return gridSource.value.filter(p => getPlatform(p.title) === activeFilter.value)
+  return gridSource.value.filter(p => getPlatform(p) === activeFilter.value)
 })
 
 // ── Placeholder visual ──

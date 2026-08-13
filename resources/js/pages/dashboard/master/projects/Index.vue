@@ -102,6 +102,7 @@ onMounted(fetchProjects);
                             <th class="py-4">#</th>
                             <th class="py-4">Thumbnail</th>
                             <th class="py-4">Title</th>
+                            <th class="py-4">Kategori</th>
                             <th class="py-4">Featured</th>
                             <th class="py-4">Urutan</th>
                             <th class="py-4">Aksi</th>
@@ -109,7 +110,7 @@ onMounted(fetchProjects);
                     </thead>
                     <tbody>
                         <tr v-if="loading">
-                            <td colspan="6" class="text-center py-4">Memuat data...</td>
+                            <td colspan="7" class="text-center py-4">Memuat data...</td>
                         </tr>
                         <template v-else-if="projects.length">
                             <tr
@@ -131,6 +132,22 @@ onMounted(fetchProjects);
                                     />
                                 </td>
                                 <td class="py-4">{{ project.title }}</td>
+                                <td class="py-4">
+                                    <span
+                                        class="badge"
+                                        :class="
+                                            project.category === 'mobile'
+                                                ? 'badge-light-primary'
+                                                : 'badge-light-info'
+                                        "
+                                    >
+                                        {{
+                                            project.category === 'mobile'
+                                                ? "Mobile"
+                                                : "Web"
+                                        }}
+                                    </span>
+                                </td>
                                 <td class="py-4">
                                     <span
                                         class="badge"
@@ -169,7 +186,7 @@ onMounted(fetchProjects);
                             </tr>
                         </template>
                         <tr v-else>
-                            <td colspan="6" class="text-center py-4">
+                            <td colspan="7" class="text-center py-4">
                                 Data tidak ditemukan
                             </td>
                         </tr>

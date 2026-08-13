@@ -8,6 +8,7 @@ export interface Project {
     link_project?: string;
     thumbnail?: string;
     url?: string;
+    category?: "web" | "mobile";
     is_featured: boolean;
     urutan: number;
 }

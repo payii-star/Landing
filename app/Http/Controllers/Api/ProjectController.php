@@ -73,6 +73,7 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'url' => 'nullable|url',
+            'category' => 'nullable|in:web,mobile',
             'urutan' => 'required|integer',
             'is_featured' => 'nullable|boolean',
             'thumbnail' => 'nullable|image|max:2048',
@@ -90,6 +91,7 @@ class ProjectController extends Controller
             'slug' => Str::slug($request->title) . '-' . Str::random(5),
             'description' => $request->description,
             'link_project' => $request->url,
+            'category' => $request->category ?? 'web',
             'urutan' => $request->urutan,
             'is_featured' => $request->boolean('is_featured'),
         ];
@@ -112,6 +114,7 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'url' => 'nullable|url',
+            'category' => 'nullable|in:web,mobile',
             'urutan' => 'required|integer',
             'is_featured' => 'nullable|boolean',
             'thumbnail' => 'nullable|image|max:2048',
@@ -128,6 +131,7 @@ class ProjectController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'link_project' => $request->url,
+            'category' => $request->category ?? $project->category ?? 'web',
             'urutan' => $request->urutan,
             'is_featured' => $request->boolean('is_featured'),
         ];

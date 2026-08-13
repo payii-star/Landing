@@ -19,6 +19,7 @@ const project = ref<Project>({
     title: "",
     description: "",
     url: "",
+    category: "web",
     is_featured: false,
     urutan: 1,
 } as Project);
@@ -31,6 +32,9 @@ const formSchema = Yup.object().shape({
     title: Yup.string().required("Title harus diisi"),
     description: Yup.string().nullable(),
     url: Yup.string().url("URL harus valid").nullable(),
+    category: Yup.string()
+        .oneOf(["web", "mobile"], "Kategori tidak valid")
+        .required("Kategori harus dipilih"),
     urutan: Yup.number()
         .typeError("Urutan harus angka")
         .required("Urutan harus diisi"),
@@ -44,6 +48,7 @@ function getEdit() {
             project.value = {
                 ...data.data,
                 url: data.data.link_project,
+                category: data.data.category ?? "web",
             };
             thumbnail.value = data.data.image ? ["/storage/" + data.data.image] : [];
         })
@@ -60,6 +65,7 @@ function submit() {
     formData.append("title", project.value.title);
     formData.append("description", project.value.description ?? "");
     formData.append("url", project.value.url ?? "");
+    formData.append("category", project.value.category ?? "web");
     formData.append("urutan", String(project.value.urutan));
     formData.append("is_featured", project.value.is_featured ? "1" : "0");
 
@@ -208,6 +214,29 @@ watch(
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
                                 <ErrorMessage name="thumbnail" />
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Input group-->
+                </div>
+                <div class="col-md-3">
+                    <!--begin::Input group-->
+                    <div class="fv-row mb-7">
+                        <label class="form-label fw-bold fs-6 required">
+                            Kategori
+                        </label>
+                        <Field
+                            as="select"
+                            class="form-select form-select-lg form-select-solid"
+                            name="category"
+                            v-model="project.category"
+                        >
+                            <option value="web">Web</option>
+                            <option value="mobile">Mobile</option>
+                        </Field>
+                        <div class="fv-plugins-message-container">
+                            <div class="fv-help-block">
+                                <ErrorMessage name="category" />
                             </div>
                         </div>
                     </div>
