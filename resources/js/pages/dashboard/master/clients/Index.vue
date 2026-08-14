@@ -4,6 +4,7 @@ import ApiService from "@/core/services/ApiService";
 import axios from "@/libs/axios";
 import { toast } from "vue3-toastify";
 import { block, unblock } from "@/libs/utils";
+import { useDelete } from "@/libs/hooks";
 import Form from "./Form.vue";
 
 interface ClientLogo {
@@ -17,6 +18,10 @@ const clients = ref<ClientLogo[]>([]);
 const openForm = ref(false);
 const selected = ref<string>("");
 const dragIndex = ref<number | null>(null);
+
+const { delete: deleteClient } = useDelete({
+    onSuccess: () => fetchClients(),
+});
 
 function fetchClients() {
     block(document.getElementById("client-logo-list"));
@@ -44,21 +49,7 @@ function edit(id: string) {
 }
 
 function remove(id: string) {
-    if (!confirm("Yakin ingin menghapus client ini?")) return;
-
-    block(document.getElementById("client-logo-list"));
-    axios
-        .delete(`/master/client-logos/${id}`)
-        .then(() => {
-            toast.success("Client berhasil dihapus");
-            fetchClients();
-        })
-        .catch((err: any) => {
-            toast.error(err.response?.data?.message || "Gagal menghapus data");
-        })
-        .finally(() => {
-            unblock(document.getElementById("client-logo-list"));
-        });
+    deleteClient(`/master/client-logos/${id}`);
 }
 
 // ── Drag & drop reorder (native HTML5, tanpa library tambahan) ──

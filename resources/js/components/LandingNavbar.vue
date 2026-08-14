@@ -227,9 +227,9 @@
                         <!-- Primary CTA Button -->
                         <template v-for="menu in desktopPrimary" :key="'p-' + menu.id">
                             <a
-                                v-if="isExternal(menu.url, menu.target)"
-                                :href="menu.url"
-                                target="_blank"
+                                v-if="isExternal(getPrimaryMenuUrl(menu), menu.target)"
+                                :href="getPrimaryMenuUrl(menu)"
+                                target="_self"
                                 rel="noopener noreferrer"
                                 class="d-none d-lg-inline-flex cta-btn"
                                 @click="trackClick(menu.id)"
@@ -242,7 +242,7 @@
                             </a>
                             <router-link
                                 v-else
-                                :to="menu.url"
+                                :to="getPrimaryMenuUrl(menu)"
                                 class="d-none d-lg-inline-flex cta-btn"
                                 @click="trackClick(menu.id)"
                             >
@@ -441,9 +441,9 @@
                         <template v-for="menu in mobileButtons" :key="'mc-' + menu.id">
                             <!-- Eksternal -->
                             <a
-                                v-if="isExternal(menu.url, menu.target)"
-                                :href="menu.url"
-                                target="_blank"
+                                v-if="isExternal(getPrimaryMenuUrl(menu), menu.target)"
+                                :href="getPrimaryMenuUrl(menu)"
+                                target="_self"
                                 rel="noopener noreferrer"
                                 class="drawer-cta"
                                 :class="menu.type === 'button-primary' ? 'dcta-primary' : 'dcta-ghost'"
@@ -461,7 +461,7 @@
                             <!-- Internal → router-link -->
                             <router-link
                                 v-else
-                                :to="menu.url"
+                                :to="getPrimaryMenuUrl(menu)"
                                 class="drawer-cta"
                                 :class="menu.type === 'button-primary' ? 'dcta-primary' : 'dcta-ghost'"
                                 @click="handleMobileClick(menu.id)"
@@ -557,6 +557,14 @@ const isExternal = (url: string, target?: string): boolean => {
     if (!url) return false;
     if (target === "_blank") return true;
     return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("//");
+};
+
+const getPrimaryMenuUrl = (menu: any): string => {
+    if (menu.label?.trim().toLowerCase() === "masuk") {
+        return "http://192.168.112.210:8000/sign-in";
+    }
+
+    return menu.url;
 };
 
 // === COMPUTED MENUS ===

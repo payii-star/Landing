@@ -160,7 +160,7 @@ export const mockNavbar = [
   {
     id: 6,
     label: "Masuk",
-    url: import.meta.env.VITE_EPKL_LOGIN_URL || "#",
+    url: import.meta.env.VITE_EPKL_LOGIN_URL || "http://192.168.112.210:8000/sign-in",
     type: "button-primary" as const,
     target: "_self" as const,
     visibility: "guest" as const,

@@ -15,7 +15,6 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\StatisticController;
 use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\LandingContentController;
-use App\Http\Controllers\Api\ClientLogoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,14 +124,62 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
         Route::put('footer/socials/{footerSocial}', [FooterController::class, 'socialUpdate']);
         Route::delete('footer/socials/{footerSocial}', [FooterController::class, 'socialDestroy']);
 
-       Route::get('landing-content', [LandingContentController::class, 'adminIndex']);
+        Route::get('landing-content', [LandingContentController::class, 'adminIndex']);
 Route::post('landing-content', [LandingContentController::class, 'update']);
-
-        Route::get('client-logos', [ClientLogoController::class, 'adminIndex']);
-        Route::post('client-logos/store', [ClientLogoController::class, 'store']);
-        Route::get('client-logos/{id}', [ClientLogoController::class, 'show']);
-        Route::put('client-logos/{id}', [ClientLogoController::class, 'update']);
-        Route::delete('client-logos/{id}', [ClientLogoController::class, 'destroy']);
-        Route::post('client-logos/reorder', [ClientLogoController::class, 'reorder']);
     });
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// INTERNAL — cuma bisa diakses server-ke-server dari backend E-pkl,
+// pakai header X-Internal-Api-Key (lihat VerifyInternalApiKey middleware).
+// BUKAN buat dipanggil dari browser/frontend manapun.
+// Mirror persis dari route master/* di atas, controller-nya sama persis,
+// cuma nggak butuh sesi login Landing (controllernya sendiri stateless,
+// nggak baca auth()/user() sama sekali).
+// ══════════════════════════════════════════════════════════════════════════
+Route::prefix('internal')->middleware('internal.api')->group(function () {
+    Route::get('projects', [ProjectController::class, 'adminIndex']);
+    Route::post('projects/store', [ProjectController::class, 'store']);
+    Route::get('projects/{project}', [ProjectController::class, 'show']);
+    Route::put('projects/{project}', [ProjectController::class, 'update']);
+    Route::delete('projects/{project}', [ProjectController::class, 'destroy']);
+
+    Route::get('statistics', [StatisticController::class, 'adminIndex']);
+    Route::post('statistics/store', [StatisticController::class, 'store']);
+    Route::get('statistics/{statistic}', [StatisticController::class, 'show']);
+    Route::put('statistics/{statistic}', [StatisticController::class, 'update']);
+    Route::delete('statistics/{statistic}', [StatisticController::class, 'destroy']);
+
+    Route::post('menu', [MenuController::class, 'adminIndex']);
+    Route::post('menu/store', [MenuController::class, 'store']);
+    Route::get('menu/{menu}', [MenuController::class, 'show']);
+    Route::put('menu/{menu}', [MenuController::class, 'update']);
+    Route::delete('menu/{menu}', [MenuController::class, 'destroy']);
+
+    Route::post('services', [ServiceController::class, 'adminIndex']);
+    Route::post('services/store', [ServiceController::class, 'store']);
+    Route::get('services/{service}', [ServiceController::class, 'show']);
+    Route::put('services/{service}', [ServiceController::class, 'update']);
+    Route::delete('services/{service}', [ServiceController::class, 'destroy']);
+
+    Route::post('testimonials', [TestimonialController::class, 'adminIndex']);
+    Route::post('testimonials/store', [TestimonialController::class, 'store']);
+    Route::get('testimonials/{testimonial}', [TestimonialController::class, 'show']);
+    Route::put('testimonials/{testimonial}', [TestimonialController::class, 'update']);
+    Route::delete('testimonials/{testimonial}', [TestimonialController::class, 'destroy']);
+
+    Route::post('teams', [TeamController::class, 'adminIndex']);
+    Route::post('teams/store', [TeamController::class, 'store']);
+    Route::get('teams/{team}', [TeamController::class, 'show']);
+    Route::put('teams/{team}', [TeamController::class, 'update']);
+    Route::delete('teams/{team}', [TeamController::class, 'destroy']);
+
+    Route::get('footer', [FooterController::class, 'adminShow']);
+    Route::post('footer/setting', [FooterController::class, 'updateSetting']);
+    Route::post('footer/socials/store', [FooterController::class, 'socialStore']);
+    Route::put('footer/socials/{footerSocial}', [FooterController::class, 'socialUpdate']);
+    Route::delete('footer/socials/{footerSocial}', [FooterController::class, 'socialDestroy']);
+
+    Route::get('landing-content', [LandingContentController::class, 'adminIndex']);
+    Route::post('landing-content', [LandingContentController::class, 'update']);
 });

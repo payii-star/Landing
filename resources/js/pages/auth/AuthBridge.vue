@@ -1,4 +1,4 @@
-<template>
+  <template>
     <div class="d-flex flex-column align-items-center justify-content-center" style="height:100vh;">
         <div v-if="!errorMsg" class="text-center">
             <div class="spinner-border text-primary mb-4" style="width:3rem;height:3rem;"></div>
