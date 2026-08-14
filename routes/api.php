@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\StatisticController;
 use App\Http\Controllers\Api\TeamController;
 use App\Http\Controllers\Api\LandingContentController;
+use App\Http\Controllers\Api\ClientLogoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,7 +125,14 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
         Route::put('footer/socials/{footerSocial}', [FooterController::class, 'socialUpdate']);
         Route::delete('footer/socials/{footerSocial}', [FooterController::class, 'socialDestroy']);
 
-        Route::get('landing-content', [LandingContentController::class, 'adminIndex']);
+       Route::get('landing-content', [LandingContentController::class, 'adminIndex']);
 Route::post('landing-content', [LandingContentController::class, 'update']);
+
+        Route::get('client-logos', [ClientLogoController::class, 'adminIndex']);
+        Route::post('client-logos/store', [ClientLogoController::class, 'store']);
+        Route::get('client-logos/{id}', [ClientLogoController::class, 'show']);
+        Route::put('client-logos/{id}', [ClientLogoController::class, 'update']);
+        Route::delete('client-logos/{id}', [ClientLogoController::class, 'destroy']);
+        Route::post('client-logos/reorder', [ClientLogoController::class, 'reorder']);
     });
 });

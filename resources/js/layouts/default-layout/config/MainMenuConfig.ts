@@ -77,6 +77,12 @@ const MainMenuConfig: Array<MenuItem> = [
     route: "/dashboard/master/testimonials",
 },
 {
+    // ── BARU: menu untuk halaman Client / Mitra ──
+    heading: "Client",
+    name: "master-clients",
+    route: "/dashboard/master/clients",
+},
+{
     heading: "Teams",
     name: "master-teams",
     route: "/dashboard/master/teams",

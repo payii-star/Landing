@@ -210,6 +210,17 @@ const routes: Array<RouteRecordRaw> = [
     },
 },
 {
+    // ── BARU: route untuk halaman Client / Mitra ──
+    path: "master/clients",
+    name: "dashboard.master.clients",
+    component: () =>
+        import("@/pages/dashboard/master/clients/Index.vue"),
+    meta: {
+        pageTitle: "Client / Mitra",
+        breadcrumbs: ["Master", "Client"],
+    },
+},
+{
     path: "master/teams",
     name: "dashboard.master.teams",
     component: () =>
