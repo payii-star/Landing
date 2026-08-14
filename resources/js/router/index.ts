@@ -171,79 +171,6 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Master", "Footer"],
                 },
             },
-<<<<<<< HEAD
-
-            { path: "master/footer",
-    name: "dashboard.master.footer",
-    component: () =>
-        import("@/pages/dashboard/master/footer/Index.vue"),
-    meta: {
-        pageTitle: "Footer",
-        breadcrumbs: ["Master", "Footer"],
-    },
-},
-{
-    path: "master/landing-content",
-    name: "dashboard.master.landing-content",
-    component: () =>
-        import("@/pages/dashboard/master/landing-content/Index.vue"),
-    meta: {
-        pageTitle: "Landing Content",
-        breadcrumbs: ["Master", "Landing Content"],
-    },
-},
-{
-    path: "master/menu",
-    name: "dashboard.master.menu",
-    component: () =>
-        import("@/pages/dashboard/master/menu/Index.vue"),
-    meta: {
-        pageTitle: "Menu",
-        breadcrumbs: ["Master", "Menu"],
-    },
-},
-{
-    path: "master/services",
-    name: "dashboard.master.services",
-    component: () =>
-        import("@/pages/dashboard/master/services/Index.vue"),
-    meta: {
-        pageTitle: "Services",
-        breadcrumbs: ["Master", "Services"],
-    },
-},
-{
-    path: "master/testimonials",
-    name: "dashboard.master.testimonials",
-    component: () =>
-        import("@/pages/dashboard/master/testimonials/Index.vue"),
-    meta: {
-        pageTitle: "Testimonials",
-        breadcrumbs: ["Master", "Testimonials"],
-    },
-},
-{
-    // ── BARU: route untuk halaman Client / Mitra ──
-    path: "master/clients",
-    name: "dashboard.master.clients",
-    component: () =>
-        import("@/pages/dashboard/master/clients/Index.vue"),
-    meta: {
-        pageTitle: "Client / Mitra",
-        breadcrumbs: ["Master", "Client"],
-    },
-},
-{
-    path: "master/teams",
-    name: "dashboard.master.teams",
-    component: () =>
-        import("@/pages/dashboard/master/teams/Index.vue"),
-    meta: {
-        pageTitle: "Teams",
-        breadcrumbs: ["Master", "Teams"],
-    },
-},
-=======
             {
                 path: "master/landing-content",
                 name: "dashboard.master.landing-content",
@@ -285,6 +212,17 @@ const routes: Array<RouteRecordRaw> = [
                 },
             },
             {
+                // ── BARU: route untuk halaman Client / Mitra ──
+                path: "master/clients",
+                name: "dashboard.master.clients",
+                component: () =>
+                    import("@/pages/dashboard/master/clients/Index.vue"),
+                meta: {
+                    pageTitle: "Client / Mitra",
+                    breadcrumbs: ["Master", "Client"],
+                },
+            },
+            {
                 path: "master/teams",
                 name: "dashboard.master.teams",
                 component: () =>
@@ -294,7 +232,6 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Master", "Teams"],
                 },
             },
->>>>>>> 7785ce7d6f846cde7a9361ec5c8c16a40ecbfbeb
         ],
     },
 
