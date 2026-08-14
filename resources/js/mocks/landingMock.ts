@@ -160,7 +160,7 @@ export const mockNavbar = [
   {
     id: 6,
     label: "Masuk",
-    url: "#", // TODO: isi URL sistem Tim 2 kalau nanti dibutuhkan
+    url: import.meta.env.VITE_EPKL_LOGIN_URL || "#",
     type: "button-primary" as const,
     target: "_self" as const,
     visibility: "guest" as const,
@@ -169,8 +169,13 @@ export const mockNavbar = [
     show_on_mobile: true,
     show_on_desktop: true,
     urutan: 6,
+    icon_class: "",
+    custom_class: "",
+    badge_text: "",
+    badge_color: "",
+    rel_attribute: "",
     children: [],
-  },
+},
 ];
 
 // ── 3. FOOTER (endpoint /footer/landing) [SIAP] ──

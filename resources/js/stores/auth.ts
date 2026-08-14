@@ -11,6 +11,7 @@ export interface User {
     phone?: string;
     photo?: string;
     role?: string;  
+    permission?: string[];
 }
 
 export const useAuthStore = defineStore("auth", () => {

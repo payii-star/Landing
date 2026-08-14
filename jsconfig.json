@@ -1,6 +1,7 @@
 {
     "include": ["./resources/js/**/*", "./resources/js/**/{*.js,*.ts,*.vue}"],
     "compilerOptions": {
+        "ignoreDeprecations": "6.0",
         "baseUrl": ".",
         "paths": {
             "@/*": ["./resources/js/*"]

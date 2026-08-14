@@ -71,6 +71,17 @@ const routes: Array<RouteRecordRaw> = [
         },
     },
 
+    // Jembatan login dari E-pkl — TIDAK butuh auth (justru dipakai buat
+    // masukin token SEBELUM login dianggap sah). Lihat WithEmail.vue di E-pkl.
+    {
+        path: '/auth/bridge',
+        name: 'auth-bridge',
+        component: () => import('@/pages/auth/AuthBridge.vue'),
+        meta: {
+            pageTitle: 'Masuk...',
+        },
+    },
+
     // =================================================================
     // 2. DASHBOARD (Protected / Wajib Login)
     // =================================================================
@@ -150,7 +161,8 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Master", "Statistics"],
                 },
             },
-            { path: "master/footer",
+            {
+                path: "master/footer",
                 name: "dashboard.master.footer",
                 component: () =>
                     import("@/pages/dashboard/master/footer/Index.vue"),
@@ -159,66 +171,56 @@ const routes: Array<RouteRecordRaw> = [
                     breadcrumbs: ["Master", "Footer"],
                 },
             },
-
-            { path: "master/footer",
-    name: "dashboard.master.footer",
-    component: () =>
-        import("@/pages/dashboard/master/footer/Index.vue"),
-    meta: {
-        pageTitle: "Footer",
-        breadcrumbs: ["Master", "Footer"],
-    },
-},
-{
-    path: "master/landing-content",
-    name: "dashboard.master.landing-content",
-    component: () =>
-        import("@/pages/dashboard/master/landing-content/Index.vue"),
-    meta: {
-        pageTitle: "Landing Content",
-        breadcrumbs: ["Master", "Landing Content"],
-    },
-},
-{
-    path: "master/menu",
-    name: "dashboard.master.menu",
-    component: () =>
-        import("@/pages/dashboard/master/menu/Index.vue"),
-    meta: {
-        pageTitle: "Menu",
-        breadcrumbs: ["Master", "Menu"],
-    },
-},
-{
-    path: "master/services",
-    name: "dashboard.master.services",
-    component: () =>
-        import("@/pages/dashboard/master/services/Index.vue"),
-    meta: {
-        pageTitle: "Services",
-        breadcrumbs: ["Master", "Services"],
-    },
-},
-{
-    path: "master/testimonials",
-    name: "dashboard.master.testimonials",
-    component: () =>
-        import("@/pages/dashboard/master/testimonials/Index.vue"),
-    meta: {
-        pageTitle: "Testimonials",
-        breadcrumbs: ["Master", "Testimonials"],
-    },
-},
-{
-    path: "master/teams",
-    name: "dashboard.master.teams",
-    component: () =>
-        import("@/pages/dashboard/master/teams/Index.vue"),
-    meta: {
-        pageTitle: "Teams",
-        breadcrumbs: ["Master", "Teams"],
-    },
-},
+            {
+                path: "master/landing-content",
+                name: "dashboard.master.landing-content",
+                component: () =>
+                    import("@/pages/dashboard/master/landing-content/Index.vue"),
+                meta: {
+                    pageTitle: "Landing Content",
+                    breadcrumbs: ["Master", "Landing Content"],
+                },
+            },
+            {
+                path: "master/menu",
+                name: "dashboard.master.menu",
+                component: () =>
+                    import("@/pages/dashboard/master/menu/Index.vue"),
+                meta: {
+                    pageTitle: "Menu",
+                    breadcrumbs: ["Master", "Menu"],
+                },
+            },
+            {
+                path: "master/services",
+                name: "dashboard.master.services",
+                component: () =>
+                    import("@/pages/dashboard/master/services/Index.vue"),
+                meta: {
+                    pageTitle: "Services",
+                    breadcrumbs: ["Master", "Services"],
+                },
+            },
+            {
+                path: "master/testimonials",
+                name: "dashboard.master.testimonials",
+                component: () =>
+                    import("@/pages/dashboard/master/testimonials/Index.vue"),
+                meta: {
+                    pageTitle: "Testimonials",
+                    breadcrumbs: ["Master", "Testimonials"],
+                },
+            },
+            {
+                path: "master/teams",
+                name: "dashboard.master.teams",
+                component: () =>
+                    import("@/pages/dashboard/master/teams/Index.vue"),
+                meta: {
+                    pageTitle: "Teams",
+                    breadcrumbs: ["Master", "Teams"],
+                },
+            },
         ],
     },
 
@@ -317,9 +319,13 @@ router.beforeEach(async (to, from, next) => {
     // Logic Middleware
     if (to.meta.middleware == "auth") {
         if (authStore.isAuthenticated) {
+            const userPermissions = (authStore.user as {
+                permission?: string[];
+            }).permission ?? [];
+
             if (
                 to.meta.permission &&
-                !authStore.user.permission.includes(to.meta.permission)
+                !userPermissions.includes(to.meta.permission)
             ) {
                 next({ name: "404" });
             } else if (to.meta.checkDetail == false) {
