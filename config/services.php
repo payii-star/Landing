@@ -31,10 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    // Dipakai buat login-bridge (url) DAN proxy CRUD konten landing (key).
-    'landing_api' => [
-        'url' => env('LANDING_API_URL', 'http://127.0.0.1:8001/api'),
-        'key' => env('LANDING_INTERNAL_API_KEY'),
+    // Dipakai buat verifikasi request MASUK dari backend E-pkl
+    // (lihat VerifyInternalApiKey middleware). Ini config di LANDING —
+    // beda dari services.php punya E-pkl (yang isinya 'landing_api').
+    'internal_api' => [
+        'key' => env('INTERNAL_API_KEY'),
     ],
 
 ];
