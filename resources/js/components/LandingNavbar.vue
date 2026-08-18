@@ -38,16 +38,10 @@
                             <span class="brand-glow-ring"></span>
                             <span class="brand-float">
                                 <img
-                                    v-if="logoUrl"
-                                    :src="logoUrl"
+                                    :src="displayLogoUrl"
                                     alt="Logo"
                                     class="brand-img"
-                                />
-                                <img
-                                    v-else
-                                    src="/media/logo/logo-mcflyon.png"
-                                    alt="Logo"
-                                    class="brand-img"
+                                    @error="onLogoError"
                                 />
                             </span>
                         </div>
@@ -302,8 +296,13 @@
                             <div class="brand-logo-wrap brand-logo-wrap-sm">
                                 <span class="brand-glow-ring"></span>
                                 <span class="brand-float">
-                                    <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="brand-img" style="height: 36px"/>
-                                    <img v-else src="/media/logos/logo-custom.png" alt="Logo" class="brand-img" style="height: 36px"/>
+                                    <img
+                                        :src="displayLogoUrl"
+                                        alt="Logo"
+                                        class="brand-img"
+                                        style="height: 36px"
+                                        @error="onLogoError"
+                                    />
                                 </span>
                             </div>
                         </router-link>
@@ -483,7 +482,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useLandingStore } from "@/stores/landing";
 
@@ -540,15 +539,36 @@ let closeTimer: ReturnType<typeof setTimeout> | null = null;
 let lastY = 0;
 
 // === LOGO URL ===
-const backendUrl = import.meta.env.VITE_API_URL
-    ? import.meta.env.VITE_API_URL.replace("/api", "")
-    : "http://127.0.0.1:8000";
+const fallbackLogoUrl = "/media/logo/logo-mcflyon.png";
+const logoLoadFailed = ref(false);
+
+const apiUrlFromEnv =
+    import.meta.env.VITE_API_URL || import.meta.env.VITE_APP_API_URL || "";
+
+const backendUrl = apiUrlFromEnv
+    ? apiUrlFromEnv.replace(/\/api\/?$/, "")
+    : window.location.origin;
 
 const logoUrl = computed(() => {
     const path = landingStore.content?.landing_logo;
     if (!path) return null;
     if (path.startsWith("http")) return path;
-    return `${backendUrl}${path}`;
+    if (path.startsWith("//")) return `${window.location.protocol}${path}`;
+    if (path.startsWith("/")) return `${backendUrl}${path}`;
+    return `${backendUrl}/${path}`;
+});
+
+const displayLogoUrl = computed(() => {
+    if (logoLoadFailed.value || !logoUrl.value) return fallbackLogoUrl;
+    return logoUrl.value;
+});
+
+const onLogoError = () => {
+    logoLoadFailed.value = true;
+};
+
+watch(logoUrl, () => {
+    logoLoadFailed.value = false;
 });
 
 // === HELPER: apakah URL ini eksternal? ===
