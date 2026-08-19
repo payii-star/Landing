@@ -71,7 +71,7 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
             Route::post('users', [UserController::class, 'index']);
             Route::post('users/store', [UserController::class, 'store']);
             Route::apiResource('users', UserController::class)
-                ->except(['index', 'store'])->scoped(['user' => 'uuid']);
+                ->except(['index', 'store'])->scoped(['user' => 'uuid']);   
         });
 
         Route::middleware('can:master-role')->group(function () {
@@ -125,7 +125,9 @@ Route::middleware(['auth', 'verified', 'json'])->group(function () {
         Route::delete('footer/socials/{footerSocial}', [FooterController::class, 'socialDestroy']);
 
         Route::get('landing-content', [LandingContentController::class, 'adminIndex']);
-Route::post('landing-content', [LandingContentController::class, 'update']);
+        Route::post('landing-content', [LandingContentController::class, 'update']);
+        Route::get('landing-content/client-logos', [LandingContentController::class, 'clientLogos']);
+        Route::post('landing-content/client-logos', [LandingContentController::class, 'updateClientLogos']);
     });
 });
 
@@ -182,4 +184,11 @@ Route::prefix('internal')->middleware('internal.api')->group(function () {
 
     Route::get('landing-content', [LandingContentController::class, 'adminIndex']);
     Route::post('landing-content', [LandingContentController::class, 'update']);
+
+    Route::get('client-logos', [\App\Http\Controllers\Api\ClientLogoController::class, 'adminIndex']);
+    Route::get('client-logos/{id}', [\App\Http\Controllers\Api\ClientLogoController::class, 'show']);
+    Route::post('client-logos/store', [\App\Http\Controllers\Api\ClientLogoController::class, 'store']);
+    Route::put('client-logos/{id}', [\App\Http\Controllers\Api\ClientLogoController::class, 'update']);
+    Route::delete('client-logos/{id}', [\App\Http\Controllers\Api\ClientLogoController::class, 'destroy']);
+    Route::post('client-logos/reorder', [\App\Http\Controllers\Api\ClientLogoController::class, 'reorder']);
 });
