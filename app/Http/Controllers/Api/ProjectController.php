@@ -11,7 +11,10 @@ use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
-    // Route: GET /front/projects (halaman /projects, 17 item)
+    /**
+     * GET /api/front/projects
+     * Semua project untuk halaman Projects.
+     */
     public function index()
     {
         $projects = Project::orderBy('urutan')->get();
@@ -22,7 +25,10 @@ class ProjectController extends Controller
         ]);
     }
 
-    // Route: GET /front/best-projects (Home, cuma yang featured)
+    /**
+     * GET /api/front/best-projects
+     * Hanya project yang Featured.
+     */
     public function featured()
     {
         $projects = Project::where('is_featured', true)
@@ -35,12 +41,16 @@ class ProjectController extends Controller
         ]);
     }
 
+    /**
+     * GET /api/front/projects/{slug}
+     */
     public function showBySlug(string $slug)
     {
         $project = Project::where('slug', $slug)->first();
 
         if (!$project) {
             return response()->json([
+                'success' => false,
                 'message' => 'Project tidak ditemukan',
             ], 404);
         }
@@ -51,6 +61,10 @@ class ProjectController extends Controller
         ]);
     }
 
+    /**
+     * GET /api/master/projects
+     * Data untuk admin.
+     */
     public function adminIndex()
     {
         return response()->json([
@@ -59,6 +73,9 @@ class ProjectController extends Controller
         ]);
     }
 
+    /**
+     * GET /api/master/projects/{project}
+     */
     public function show(Project $project)
     {
         return response()->json([
@@ -67,6 +84,9 @@ class ProjectController extends Controller
         ]);
     }
 
+    /**
+     * POST /api/master/projects
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -76,11 +96,12 @@ class ProjectController extends Controller
             'category' => 'nullable|in:web,mobile',
             'urutan' => 'required|integer',
             'is_featured' => 'nullable|boolean',
-            'thumbnail' => 'nullable|image|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
+                'success' => false,
                 'message' => $validator->errors()->first(),
                 'errors' => $validator->errors(),
             ], 422);
@@ -90,24 +111,39 @@ class ProjectController extends Controller
             'title' => $request->title,
             'slug' => Str::slug($request->title) . '-' . Str::random(5),
             'description' => $request->description,
-            'link_project' => $request->url,
+            'url' => $request->url,
             'category' => $request->category ?? 'web',
             'urutan' => $request->urutan,
             'is_featured' => $request->boolean('is_featured'),
         ];
 
+        /*
+         * Simpan thumbnail ke:
+         *
+         * storage/app/public/landing/projects
+         *
+         * sehingga URL frontend:
+         *
+         * /storage/landing/projects/nama-file.jpg
+         */
         if ($request->hasFile('thumbnail')) {
-            $data['image'] = $request->file('thumbnail')->store('projects', 'public');
+            $data['thumbnail'] = $request
+                ->file('thumbnail')
+                ->store('landing/projects', 'public');
         }
 
         $project = Project::create($data);
 
         return response()->json([
             'success' => true,
+            'message' => 'Project berhasil ditambahkan',
             'data' => $project,
         ], 201);
     }
 
+    /**
+     * PUT /api/master/projects/{project}
+     */
     public function update(Request $request, Project $project)
     {
         $validator = Validator::make($request->all(), [
@@ -117,11 +153,12 @@ class ProjectController extends Controller
             'category' => 'nullable|in:web,mobile',
             'urutan' => 'required|integer',
             'is_featured' => 'nullable|boolean',
-            'thumbnail' => 'nullable|image|max:2048',
+            'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
+                'success' => false,
                 'message' => $validator->errors()->first(),
                 'errors' => $validator->errors(),
             ], 422);
@@ -130,35 +167,49 @@ class ProjectController extends Controller
         $data = [
             'title' => $request->title,
             'description' => $request->description,
-            'link_project' => $request->url,
+            'url' => $request->url,
             'category' => $request->category ?? $project->category ?? 'web',
             'urutan' => $request->urutan,
             'is_featured' => $request->boolean('is_featured'),
         ];
 
+        /*
+         * Kalau upload thumbnail baru,
+         * hapus thumbnail lama lalu simpan yang baru.
+         */
         if ($request->hasFile('thumbnail')) {
-            if ($project->image) {
-                Storage::disk('public')->delete($project->image);
+            if ($project->thumbnail) {
+                Storage::disk('public')->delete($project->thumbnail);
             }
-            $data['image'] = $request->file('thumbnail')->store('projects', 'public');
+
+            $data['thumbnail'] = $request
+                ->file('thumbnail')
+                ->store('landing/projects', 'public');
         }
 
         $project->update($data);
 
         return response()->json([
             'success' => true,
-            'data' => $project,
+            'message' => 'Project berhasil diperbarui',
+            'data' => $project->fresh(),
         ]);
     }
 
+    /**
+     * DELETE /api/master/projects/{project}
+     */
     public function destroy(Project $project)
     {
-        if ($project->image) {
-            Storage::disk('public')->delete($project->image);
+        if ($project->thumbnail) {
+            Storage::disk('public')->delete($project->thumbnail);
         }
 
         $project->delete();
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Project berhasil dihapus',
+        ]);
     }
 }
