@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\LandingContent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class LandingController extends Controller
 {
@@ -24,14 +25,37 @@ class LandingController extends Controller
         $data = LandingContent::pluck('value', 'key');
 
         $result = $data->toArray();
-        if (isset($result['client_logos'])) {
-            $result['client_logos'] = json_decode($result['client_logos']);
-        }
+
+        // client_logos sekarang datanya beneran di E-pkl (tabel landing_client_logos),
+        // bukan lagi di landing_contents. Ambil dari sana; kalau E-pkl lagi nggak
+        // bisa diakses, fallback ke value lama di landing_contents (kalau ada).
+        $result['client_logos'] = $this->fetchClientLogosFromEpkl()
+            ?? (isset($result['client_logos']) ? json_decode($result['client_logos']) : []);
 
         return response()->json([
             'success' => true,
             'data' => $result,
         ]);
+    }
+
+    private function fetchClientLogosFromEpkl(): ?array
+    {
+        $epklUrl = config('services.epkl_api.url');
+        if (!$epklUrl) {
+            return null;
+        }
+
+        try {
+            $res = Http::timeout(5)->get(rtrim($epklUrl, '/') . '/front/client-logos');
+        } catch (\Throwable) {
+            return null;
+        }
+
+        if ($res->failed()) {
+            return null;
+        }
+
+        return $res->json('data') ?? [];
     }
 
     public function landingCta()

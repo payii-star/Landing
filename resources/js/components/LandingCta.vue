@@ -47,16 +47,22 @@ import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 import { mockCta } from '@/mocks/landingMock';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== 'false';
+
 const ctaData = ref(null);
 
 const fetchCtaData = async () => {
   try {
-    const response = await axios.get('/api/front/landing-cta');
+    const response = await axios.get(`${API_URL}/front/landing-cta`);
     ctaData.value = response.data.data || response.data;
   } catch (error) {
     console.error('Gagal memuat data CTA:', error);
-    // ── SEMENTARA: kalau API gagal (404), pakai dummy data
-    ctaData.value = mockCta;
+
+    if (USE_MOCK_FALLBACK) {
+      console.warn('⚠️ Pakai mockCta — backend belum tersedia. JANGAN lupa dicabut sebelum production.');
+      ctaData.value = mockCta;
+    }
   }
 };
 

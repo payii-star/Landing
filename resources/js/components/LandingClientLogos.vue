@@ -36,7 +36,7 @@
           <!-- Set A -->
           <div v-for="(logo, i) in paddedLogos" :key="'a' + i" class="cls-item">
             <div class="cls-card">
-              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="resolveLogoUrl(logo.url)" :alt="logo.name" class="cls-img" draggable="false"/>
               <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <span class="cls-tip">{{ logo.name }}</span>
             </div>
@@ -44,7 +44,7 @@
           <!-- Set B — salinan identik, untuk sambungan seamless -->
           <div v-for="(logo, i) in paddedLogos" :key="'b' + i" class="cls-item" aria-hidden="true">
             <div class="cls-card">
-              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="resolveLogoUrl(logo.url)" :alt="logo.name" class="cls-img" draggable="false"/>
               <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <span class="cls-tip">{{ logo.name }}</span>
             </div>
@@ -62,6 +62,16 @@ import { useLandingStore } from '@/stores/landing';
 
 const landingStore = useLandingStore();
 const isPaused     = ref(false);
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+
+// Logo dari seeder/DB disimpan sebagai path relatif ("/media/clients/xxx.png").
+// Harus diarahkan ke origin BACKEND, bukan origin frontend (Vite dev server).
+const resolveLogoUrl = (url) => {
+  if (!url) return url;
+  if (/^https?:\/\//i.test(url)) return url;
+  const backendUrl = API_URL.replace('/api', '');
+  return url.startsWith('/') ? `${backendUrl}${url}` : `${backendUrl}/${url}`;
+};
 
 const clientLogos = computed(() => landingStore.content?.client_logos || []);
 

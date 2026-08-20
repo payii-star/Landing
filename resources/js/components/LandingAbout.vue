@@ -73,12 +73,14 @@ import { mockAbout } from '@/mocks/landingMock';
 
 const aboutData = ref({ ...mockAbout });
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+
 // Sama seperti pola di stores/landing.ts — bisa dimatikan lewat .env kalau perlu
 const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
 const fetchAboutData = async () => {
   try {
-    const response = await axios.get('/api/front/landing-about');
+    const response = await axios.get(`${API_URL}/front/landing-about`);
     if (response.data.data) aboutData.value = response.data.data;
   } catch (error) {
     console.error('❌ Gagal memuat data About:', error);
@@ -91,8 +93,9 @@ const fetchAboutData = async () => {
 };
 
 const getImageUrl = (path: string | null) => {
+  const backendUrl = API_URL.replace('/api', '');
   return path
-    ? `http://localhost:8000/storage/${path}`
+    ? `${backendUrl}/storage/${path}`
     : 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
 };
 

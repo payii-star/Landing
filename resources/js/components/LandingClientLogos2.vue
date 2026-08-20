@@ -30,14 +30,14 @@
         <div class="cls-track" :class="{ paused: paused1 }" :style="{ '--dur': dur1 + 's' }">
           <div v-for="(logo, i) in row1" :key="'b' + i" class="cls-item" aria-hidden="true">
             <div class="cls-card">
-              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="resolveLogoUrl(logo.url)" :alt="logo.name" class="cls-img" draggable="false"/>
               <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <div class="cls-card-name">{{ logo.name }}</div>
             </div>
           </div>
           <div v-for="(logo, i) in row1" :key="'b' + i" class="cls-item" aria-hidden="true">
             <div class="cls-card">
-              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="resolveLogoUrl(logo.url)" :alt="logo.name" class="cls-img" draggable="false"/>
               <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <div class="cls-card-name">{{ logo.name }}</div>
             </div>
@@ -54,14 +54,14 @@
         <div class="cls-track reverse" :class="{ paused: paused2 }" :style="{ '--dur': dur2 + 's' }">
           <div v-for="(logo, i) in row2" :key="'c' + i" class="cls-item">
             <div class="cls-card">
-              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="resolveLogoUrl(logo.url)" :alt="logo.name" class="cls-img" draggable="false"/>
               <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <div class="cls-card-name">{{ logo.name }}</div>
             </div>
           </div>
           <div v-for="(logo, i) in row2" :key="'d' + i" class="cls-item" aria-hidden="true">
             <div class="cls-card">
-              <img v-if="logo.url" :src="logo.url" :alt="logo.name" class="cls-img" draggable="false"/>
+              <img v-if="logo.url" :src="resolveLogoUrl(logo.url)" :alt="logo.name" class="cls-img" draggable="false"/>
               <span v-else class="cls-badge">{{ logo.short || logo.name }}</span>
               <div class="cls-card-name">{{ logo.name }}</div>
             </div>
@@ -80,9 +80,24 @@ import { useLandingStore } from '@/stores/landing';
 import { mockClientLogos } from '@/mocks/landingMock';
 
 const landingStore = useLandingStore();
-// ── SEMENTARA: isi dummy client_logos kalau belum ada dari API
+const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+
+// Logo dari seeder/DB disimpan sebagai path relatif ("/media/clients/xxx.png"
+// atau "/storage/clients/xxx.png"). Path relatif itu harus diarahkan ke
+// ORIGIN BACKEND, bukan origin frontend (Vite) — kalau tidak, gambar 404.
+const resolveLogoUrl = (url) => {
+  if (!url) return url;
+  if (/^https?:\/\//i.test(url)) return url; // sudah absolute, biarkan
+  const backendUrl = API_URL.replace('/api', '');
+  return url.startsWith('/') ? `${backendUrl}${url}` : `${backendUrl}/${url}`;
+};
+
+// Isi dummy client_logos SEMENTARA fetchContent() (dipanggil parent page)
+// belum selesai. Begitu data asli datang, computed di bawah otomatis pakai
+// data asli — ini cuma placeholder saat loading, bukan pemaksaan dummy.
 onMounted(() => {
-  if (!landingStore.content?.client_logos) {
+  if (!landingStore.content?.client_logos && USE_MOCK_FALLBACK) {
     landingStore.content = {
       ...landingStore.content,
       client_logos: mockClientLogos,

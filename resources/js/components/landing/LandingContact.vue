@@ -226,12 +226,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useContactStore } from '@/stores/contact'
-import { mockContactSetting } from '@/mocks/landingMock'
 
 const store = useContactStore()
 
 onMounted(() => {
-  store.setting = mockContactSetting
+  // Ambil data asli dari backend (stores/contact.ts sudah punya fallback
+  // mockContactSetting sendiri kalau API-nya gagal, jadi tidak perlu
+  // dipaksa pakai mock di sini lagi).
+  store.fetchSetting()
 })
 
 
