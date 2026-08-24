@@ -10,7 +10,6 @@
             class="navbar-root"
             :class="{
                 'is-scrolled': isScrolled,
-                'is-hidden': isHidden,
                 'is-top': !isScrolled,
             }"
             ref="navbarRef"
@@ -482,16 +481,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
-import { useLandingStore } from "@/stores/landing";
 
-const landingStore = useLandingStore();
+type StaticMenu = {
+    id: number;
+    label: string;
+    mobile_label?: string;
+    url: string;
+    type: "link" | "button-primary" | "button-outline";
+    target?: string;
+    icon_class?: string;
+    badge_text?: string;
+    badge_color?: string;
+    has_dropdown?: boolean;
+    children?: StaticMenu[];
+};
+
 const route = useRoute();
 const navbarRef = ref<HTMLElement | null>(null);
 
 const isScrolled = ref(false);
-const isHidden = ref(false);
 const activeDropdown = ref<number | null>(null);
 const mobileMenuOpen = ref(false);
 const mobileActiveDropdown = ref<number | null>(null);
@@ -499,6 +509,54 @@ const scrollProgress = ref(0);
 const spotlightX = ref(0);
 const spotlightY = ref(0);
 const spotlightVisible = ref(false);
+
+// Header ini sengaja STATIC.
+// Tidak mengambil menu/content dari landingStore/API Admin Landing.
+// Dengan begitu header tetap tampil untuk landing utama maupun tim E-PKL.
+const staticMenus: StaticMenu[] = [
+    {
+        id: 1,
+        label: "Beranda",
+        mobile_label: "Home",
+        url: "/",
+        type: "link",
+    },
+    {
+        id: 2,
+        label: "Tentang Kami",
+        mobile_label: "Tentang",
+        url: "/about",
+        type: "link",
+    },
+    {
+        id: 3,
+        label: "Layanan",
+        mobile_label: "Layanan",
+        url: "/services",
+        type: "link",
+    },
+    {
+        id: 4,
+        label: "Proyek",
+        mobile_label: "Proyek",
+        url: "/projects",
+        type: "link",
+    },
+    {
+        id: 5,
+        label: "Kontak",
+        mobile_label: "Kontak",
+        url: "/contact",
+        type: "link",
+    },
+    {
+        id: 6,
+        label: "Masuk",
+        mobile_label: "Masuk",
+        url: "http://192.168.112.210:8000/sign-in",
+        type: "button-primary",
+    },
+];
 
 // === DRAWER DRAG ===
 const drawerRef = ref<HTMLElement | null>(null);
@@ -513,20 +571,27 @@ const onDragStart = (e: TouchEvent | MouseEvent) => {
     dragStartTime = Date.now();
     dragY.value = 0;
 };
+
 const onDragMove = (e: TouchEvent | MouseEvent) => {
     if (!isDragging.value) return;
+
     const currentY = "touches" in e ? e.touches[0].clientY : e.clientY;
     const delta = currentY - dragStartY;
     dragY.value = delta > 0 ? delta : Math.max(delta * 0.15, -30);
 };
+
 const onDragEnd = () => {
     if (!isDragging.value) return;
+
     isDragging.value = false;
-    const elapsed = Date.now() - dragStartTime;
+
+    const elapsed = Math.max(Date.now() - dragStartTime, 1);
     const velocity = dragY.value / elapsed;
+
     if (dragY.value > 80 || velocity > 0.5) {
         closeMobileMenu();
     }
+
     dragY.value = 0;
 };
 
@@ -536,103 +601,89 @@ const drawerStyle = computed(() => ({
 }));
 
 let closeTimer: ReturnType<typeof setTimeout> | null = null;
-let lastY = 0;
 
-// === LOGO URL ===
+// === STATIC LOGO ===
+// Tidak lagi membaca logo dari LandingContent/admin landing.
 const fallbackLogoUrl = "/media/logo/logo-mcflyon.png";
-const logoLoadFailed = ref(false);
-
-const apiUrlFromEnv =
-    import.meta.env.VITE_API_URL || import.meta.env.VITE_APP_API_URL || "";
-
-const backendUrl = apiUrlFromEnv
-    ? apiUrlFromEnv.replace(/\/api\/?$/, "")
-    : window.location.origin;
-
-const logoUrl = computed(() => {
-    const path = landingStore.content?.landing_logo;
-    if (!path) return null;
-    if (path.startsWith("http")) return path;
-    if (path.startsWith("//")) return `${window.location.protocol}${path}`;
-    if (path.startsWith("/")) return `${backendUrl}${path}`;
-    return `${backendUrl}/${path}`;
-});
-
-const displayLogoUrl = computed(() => {
-    if (logoLoadFailed.value || !logoUrl.value) return fallbackLogoUrl;
-    return logoUrl.value;
-});
+const displayLogoUrl = ref(fallbackLogoUrl);
 
 const onLogoError = () => {
-    logoLoadFailed.value = true;
+    // Kalau logo utama gagal, coba placeholder yang umum tersedia.
+    if (displayLogoUrl.value !== "/media/logo/logo-placeholder.png") {
+        displayLogoUrl.value = "/media/logo/logo-placeholder.png";
+    }
 };
 
-watch(logoUrl, () => {
-    logoLoadFailed.value = false;
-});
+// === MENU DATA ===
+const desktopLinks = computed(() =>
+    staticMenus.filter((menu) => menu.type === "link")
+);
 
-// === HELPER: apakah URL ini eksternal? ===
-// Dianggap eksternal jika: dimulai dengan http(s), atau target="_blank" eksplisit
+const desktopPrimary = computed(() =>
+    staticMenus.filter((menu) => menu.type === "button-primary")
+);
+
+const desktopGhost = computed(() =>
+    staticMenus.filter((menu) => menu.type === "button-outline")
+);
+
+const mobileLinks = computed(() =>
+    staticMenus.filter((menu) => menu.type === "link")
+);
+
+const mobileButtons = computed(() =>
+    staticMenus.filter(
+        (menu) =>
+            menu.type === "button-primary" ||
+            menu.type === "button-outline"
+    )
+);
+
+const getPrimaryMenuUrl = (menu: StaticMenu): string => menu.url;
+
+// === URL HELPERS ===
 const isExternal = (url: string, target?: string): boolean => {
     if (!url) return false;
     if (target === "_blank") return true;
-    return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("//");
+
+    return (
+        url.startsWith("http://") ||
+        url.startsWith("https://") ||
+        url.startsWith("//")
+    );
 };
 
-const getPrimaryMenuUrl = (menu: any): string => {
-    if (menu.label?.trim().toLowerCase() === "masuk") {
-        return "http://192.168.112.210:8000/sign-in";
-    }
+const isActive = (url: string) => {
+    if (!url || url === "#") return false;
 
-    return menu.url;
+    return route.path === url || route.path.startsWith(url + "/");
 };
 
-// === COMPUTED MENUS ===
-const isRoot = (m: any) =>
-    !m.parent_id || m.parent_id === null || m.parent_id === 0;
-
-const desktopLinks = computed(() =>
-    (landingStore.menus ?? [])
-        .filter((m) => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "link")
-        .sort((a, b) => a.urutan - b.urutan)
-);
-const desktopPrimary = computed(() =>
-    (landingStore.menus ?? [])
-        .filter((m) => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "button-primary")
-        .sort((a, b) => a.urutan - b.urutan)
-);
-const desktopGhost = computed(() =>
-    (landingStore.menus ?? [])
-        .filter((m) => m.is_active && isRoot(m) && m.show_on_desktop !== false && m.type === "button-outline")
-        .sort((a, b) => a.urutan - b.urutan)
-);
-const mobileLinks = computed(() =>
-    (landingStore.menus ?? [])
-        .filter((m) => m.is_active && isRoot(m) && m.show_on_mobile !== false && m.type === "link")
-        .sort((a, b) => a.urutan - b.urutan)
-);
-const mobileButtons = computed(() =>
-    (landingStore.menus ?? [])
-        .filter((m) => m.is_active && isRoot(m) && m.show_on_mobile !== false && (m.type === "button-primary" || m.type === "button-outline"))
-        .sort((a, b) => a.urutan - b.urutan)
-);
+// Header static, jadi tracking menu admin sengaja tidak dipanggil.
+const trackClick = (_id: number) => {};
 
 // === DROPDOWN ===
 const openDropdown = (id: number) => {
     if (closeTimer) clearTimeout(closeTimer);
     activeDropdown.value = id;
 };
+
 const keepOpen = (id: number) => {
     if (closeTimer) clearTimeout(closeTimer);
     activeDropdown.value = id;
 };
+
 const scheduleClose = () => {
+    if (closeTimer) clearTimeout(closeTimer);
+
     closeTimer = setTimeout(() => {
         activeDropdown.value = null;
     }, 180);
 };
+
 const toggleMobileDropdown = (id: number) => {
-    mobileActiveDropdown.value = mobileActiveDropdown.value === id ? null : id;
+    mobileActiveDropdown.value =
+        mobileActiveDropdown.value === id ? null : id;
 };
 
 // === MOBILE ===
@@ -640,86 +691,88 @@ const toggleMobile = () => {
     mobileMenuOpen.value = !mobileMenuOpen.value;
     document.body.style.overflow = mobileMenuOpen.value ? "hidden" : "";
 };
+
 const closeMobileMenu = () => {
     mobileMenuOpen.value = false;
     mobileActiveDropdown.value = null;
     document.body.style.overflow = "";
 };
+
 const handleMobileClick = (id: number) => {
     trackClick(id);
     closeMobileMenu();
 };
 
-// === HELPERS ===
-const isActive = (url: string) => {
-    if (!url || url === "#") return false;
-    return route.path === url || route.path.startsWith(url + "/");
-};
-const trackClick = async (id: number) => {
-    try {
-        await landingStore.trackMenuClick(id);
-    } catch {}
-};
-
 // === SPOTLIGHT EFFECT ===
 const onNavMouseMove = (e: MouseEvent) => {
     if (!navbarRef.value) return;
+
     const rect = navbarRef.value.getBoundingClientRect();
+
     spotlightX.value = e.clientX - rect.left;
     spotlightY.value = e.clientY - rect.top;
     spotlightVisible.value = true;
 };
+
 const onNavMouseLeave = () => {
     spotlightVisible.value = false;
 };
 
 // === SCROLL ===
+// Header TIDAK disembunyikan saat scroll.
+// Hanya background + progress yang berubah.
 const onScroll = () => {
-    const y = scrollContainer === window
-        ? window.scrollY
-        : (scrollContainer as Element).scrollTop;
+    const y =
+        scrollContainer === window
+            ? window.scrollY
+            : (scrollContainer as Element).scrollTop;
 
-    const docH = scrollContainer === window
-        ? document.documentElement.scrollHeight - window.innerHeight
-        : (scrollContainer as Element).scrollHeight - (scrollContainer as Element).clientHeight;
+    const docH =
+        scrollContainer === window
+            ? document.documentElement.scrollHeight - window.innerHeight
+            : (scrollContainer as Element).scrollHeight -
+              (scrollContainer as Element).clientHeight;
 
-    scrollProgress.value = docH > 0 ? Math.round((y / docH) * 100) : 0;
+    scrollProgress.value =
+        docH > 0 ? Math.min(100, Math.round((y / docH) * 100)) : 0;
+
     isScrolled.value = y > 20;
-
-    if (y > lastY && y > 130) {
-        isHidden.value = true;
-    } else if (y <= 20) {
-        isHidden.value = false;
-    }
-
-    lastY = y <= 0 ? 0 : y;
 };
 
 const onClickOut = (e: MouseEvent) => {
-    if (!(e.target as HTMLElement).closest(".nav-item"))
+    const target = e.target as HTMLElement;
+
+    if (!target.closest(".nav-item")) {
         activeDropdown.value = null;
+    }
 };
 
 let scrollContainer: Element | Window = window;
 
-onMounted(async () => {
-    await landingStore.fetchMenu(window.innerWidth < 992 ? "mobile" : "desktop");
-    await landingStore.fetchContent();
-
-    // Cari elemen yang benar-benar scroll (bukan window) — struktur project ini
-    // pakai .landing-wrapper sebagai scroll container, bukan window biasa.
+onMounted(() => {
+    // Cari elemen scroll landing jika ada.
     const wrapper = document.querySelector(".landing-wrapper");
     scrollContainer = wrapper || window;
-    scrollContainer.addEventListener("scroll", onScroll, { passive: true });
+
+    scrollContainer.addEventListener("scroll", onScroll, {
+        passive: true,
+    });
 
     document.addEventListener("click", onClickOut);
+
+    // Jalankan sekali supaya state langsung benar.
+    onScroll();
 });
 
 onUnmounted(() => {
     scrollContainer.removeEventListener("scroll", onScroll);
     document.removeEventListener("click", onClickOut);
+
     document.body.style.overflow = "";
-    if (closeTimer) clearTimeout(closeTimer);
+
+    if (closeTimer) {
+        clearTimeout(closeTimer);
+    }
 });
 </script>
 
