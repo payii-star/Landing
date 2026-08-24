@@ -10,6 +10,7 @@
             class="navbar-root"
             :class="{
                 'is-scrolled': isScrolled,
+                'is-hidden': isHidden && !mobileMenuOpen,
                 'is-top': !isScrolled,
             }"
             ref="navbarRef"
@@ -719,8 +720,14 @@ const onNavMouseLeave = () => {
 };
 
 // === SCROLL ===
-// Header TIDAK disembunyikan saat scroll.
-// Hanya background + progress yang berubah.
+// Header:
+// - transparan saat berada di atas maupun ketika scroll
+// - hilang saat user scroll KE BAWAH
+// - muncul kembali saat user scroll KE ATAS
+// - tetap muncul saat mobile drawer sedang terbuka
+const isHidden = ref(false);
+let lastScrollY = 0;
+
 const onScroll = () => {
     const y =
         scrollContainer === window
@@ -737,6 +744,25 @@ const onScroll = () => {
         docH > 0 ? Math.min(100, Math.round((y / docH) * 100)) : 0;
 
     isScrolled.value = y > 20;
+
+    // Di paling atas: selalu tampil.
+    if (y <= 20) {
+        isHidden.value = false;
+        lastScrollY = y;
+        return;
+    }
+
+    // Scroll turun -> sembunyikan.
+    if (y > lastScrollY + 4) {
+        isHidden.value = true;
+    }
+
+    // Scroll naik -> tampilkan kembali.
+    if (y < lastScrollY - 4) {
+        isHidden.value = false;
+    }
+
+    lastScrollY = y;
 };
 
 const onClickOut = (e: MouseEvent) => {
@@ -824,18 +850,35 @@ onUnmounted(() => {
     width: 100%;
     z-index: 900;
     padding: 0;
-    transition: background 0.5s ease, box-shadow 0.5s ease,
-        transform 0.4s var(--ease-spring), backdrop-filter 0.5s ease;
+
+    /* Header transparan, background landing tetap terlihat. */
+    background: transparent;
+
+    /* Animasi muncul / hilang saat scroll. */
+    transition:
+        transform 0.38s var(--ease-spring),
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        backdrop-filter 0.25s ease;
 }
+
+/* Tetap transparan saat scroll.
+   Hanya diberi blur tipis supaya teks menu tetap terbaca. */
 .navbar-root.is-scrolled {
-    background: var(--glass);
-    backdrop-filter: blur(28px) saturate(160%) brightness(0.9);
-    -webkit-backdrop-filter: blur(28px) saturate(160%) brightness(0.9);
-    box-shadow: 0 1px 0 var(--border-strong), 0 8px 40px rgba(5, 12, 36, 0.55),
-        0 0 60px rgba(29, 78, 216, 0.06);
+    background: rgba(2, 6, 23, 0.12);
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    box-shadow: 0 1px 0 rgba(59, 130, 246, 0.08);
 }
+
+/* Scroll ke bawah -> header naik keluar layar. */
 .navbar-root.is-hidden {
     transform: translateY(-100%);
+}
+
+/* Scroll ke atas / posisi paling atas -> header kembali. */
+.navbar-root.is-top {
+    transform: translateY(0);
 }
 
 .navbar-noise {
@@ -1479,7 +1522,7 @@ onUnmounted(() => {
 ════════════════════════════════════════ */
 [data-bs-theme="light"] .navbar-wrapper,
 [data-theme="light"] .navbar-wrapper {
-    --glass: rgba(255, 255, 255, 0.9);
+    --glass: rgba(255, 255, 255, 0.12);
     --glass-s: rgba(255, 255, 255, 0.99);
     --border: rgba(0, 0, 0, 0.08);
     --border-strong: rgba(59, 130, 246, 0.2);
