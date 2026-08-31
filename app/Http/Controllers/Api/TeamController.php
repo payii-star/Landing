@@ -10,12 +10,30 @@ use Illuminate\Support\Facades\Validator;
 
 class TeamController extends Controller
 {
-    // Route: GET /front/teams (publik)
-    public function index()
+    // Route: GET /front/teams
+    public function index(Request $request)
     {
         $teams = Team::where('is_active', true)
             ->orderBy('order')
-            ->get();
+            ->get()
+            ->map(function (Team $team) use ($request) {
+                return [
+                    'id' => $team->id,
+                    'name' => $team->name,
+                    'position' => $team->position,
+                    'image' => $team->image,
+
+                    'image_url' => $team->image
+                        ? $request->getSchemeAndHttpHost()
+                            . '/storage/' . $team->image
+                        : 'https://ui-avatars.com/api/?name='
+                            . urlencode($team->name)
+                            . '&background=3b82f6&color=fff&size=256',
+
+                    'order' => $team->order,
+                    'is_active' => $team->is_active,
+                ];
+            });
 
         return response()->json([
             'success' => true,
@@ -23,7 +41,7 @@ class TeamController extends Controller
         ]);
     }
 
-    // Route: POST /master/teams (list dashboard, dipakai komponen paginate)
+    // Route: POST /master/teams
     public function adminIndex(Request $request)
     {
         $per = $request->per ?? 10;
@@ -36,7 +54,9 @@ class TeamController extends Controller
             ->orderBy('order')
             ->paginate($per, ['*'], 'page', $page + 1);
 
-        $data->getCollection()->transform(fn (Team $team) => $this->format($team));
+        $data->getCollection()->transform(
+            fn (Team $team) => $this->format($team)
+        );
 
         return response()->json($data);
     }
@@ -74,8 +94,10 @@ class TeamController extends Controller
             'is_active' => true,
         ];
 
+        // Simpan semua foto team ke landing/team
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('teams', 'public');
+            $data['image'] = $request->file('image')
+                ->store('landing/team', 'public');
         }
 
         $team = Team::create($data);
@@ -110,14 +132,23 @@ class TeamController extends Controller
             'order' => $request->order,
         ];
 
+        // Jika upload foto baru
         if ($request->hasFile('image')) {
+
+            // Hapus foto lama
             if ($team->image) {
                 Storage::disk('public')->delete($team->image);
             }
-            $data['image'] = $request->file('image')->store('teams', 'public');
+
+            // Simpan foto baru ke landing/team
+            $data['image'] = $request->file('image')
+                ->store('landing/team', 'public');
         }
 
         $team->update($data);
+
+        // Refresh supaya data terbaru dikembalikan
+        $team->refresh();
 
         return response()->json([
             'success' => true,
@@ -129,9 +160,11 @@ class TeamController extends Controller
     // Route: DELETE /master/teams/{team}
     public function destroy(Team $team)
     {
+        // Hapus foto dari storage
         if ($team->image) {
             Storage::disk('public')->delete($team->image);
         }
+
         $team->delete();
 
         return response()->json([
@@ -148,7 +181,11 @@ class TeamController extends Controller
             'name' => $team->name,
             'position' => $team->position,
             'image' => $team->image,
-            'image_url' => $team->image_url,
+            'image_url' => $team->image
+                ? asset('storage/' . $team->image)
+                : 'https://ui-avatars.com/api/?name='
+                    . urlencode($team->name)
+                    . '&background=3b82f6&color=fff&size=256',
             'order' => $team->order,
         ];
     }
