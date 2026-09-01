@@ -118,6 +118,9 @@ export const useLandingStore = defineStore("landing", () => {
     const projects = ref<Project[]>([]);
     const projectsLoading = ref(false);
 
+    const services = ref<any[]>([]);
+    const servicesLoading = ref(false);
+
     const loading = ref(false);
     const error = ref<string | null>(null);
 
@@ -516,6 +519,33 @@ export const useLandingStore = defineStore("landing", () => {
         }
     }
 
+    // ── SERVICES ──────────────────────────────────────────────────
+
+    async function fetchServices() {
+        servicesLoading.value = true;
+
+        try {
+            const response = await axios.get(
+                `${API_URL}/front/services`
+            );
+
+            if (response.data?.success) {
+                services.value = response.data.data || [];
+            } else {
+                services.value = [];
+            }
+        } catch (err) {
+            console.error(
+                "❌ Error fetching landing services:",
+                err
+            );
+
+            services.value = [];
+        } finally {
+            servicesLoading.value = false;
+        }
+    }
+
     // ── REFRESH MENU ──────────────────────────────────────────────
 
     async function refreshMenus() {
@@ -656,6 +686,9 @@ export const useLandingStore = defineStore("landing", () => {
         projects,
         projectsLoading,
 
+        services,
+        servicesLoading,
+
         loading,
         error,
 
@@ -666,6 +699,7 @@ export const useLandingStore = defineStore("landing", () => {
         fetchTeams,
         fetchTestimonials,
         fetchProjects,
+        fetchServices,
 
         refreshMenus,
         clearData,
