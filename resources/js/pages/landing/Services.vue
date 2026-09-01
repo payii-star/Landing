@@ -15,7 +15,7 @@ import ParticleBackground from '@/components/ParticleBackground.vue';
 const heroData = ref<any>(null);
 const servicesData = ref<any[]>([]);
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://192.168.112.210:8000/api";
 // Sama seperti pola di stores/landing.ts — bisa dimatikan lewat .env kalau perlu
 const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
 
