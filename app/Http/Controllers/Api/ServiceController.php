@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ServiceController extends Controller
@@ -55,7 +54,7 @@ class ServiceController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'order' => 'required|integer',
-            'icon' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'icon' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -65,17 +64,12 @@ class ServiceController extends Controller
             ], 422);
         }
 
-        $data = [
+        $service = Service::create([
             'title' => $request->title,
             'description' => $request->description,
             'urutan' => $request->order,
-        ];
-
-        if ($request->hasFile('icon')) {
-            $data['icon'] = $request->file('icon')->store('services', 'public');
-        }
-
-        $service = Service::create($data);
+            'icon' => $request->icon,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -91,7 +85,7 @@ class ServiceController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'order' => 'required|integer',
-            'icon' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'icon' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -101,20 +95,12 @@ class ServiceController extends Controller
             ], 422);
         }
 
-        $data = [
+        $service->update([
             'title' => $request->title,
             'description' => $request->description,
             'urutan' => $request->order,
-        ];
-
-        if ($request->hasFile('icon')) {
-            if ($service->icon) {
-                Storage::disk('public')->delete($service->icon);
-            }
-            $data['icon'] = $request->file('icon')->store('services', 'public');
-        }
-
-        $service->update($data);
+            'icon' => $request->icon,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -126,9 +112,6 @@ class ServiceController extends Controller
     // Route: DELETE /master/services/{service}
     public function destroy(Service $service)
     {
-        if ($service->icon) {
-            Storage::disk('public')->delete($service->icon);
-        }
         $service->delete();
 
         return response()->json([

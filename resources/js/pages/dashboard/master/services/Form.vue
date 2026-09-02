@@ -16,9 +16,13 @@ const props = defineProps({
 
 const emit = defineEmits(["close", "refresh"]);
 
-const service = ref<Service>({} as Service);
-const fileTypes = ref(["image/jpeg", "image/png", "image/jpg", "image/svg+xml"]);
-const icon = ref<any>([]);
+const service = ref<Service>({
+    title: "",
+    description: "",
+    icon: "",
+    order: 1,
+} as Service);
+
 const formRef = ref();
 
 const formSchema = Yup.object().shape({
@@ -29,15 +33,21 @@ const formSchema = Yup.object().shape({
         .required("Urutan harus diisi"),
 });
 
+function resetForm() {
+    service.value = {
+        title: "",
+        description: "",
+        icon: "",
+        order: 1,
+    } as Service;
+}
+
 function getEdit() {
     block(document.getElementById("form-service"));
-    // TODO: cocokkan endpoint ini dengan API Destria
+
     ApiService.get("master/services", props.selected)
         .then(({ data }) => {
             service.value = data.service;
-            icon.value = data.service.icon
-                ? ["/storage/" + data.service.icon]
-                : [];
         })
         .catch((err: any) => {
             toast.error(err.response.data.message);
@@ -48,29 +58,21 @@ function getEdit() {
 }
 
 function submit() {
-    const formData = new FormData();
-    formData.append("title", service.value.title);
-    formData.append("description", service.value.description);
-    formData.append("order", String(service.value.order));
-
-    if (icon.value.length) {
-        formData.append("icon", icon.value[0].file);
-    }
-    if (props.selected) {
-        formData.append("_method", "PUT");
-    }
+    const payload = {
+        title: service.value.title ?? "",
+        description: service.value.description ?? "",
+        icon: service.value.icon ?? "",
+        order: Number(service.value.order ?? 1),
+    };
 
     block(document.getElementById("form-service"));
+
     axios({
-        method: "post",
-        // TODO: cocokkan endpoint ini dengan API Destria
+        method: props.selected ? "put" : "post",
         url: props.selected
             ? `/master/services/${props.selected}`
             : "/master/services/store",
-        data: formData,
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
+        data: payload,
     })
         .then(() => {
             emit("close");
@@ -90,6 +92,8 @@ function submit() {
 onMounted(async () => {
     if (props.selected) {
         getEdit();
+    } else {
+        resetForm();
     }
 });
 
@@ -98,6 +102,8 @@ watch(
     () => {
         if (props.selected) {
             getEdit();
+        } else {
+            resetForm();
         }
     }
 );
@@ -195,15 +201,19 @@ watch(
                     <!--begin::Input group-->
                     <div class="fv-row mb-7">
                         <label class="form-label fw-bold fs-6">
-                            Icon / Gambar Layanan
+                            Icon (Font Awesome)
                         </label>
-                        <!--begin::Input-->
-                        <file-upload
-                            :files="icon"
-                            :accepted-file-types="fileTypes"
-                            v-on:updatefiles="(file) => (icon = file)"
-                        ></file-upload>
-                        <!--end::Input-->
+                        <Field
+                            class="form-control form-control-lg form-control-solid"
+                            type="text"
+                            name="icon"
+                            autocomplete="off"
+                            v-model="service.icon"
+                            placeholder="cth: briefcase, code, cloud"
+                        />
+                        <div class="form-text">
+                            Nama ikon Font Awesome tanpa prefix "fa-", cth: "briefcase"
+                        </div>
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
                                 <ErrorMessage name="icon" />

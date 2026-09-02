@@ -24,6 +24,17 @@ const columns = [
     column.accessor("description", {
         header: "Deskripsi",
     }),
+    column.accessor("icon", {
+        header: "Icon",
+        cell: (cell) =>
+            h(
+                "i",
+                cell.getValue()
+                    ? { class: `fa-solid fa-${cell.getValue()} fs-2` }
+                    : { class: "text-muted" },
+                cell.getValue() ? "" : "-"
+            ),
+    }),
     column.accessor("order", {
         header: "Urutan",
     }),
@@ -47,7 +58,6 @@ const columns = [
                     {
                         class: "btn btn-sm btn-icon btn-danger",
                         onClick: () =>
-                            // TODO: cocokkan endpoint ini dengan API Destria
                             deleteService(
                                 `/master/services/${cell.getValue()}`
                             ),

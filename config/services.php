@@ -38,4 +38,8 @@ return [
         'key' => env('INTERNAL_API_KEY'),
     ],
 
+    'epkl_api' => [
+    'url' => env('EPKL_API_URL'),
+    ],
+
 ];

@@ -74,7 +74,7 @@
         >
           <!-- Icon -->
           <div class="card-icon">
-            <img v-if="item.icon" :src="`/${item.icon}`" :alt="item.title" class="icon-img" />
+            <i v-if="item.icon" :class="['fa-solid', `fa-${item.icon}`, 'icon-img']"></i>
 
             <svg v-else-if="getIconType(item.title) === 'consult'" class="icon-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
@@ -366,7 +366,7 @@ const getIconType = (title = '') => {
   color: #e2eaff;
 }
 .icon-img { width: 26px; height: 26px; object-fit: contain; }
-img.icon-img { filter: brightness(0) invert(1); }
+.card-icon i.icon-img { width: auto; height: auto; font-size: 26px; line-height: 1; }
 
 .card-title {
   font-size: 1.35rem; font-weight: 700; color: #e2e8f0;
