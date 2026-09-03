@@ -49,10 +49,10 @@
                       </svg>
                     </div>
                   </div>
-                  <p class="tst-comment">"{{ item.content }}"</p>
+                  <p class="tst-comment">"{{ item.message }}"</p>
                   <div class="tst-author">
                     <div class="tst-avatar-wrap">
-                      <img :src="getImageUrl(item.avatar)" :alt="item.name" class="tst-avatar"/>
+                      <img :src="getImageUrl(item.photo)" :alt="item.name" class="tst-avatar"/>
                     </div>
                     <div class="tst-author-info">
                       <span class="tst-author-name">{{ item.name }}</span>
@@ -91,7 +91,7 @@ const getImageUrl = (path: string | null) => {
   if (!path) return `https://ui-avatars.com/api/?name=User&background=3b82f6&color=fff`;
   const backendUrl = import.meta.env.VITE_API_URL
     ? import.meta.env.VITE_API_URL.replace('/api', '')
-    : 'http://127.0.0.1:8000';
+    : 'http://192.168.112.210:8000';
   return path.startsWith('http') ? path : `${backendUrl}/storage/${path}`;
 };
 

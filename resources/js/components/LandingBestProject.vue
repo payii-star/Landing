@@ -72,7 +72,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 // ── Samain sama pola di stores/project.ts, biar konsisten dan gak salah host ──
-const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.112.210:8000/api';
 
 const projects = ref([]);
 const loading = ref(true);
@@ -81,7 +81,7 @@ const loadError = ref(false);
 const getImageUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
-  const backendUrl = 'http://127.0.0.1:8000';
+  const backendUrl = 'http://192.168.112.210:8000';
   return path.startsWith('/') ? `${backendUrl}${path}` : `${backendUrl}/${path}`;
 };
 
