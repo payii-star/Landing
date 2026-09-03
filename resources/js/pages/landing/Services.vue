@@ -8,6 +8,7 @@ import LandingFooter from "@/components/LandingFooter.vue";
 import LandingServicesHero from "@/components/LandingServicesHero.vue";
 import LandingTestimonialsCust from '@/components/LandingTestimonialsCust.vue';
 import LandingCta from '@/components/LandingCta.vue';
+import LandingWhyUs from '@/components/LandingWhyUs.vue';
 import LandingServices from '@/components/LandingServices.vue';
 import ParticleBackground from '@/components/ParticleBackground.vue';
 
@@ -81,6 +82,7 @@ onMounted(() => {
             Memuat data...
           </div>
       </div>
+      <LandingWhyUs/>
       <LandingServices/>
       <LandingTestimonialsCust/>
       <LandingCta />
