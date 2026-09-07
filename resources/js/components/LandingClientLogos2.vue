@@ -81,7 +81,7 @@ import { mockClientLogos } from '@/mocks/landingMock';
 
 const landingStore = useLandingStore();
 const USE_MOCK_FALLBACK = import.meta.env.VITE_USE_MOCK_FALLBACK !== "false";
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://192.168.112.210:8000/api";
 
 // Logo dari seeder/DB disimpan sebagai path relatif ("/media/clients/xxx.png"
 // atau "/storage/clients/xxx.png"). Path relatif itu harus diarahkan ke

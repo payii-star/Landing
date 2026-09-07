@@ -55,7 +55,33 @@ class LandingController extends Controller
             return null;
         }
 
-        return $res->json('data') ?? [];
+        $logos = $res->json('data');
+        if (!is_array($logos)) {
+            return [];
+        }
+
+        // Logo disimpan di filesystem project E-PKL, jadi path relatif harus
+        // dibentuk terhadap origin E-PKL, bukan origin project Landing.
+        $epklOrigin = preg_replace('#/api/?$#', '', rtrim($epklUrl, '/'));
+
+        return array_map(function (array $logo) use ($epklOrigin): array {
+            if (!empty($logo['url']) && preg_match('#^https?://#i', $logo['url'])) {
+                return $logo;
+            }
+
+            $path = $logo['url'] ?? $logo['logo'] ?? null;
+            if (!$path) {
+                return $logo;
+            }
+
+            if (!str_starts_with($path, '/')) {
+                $path = '/storage/' . ltrim($path, '/');
+            }
+
+            $logo['url'] = $epklOrigin . $path;
+
+            return $logo;
+        }, $logos);
     }
 
     public function landingCta()

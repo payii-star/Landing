@@ -62,7 +62,7 @@ import { useLandingStore } from '@/stores/landing';
 
 const landingStore = useLandingStore();
 const isPaused     = ref(false);
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://192.168.112.210:8000/api";
 
 // Logo dari seeder/DB disimpan sebagai path relatif ("/media/clients/xxx.png").
 // Harus diarahkan ke origin BACKEND, bukan origin frontend (Vite dev server).

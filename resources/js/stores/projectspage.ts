@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import axios from 'axios'
 import { mockProjectsPageSetting } from '@/mocks/landingMock'
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://192.168.112.210:8000/api";
 
 
 

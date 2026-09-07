@@ -31,7 +31,7 @@
           <div class="proj-visual">
             <div class="proj-frame">
               <div class="proj-frame-glow"></div>
-              <img :src="getImageUrl(project.image)" :alt="project.title" class="proj-img"/>
+              <img :src="getImageUrl(project.thumbnail || project.image)" :alt="project.title" class="proj-img"/>
               <div class="proj-corner tl"></div>
               <div class="proj-corner br"></div>
             </div>
@@ -72,7 +72,10 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 // ── Samain sama pola di stores/project.ts, biar konsisten dan gak salah host ──
-const API_URL = import.meta.env.VITE_API_URL || 'http://192.168.112.210:8000/api';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_APP_API_URL ||
+  'http://192.168.112.210:8000/api';
 
 const projects = ref([]);
 const loading = ref(true);

@@ -178,7 +178,7 @@ const titleWords = computed(() => {
 const getImageUrl = (p?: string) => {
   if (!p) return '';
   if (p.startsWith('http')) return p;
-  return `http://127.0.0.1:8000/storage/${p}`;
+  return `http://192.168.112.210:8000/storage/${p}`;
 };
 
 const scrollToGrid = () => {

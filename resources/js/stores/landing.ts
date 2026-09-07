@@ -93,6 +93,7 @@ interface Project {
 
 const API_URL =
     import.meta.env.VITE_API_URL ||
+    import.meta.env.VITE_APP_API_URL ||
     "http://192.168.112.210:8000/api";
 
 const USE_MOCK_FALLBACK =
@@ -137,6 +138,14 @@ export const useLandingStore = defineStore("landing", () => {
 
             if (response.data?.success) {
                 content.value = response.data.data || {};
+
+                // Client logos disimpan di E-PKL dan tersedia melalui endpoint
+                // terpisah, jadi ambil langsung dari backend E-PKL juga.
+                const logosResponse = await axios.get(
+                    `${API_URL}/front/client-logos`
+                );
+                content.value.client_logos =
+                    logosResponse.data?.data || [];
             } else {
                 throw new Error(
                     response.data?.message ||
