@@ -211,6 +211,9 @@ watch(
                             v-on:updatefiles="(file) => (thumbnail = file)"
                         ></file-upload>
                         <!--end::Input-->
+                        <div class="form-text text-muted fs-7 mt-1">
+                            Format yang didukung: JPG, JPEG, PNG, WEBP. Ukuran maksimal 2MB.
+                        </div>
                         <div class="fv-plugins-message-container">
                             <div class="fv-help-block">
                                 <ErrorMessage name="thumbnail" />

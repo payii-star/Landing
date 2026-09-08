@@ -182,6 +182,9 @@ onMounted(fetchContent);
                                 :accepted-file-types="fileTypes"
                                 v-on:updatefiles="(file) => (logoFile = file)"
                             ></file-upload>
+                            <div class="form-text text-muted fs-7 mt-1">
+                                Format yang didukung: JPG, JPEG, PNG, WEBP. Ukuran maksimal 2MB.
+                            </div>
                             <img
                                 v-if="currentLogo && !logoFile.length"
                                 :src="currentLogo"
@@ -447,6 +450,9 @@ onMounted(fetchContent);
                         :accepted-file-types="fileTypes"
                         v-on:updatefiles="(file) => (ceoPhotoFile = file)"
                     ></file-upload>
+                    <div class="form-text text-muted fs-7 mt-1">
+                        Format yang didukung: JPG, JPEG, PNG, WEBP. Ukuran maksimal 2MB.
+                    </div>
                     <img
                         v-if="currentCeoPhoto && !ceoPhotoFile.length"
                         :src="currentCeoPhoto"
