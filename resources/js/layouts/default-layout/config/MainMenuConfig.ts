@@ -52,10 +52,6 @@ const MainMenuConfig: Array<MenuItem> = [
                         name: "master-statistics",
                         route: "/dashboard/master/statistics",
                     },
-                    { heading: "Footer",
-                        name: "master-footer",
-                        route: "/dashboard/master/footer",
-                    },
                     {
                         heading: "Landing Content",
                         name: "master-landing-content",

@@ -162,16 +162,6 @@ const routes: Array<RouteRecordRaw> = [
                 },
             },
             {
-                path: "master/footer",
-                name: "dashboard.master.footer",
-                component: () =>
-                    import("@/pages/dashboard/master/footer/Index.vue"),
-                meta: {
-                    pageTitle: "Footer",
-                    breadcrumbs: ["Master", "Footer"],
-                },
-            },
-            {
                 path: "master/landing-content",
                 name: "dashboard.master.landing-content",
                 component: () =>
