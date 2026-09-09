@@ -71,16 +71,22 @@
 
 <script setup>
 import { computed, onMounted } from 'vue';
-import { useLandingStore } from '@/stores/landing';
+import { API_URL, useLandingStore } from '@/stores/landing';
 
 const landingStore = useLandingStore();
 
 const ceoName = computed(() => landingStore.content?.ceo_name || 'Fahrur Rozi');
 const ceoPosition = computed(() => landingStore.content?.ceo_position || '');
 const ceoComment = computed(() => landingStore.content?.ceo_comment || '');
-const ceoPhoto = computed(() =>
-  landingStore.content?.ceo_photo ? `/storage/${landingStore.content.ceo_photo}` : null
-);
+const ceoPhoto = computed(() => {
+  const photo = landingStore.content?.ceo_photo;
+  if (!photo) return null;
+  if (/^https?:\/\//i.test(photo)) return photo;
+
+  const apiOrigin = API_URL.replace(/\/api\/?$/, '');
+  const photoPath = photo.replace(/^\/?storage\//, '');
+  return `${apiOrigin}/storage/${photoPath}`;
+});
 
 const ceoCommentParagraphs = computed(() =>
   ceoComment.value.split('\n').filter(p => p.trim().length > 0)

@@ -3,7 +3,7 @@
     <div class="container">
 
       <!-- ═══════════════════════════════════════════════════════════
-           SKELETON LOADING
+           SKELETON LOADING (initial load)
       ═══════════════════════════════════════════════════════════ -->
       <template v-if="landingStore.projectsLoading">
         <div
@@ -197,10 +197,12 @@
         </div>
 
         <!-- ═════════════════════════════════════════════════════════
-             SEMUA PROJECT
+             SEMUA PROJECT (infinite scroll, muncul bertahap per 6)
 
              Featured TIDAK dibuang.
-             Semua project dari API ditampilkan.
+             Semua project dari API ditampilkan, hanya jumlah
+             yang tampil di grid dibatasi oleh visibleCount,
+             lalu otomatis nambah saat sentinel discroll ke viewport.
         ═════════════════════════════════════════════════════════ -->
         <TransitionGroup
           name="grid-fade"
@@ -209,7 +211,7 @@
           appear
         >
           <div
-            v-for="project in filteredProjects"
+            v-for="project in displayedProjects"
             :key="project.id"
             class="project-card"
           >
@@ -325,6 +327,36 @@
           </div>
         </TransitionGroup>
 
+        <!-- ═════════════════════════════════════════════════════════
+             LOADING SAAT MEMUAT PROYEK BERIKUTNYA
+             (spinner muter + teks, batch berikutnya baru muncul
+             setelah loading ini selesai — tidak ada preview
+             skeleton card di bawahnya)
+        ═════════════════════════════════════════════════════════ -->
+        <div
+          v-if="loadingMore"
+          class="load-more-spinner-wrap"
+        >
+          <span class="load-more-spinner"></span>
+          <span class="load-more-spinner-text">Memuat proyek lainnya...</span>
+        </div>
+
+        <!-- SENTINEL: elemen tak kasat mata untuk mendeteksi scroll -->
+        <div
+          v-if="hasMore"
+          ref="loadMoreTrigger"
+          class="load-more-sentinel"
+        ></div>
+
+        <!-- SEMUA PROYEK SUDAH TAMPIL -->
+        <div
+          v-if="!hasMore && filteredProjects.length > 0"
+          class="load-more-done"
+        >
+          <i class="fa-solid fa-circle-check"></i>
+          Semua proyek telah ditampilkan
+        </div>
+
         <!-- EMPTY -->
         <div
           v-if="filteredProjects.length === 0 && !landingStore.projectsLoading"
@@ -344,7 +376,8 @@ import {
   onBeforeUnmount,
   computed,
   ref,
-  nextTick
+  nextTick,
+  watch
 } from 'vue'
 
 import { useLandingStore } from '@/stores/landing'
@@ -439,6 +472,87 @@ const filteredProjects = computed(() => {
     project =>
       getPlatform(project) === activeFilter.value
   )
+})
+
+/*
+|--------------------------------------------------------------------------
+| INFINITE SCROLL (ala YouTube, per 6)
+|--------------------------------------------------------------------------
+| - Awal render: tampilkan INITIAL_VISIBLE (6) project.
+| - Saat sentinel discroll ke layar: otomatis tambah LOAD_STEP (6),
+|   dengan skeleton card muncul sebentar selagi "memuat".
+| - Filter Semua/Web/Mobile diganti -> reset ke tampilan awal.
+*/
+const INITIAL_VISIBLE = 6
+const LOAD_STEP = 6
+
+const visibleCount = ref(INITIAL_VISIBLE)
+const loadingMore = ref(false)
+const loadMoreTrigger = ref(null)
+
+const displayedProjects = computed(() =>
+  filteredProjects.value.slice(0, visibleCount.value)
+)
+
+const hasMore = computed(() =>
+  visibleCount.value < filteredProjects.value.length
+)
+
+function loadMore() {
+  if (loadingMore.value || !hasMore.value) return
+
+  loadingMore.value = true
+
+  // delay singkat biar skeleton sempat terlihat,
+  // persis kesan "memuat" seperti di YouTube.
+  setTimeout(() => {
+    visibleCount.value += LOAD_STEP
+    loadingMore.value = false
+  }, 1000)
+}
+
+// reset ke tampilan awal setiap kali filter diganti
+watch(activeFilter, () => {
+  visibleCount.value = INITIAL_VISIBLE
+})
+
+/*
+|--------------------------------------------------------------------------
+| OBSERVER UNTUK SENTINEL (auto-load saat discroll)
+|--------------------------------------------------------------------------
+*/
+let infiniteObserver = null
+
+if (typeof IntersectionObserver !== 'undefined') {
+  infiniteObserver = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          loadMore()
+        }
+      })
+    },
+    {
+      root: null,
+      // mulai load sedikit sebelum sentinel benar-benar terlihat
+      rootMargin: '250px',
+      threshold: 0
+    }
+  )
+}
+
+// sentinel dipasang/dilepas dari DOM lewat v-if="hasMore",
+// jadi kita amati perubahan ref-nya dan (re)observe otomatis.
+watch(loadMoreTrigger, (el, oldEl) => {
+  if (!infiniteObserver) return
+
+  if (oldEl) {
+    infiniteObserver.unobserve(oldEl)
+  }
+
+  if (el) {
+    infiniteObserver.observe(el)
+  }
 })
 
 /*
@@ -618,7 +732,7 @@ function getInitials(title) {
 | SCROLL REVEAL
 |--------------------------------------------------------------------------
 */
-let observer = null
+let revealObserver = null
 
 function setupReveal() {
   if (typeof IntersectionObserver === 'undefined') {
@@ -631,7 +745,7 @@ function setupReveal() {
     return
   }
 
-  observer = new IntersectionObserver(
+  revealObserver = new IntersectionObserver(
     entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -639,7 +753,7 @@ function setupReveal() {
             'is-visible'
           )
 
-          observer?.unobserve(
+          revealObserver?.unobserve(
             entry.target
           )
         }
@@ -653,7 +767,7 @@ function setupReveal() {
   document
     .querySelectorAll('.reveal')
     .forEach(el => {
-      observer?.observe(el)
+      revealObserver?.observe(el)
     })
 }
 
@@ -678,9 +792,14 @@ onMounted(async () => {
 |--------------------------------------------------------------------------
 */
 onBeforeUnmount(() => {
-  if (observer) {
-    observer.disconnect()
-    observer = null
+  if (revealObserver) {
+    revealObserver.disconnect()
+    revealObserver = null
+  }
+
+  if (infiniteObserver) {
+    infiniteObserver.disconnect()
+    infiniteObserver = null
   }
 })
 </script>
@@ -1330,6 +1449,63 @@ onBeforeUnmount(() => {
   box-shadow:
     0 10px 25px
     rgba(56,189,248,0.35);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INFINITE SCROLL / LOAD MORE (ala YouTube)
+══════════════════════════════════════════════════════════════ */
+
+.load-more-spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  padding: 48px 0 8px;
+}
+
+.load-more-spinner {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  border: 3px solid rgba(99,102,241,0.18);
+  border-top-color: #38bdf8;
+
+  animation: load-more-spin 0.8s linear infinite;
+}
+
+@keyframes load-more-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.load-more-spinner-text {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.load-more-sentinel {
+  width: 100%;
+  height: 1px;
+}
+
+.load-more-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin-top: 40px;
+
+  color: #86efac;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 /* ═══════════════════════════════════════════════════════════════

@@ -91,7 +91,7 @@ interface Project {
 
 // ── CONFIG ─────────────────────────────────────────────────────────
 
-const API_URL =
+export const API_URL =
     import.meta.env.VITE_API_URL ||
     import.meta.env.VITE_APP_API_URL ||
     "http://192.168.112.210:8000/api";
